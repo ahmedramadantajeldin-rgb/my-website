@@ -1,462 +1,161 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ME307 – Machine Design — All Sheets</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ME307 — محاضرات وشيتات التصميم الميكانيكي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Cairo', 'Segoe UI', sans-serif;
-      background: #eef1f7;
-      color: #1c1917;
-      line-height: 1.7;
-      min-height: 100vh;
-    }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(150deg, #f0f2f5 0%, #e8edf3 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
 
-    /* ── HERO HEADER ── */
-    .hero {
-      background: #1a2744;
-      position: relative;
-      overflow: hidden;
-      padding: 60px 40px 50px;
-      text-align: center;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        -45deg,
-        transparent, transparent 20px,
-        rgba(192,68,10,.04) 20px, rgba(192,68,10,.04) 21px
-      );
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #c0440a 0%, #f5a623 50%, #c0440a 100%);
-    }
-    .hero-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #f5a623;
-      display: inline-block;
-      margin-bottom: 16px;
-      border: 1px solid rgba(245,166,35,0.3);
-      padding: 4px 16px;
-    }
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 800;
-      color: #fefcf9;
-      line-height: 1.2;
-      margin-bottom: 12px;
-      position: relative;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: #f5a623;
-    }
-    .hero-sub {
-      font-size: 1.05rem;
-      color: rgba(254,252,249,0.55);
-      font-weight: 400;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .hero-pills {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-    .hero-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      padding: 4px 14px;
-      border: 1px solid rgba(245,166,35,0.3);
-      color: rgba(245,166,35,0.75);
-    }
+  .hero {
+    text-align: center;
+    margin-bottom: 60px;
+  }
 
-    /* ── CONTAINER ── */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 24px 60px;
-    }
+  .hero .badge {
+    display: inline-block;
+    background: #1a2744;
+    color: #f5c842;
+    padding: 6px 22px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
 
-    /* ── SECTION TITLE ── */
-    .section-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #92600a;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #ddd8d0;
-    }
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #1a2744;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
 
-    /* ── CARDS GRID ── */
-    .sheets-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
+  .hero .subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+    font-weight: 400;
+  }
 
-    .sheet-card {
-      background: #fefcf9;
-      border: 1px solid #ddd8d0;
-      border-top: 5px solid #1a2744;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .sheet-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(26,39,68,0.15);
-      border-top-color: #e06428;
-    }
-    .sheet-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(245,166,35,0.03) 0%, transparent 50%);
-      pointer-events: none;
-    }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    max-width: 700px;
+    width: 100%;
+  }
 
-    .card-header {
-      padding: 24px 24px 0;
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-    }
-    .card-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #f5a623;
-      line-height: 1;
-      min-width: 48px;
-    }
-    .card-info {
-      flex: 1;
-    }
-    .card-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      background: #e8ecf4;
-      color: #1a2744;
-      padding: 2px 10px;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #1a2744;
-      line-height: 1.4;
-    }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 48px 36px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
-    .card-body {
-      padding: 16px 24px 20px;
-    }
-    .card-desc {
-      font-size: 0.88rem;
-      color: #44403c;
-      line-height: 1.7;
-    }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 16px 16px 0 0;
+    transition: height 0.3s ease;
+  }
 
-    .card-footer {
-      padding: 0 24px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .card-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border: 1px solid rgba(192,68,10,0.2);
-      color: #c0440a;
-    }
-    .card-arrow {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #ddd8d0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #44403c;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-    .sheet-card:hover .card-arrow {
-      background: #1a2744;
-      border-color: #1a2744;
-      color: #f5a623;
-    }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  }
 
-    /* ── FOOTER ── */
-    .page-footer {
-      background: #1a2744;
-      color: rgba(254,252,249,0.35);
-      text-align: center;
-      padding: 20px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
+  .card:hover::before {
+    height: 8px;
+  }
 
-    /* ── SIDEBAR NAV ── */
-    .side-nav {
-      position: fixed;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 99999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .side-nav a {
-      width: 42px;
-      height: 42px;
-      background: #fefcf9;
-      border: 1px solid #ddd8d0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      color: #1a2744;
-      font-size: 16px;
-      transition: all 0.25s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .side-nav a:hover {
-      background: #1a2744;
-      color: #f5a623;
-      border-color: #1a2744;
-      transform: scale(1.1);
-      box-shadow: 0 4px 16px rgba(26,39,68,0.25);
-    }
-    .side-nav a .tooltip {
-      position: absolute;
-      right: calc(100% + 10px);
-      background: #1a2744;
-      color: #fefcf9;
-      padding: 4px 12px;
-      font-size: 0.72rem;
-      font-family: 'Cairo', sans-serif;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-    .side-nav a:hover .tooltip {
-      opacity: 1;
-    }
+  .card-lectures::before { background: linear-gradient(135deg, #1a2744, #2d4a7a); }
+  .card-sheets::before  { background: linear-gradient(135deg, #c0440a, #e06428); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      .hero { padding: 40px 20px 35px; }
-      .hero h1 { font-size: 1.8rem; }
-      .sheets-grid { grid-template-columns: 1fr; }
-      .container { padding: 24px 16px 40px; }
-      .side-nav {
-        left: 8px;
-      }
-      .side-nav a {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
-      }
-    }
-  </style>
+  .card:hover.card-lectures { border-color: #1a2744; }
+  .card:hover.card-sheets   { border-color: #c0440a; }
+
+  .card .icon {
+    font-size: 3.4rem;
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .card h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .card-lectures h2 { color: #1a2744; }
+  .card-sheets h2   { color: #c0440a; }
+
+  .card p {
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  .footer {
+    margin-top: 60px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 2rem; }
+    .cards { gap: 20px; }
+    .card { padding: 36px 24px; }
+  }
+</style>
 </head>
 <body>
 
-  <!-- ── SIDEBAR NAVIGATION ── -->
-  <nav class="side-nav" id="sideNav">
-    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" title="Scroll to Top">
-      <span>⬆</span>
-      <span class="tooltip">أعلى الصفحة</span>
+  <div class="hero">
+    <span class="badge">ME307 · Machine Design</span>
+    <h1>محاضرات وشيتات التصميم الميكانيكي</h1>
+    <p class="subtitle">كل المحاضرات والشيتات في مكان واحد — اختر القسم اللي عايزه</p>
+  </div>
+
+  <div class="cards">
+    <a href="lectures.html" class="card card-lectures" id="lectures-card">
+      <span class="icon">📖</span>
+      <h2>المحاضرات</h2>
+      <p>7 محاضرات شاملة من Lecture 1 لـ Lecture 7</p>
     </a>
-    <a href="#" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return false;" title="Scroll to Bottom">
-      <span>⬇</span>
-      <span class="tooltip">أسفل الصفحة</span>
+
+    <a href="sheets.html" class="card card-sheets" id="sheets-card">
+      <span class="icon">📝</span>
+      <h2>الشيتات</h2>
+      <p>6 شيتات حلول من Sheet 1 لـ Sheet 6</p>
     </a>
-    <a href="index.html" title="Home" style="background:#1a2744;color:#f5a623;border-color:#1a2744;">
-      <span>🏠</span>
-      <span class="tooltip">الصفحة الرئيسية</span>
-    </a>
-  </nav>
+  </div>
 
-  <!-- ── HERO SECTION ── -->
-  <header class="hero">
-    <div class="hero-badge">ME307 · Machine Design</div>
-    <h1>تصميم الآلات<br><em>Model Answers</em></h1>
-    <p class="hero-sub">جميع الشيتات (Sheet 1 – Sheet 6) — حلول نموذجية كاملة</p>
-    <div class="hero-pills">
-      <span class="hero-pill">MATERIALS</span>
-      <span class="hero-pill">TOLERANCES</span>
-      <span class="hero-pill">STRESSES</span>
-      <span class="hero-pill">TORSION</span>
-      <span class="hero-pill">BENDING</span>
-      <span class="hero-pill">RIVETED JOINTS</span>
-    </div>
-  </header>
-
-  <!-- ── CONTENT ── -->
-  <main class="container">
-    <div class="section-label">📂 ALL SHEETS — جميع الشيتات</div>
-
-    <div class="sheets-grid">
-
-      <!-- SHEET 1 -->
-      <a class="sheet-card" href="sheet1.html" id="link-sheet1">
-        <div class="card-header">
-          <div class="card-num">01</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 1</div>
-            <div class="card-title">Engineering Materials</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">خواص المواد الهندسية — التصنيف، الخصائص الميكانيكية، اختيار المواد المناسبة للتصميم.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">MODEL ANSWER</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
-
-      <!-- SHEET 2 -->
-      <a class="sheet-card" href="sheet2.html" id="link-sheet2">
-        <div class="card-header">
-          <div class="card-num">02</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 2</div>
-            <div class="card-title">Limits, Fits & Tolerances</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">حدود التفاوتات والتوافقات — أنظمة ISO، حسابات Clearance و Interference fits.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
-
-      <!-- SHEET 3 -->
-      <a class="sheet-card" href="sheet3.html" id="link-sheet3">
-        <div class="card-header">
-          <div class="card-num">03</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 3</div>
-            <div class="card-title">Stresses in Machine Members</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">الإجهادات في أجزاء الماكينات — إجهادات الشد، الضغط، القص والإجهادات المركبة.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
-
-      <!-- SHEET 4 -->
-      <a class="sheet-card" href="sheet4.html" id="link-sheet4">
-        <div class="card-header">
-          <div class="card-num">04</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 4</div>
-            <div class="card-title">Torsional & Bending Stresses</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">إجهادات اللي والانحناء — حسابات العزم، الإجهادات في الأعمدة والكمرات.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
-
-      <!-- SHEET 5 -->
-      <a class="sheet-card" href="sheet5.html" id="link-sheet5">
-        <div class="card-header">
-          <div class="card-num">05</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 5</div>
-            <div class="card-title">Bending & Torsional Stresses</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">إجهادات الانحناء واللي المتقدمة — تطبيقات Mohr's Circle والتصميم الآمن.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
-
-      <!-- SHEET 6 -->
-      <a class="sheet-card" href="sheet6.html" id="link-sheet6">
-        <div class="card-header">
-          <div class="card-num">06</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 6</div>
-            <div class="card-title">Riveted Joints</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">وصلات المسامير البرشام — تصميم الوصلات، حسابات القوة والكفاءة.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
-
-    </div>
-  </main>
-
-  <!-- ── FOOTER ── -->
-  <footer class="page-footer">
-    ME307 Machine Design — All Sheets Combined — Model Answers & Full Solutions
-  </footer>
+  <div class="footer">
+    MUST University · Faculty of Engineering · Mechanical Department
+  </div>
 
 </body>
 </html>

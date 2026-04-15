@@ -1,0 +1,581 @@
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE-ONLY RESPONSIVE FIXES — applies ONLY to ≤768px
+   This file MUST NOT affect desktop/laptop layouts in any way.
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* ── 1. REMOVE "Sheet" divider label on mobile ── */
+  .sheet-divider {
+    display: none !important;
+  }
+
+  /* ── 2. GLOBAL TEXT WRAPPING — prevent overflow ── */
+  body {
+    overflow-x: hidden !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  *, *::before, *::after {
+    max-width: 100vw;
+  }
+
+  p, li, span, div, td, th, .txt, .def, .key,
+  .step-content, .question, .question-title,
+  .question-meta, .card-description,
+  .note, .info, .tip,
+  .def-box, .note-box, .key-answer,
+  .summary, .example-box {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    hyphens: auto;
+  }
+
+  /* ── 3. EQUATION CONTAINERS — horizontal scroll inside, no page overflow ── */
+  .eq-box,
+  .eq,
+  .eq.key,
+  .formula-box,
+  [class*="eq-box"],
+  mjx-container,
+  mjx-container[jax="CHTML"],
+  mjx-container[jax="CHTML"][display="true"] {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ensure MathJax display equations don't blow out */
+  mjx-math {
+    max-width: 100% !important;
+  }
+
+  mjx-container[jax="CHTML"][display="true"] {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100% !important;
+    padding: 8px 0 !important;
+  }
+
+  /* ── 4. TABLE RESPONSIVENESS ── */
+  .table-wrap,
+  .data-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  table,
+  .mat-table,
+  .data-table {
+    min-width: 100%;
+    font-size: 12px !important;
+    display: table;
+    max-width: 100%;
+  }
+
+  table th,
+  table td,
+  .mat-table th,
+  .mat-table td,
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* ── 5. NAVIGATION BAR MOBILE FIX ── */
+  #main-nav {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none !important;
+    padding: 0 !important;
+  }
+
+  #main-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  #main-nav a {
+    min-width: auto !important;
+    padding: 8px 12px !important;
+    font-size: 10px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Hide the long first title on mobile, show only on larger screens */
+  #main-nav a:first-child {
+    max-width: 120px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 9px !important;
+    padding: 6px 10px !important;
+  }
+
+  /* ── 6. PAGE / CONTAINER SPACING ── */
+  .page {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+  }
+
+  .content,
+  #lec1 .content,
+  .doc-body,
+  .container,
+  .wrapper {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    max-width: 100% !important;
+  }
+
+  /* ── 7. HEADER SECTIONS — prevent overflow ── */
+  .hdr,
+  #lec1 .hdr,
+  .doc-header,
+  .page-header,
+  .hero,
+  .cover,
+  .sheet-bar {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .hdr h1,
+  #lec1 .hdr h1,
+  .doc-header .course,
+  .cover h1 {
+    font-size: clamp(1.2rem, 5vw, 1.8rem) !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* ── 8. SECTION BODIES — proper mobile padding ── */
+  #lec1 .sec-body,
+  #lec2 .section-body,
+  .sec-body,
+  .section-body,
+  .solution-area,
+  .prob-card {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    max-width: 100% !important;
+  }
+
+  /* ── 9. TOC on mobile ── */
+  #lec1 .toc,
+  .toc,
+  .toc-wrap {
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    padding: 14px 12px !important;
+  }
+
+  .toc-grid,
+  .toc-cols {
+    grid-template-columns: 1fr !important;
+  }
+
+  #lec2 .toc ol {
+    columns: 1 !important;
+  }
+
+  /* ── 10. COMPARISON GRIDS on mobile ── */
+  .cmp-grid,
+  .types-grid,
+  #lec1 .cmp-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── 11. QUESTION BLOCKS ── */
+  .question {
+    padding-left: 10px !important;
+    border-left-width: 3px !important;
+  }
+
+  .question-box {
+    padding: 10px 14px !important;
+  }
+
+  /* ── 12. DEFINITION / KEY / NOTE BLOCKS ── */
+  .def,
+  .key,
+  .img-desc,
+  .def-box,
+  .note-box,
+  .key-answer,
+  .formula-box,
+  .example-box,
+  .figure-box {
+    padding: 10px 12px !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  /* ── 13. SUMMARY BOXES ── */
+  .summary {
+    padding: 12px !important;
+    max-width: 100% !important;
+  }
+
+  /* ── 14. ANSWER BOXES ── */
+  .answer {
+    flex-wrap: wrap !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+  }
+
+  .ans-values {
+    font-size: 12px !important;
+    word-break: break-all !important;
+  }
+
+  /* ── 15. STEP LAYOUT ── */
+  .step {
+    gap: 10px !important;
+  }
+
+  .step-content p,
+  .step-content strong {
+    font-size: 13px !important;
+  }
+
+  /* ── 16. SECTION HEADERS ── */
+  .sec-hdr,
+  #lec1 .sec-hdr,
+  .section-header,
+  .prob-header {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .sec-num,
+  #lec1 .sec-num,
+  .section-number {
+    font-size: 1.2rem !important;
+    min-width: 2rem !important;
+  }
+
+  .sec-title,
+  #lec1 .sec-title {
+    font-size: 0.9rem !important;
+  }
+
+  .sec-badge,
+  #lec1 .sec-badge {
+    font-size: 0.5rem !important;
+    padding: 0.15rem 0.4rem !important;
+  }
+
+  /* ── 17. HEADER PILLS ── */
+  .hdr-pills,
+  .cover .pills {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .pill,
+  .cover .pill {
+    font-size: 0.55rem !important;
+    padding: 0.2rem 0.5rem !important;
+  }
+
+  /* ── 18. IMAGES — prevent overflow ── */
+  img,
+  .sheet-fig-img img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .sheet-fig-img {
+    padding: 8px !important;
+  }
+
+  /* ── 19. COMBINED TOC ── */
+  #combined-toc {
+    margin: 24px 8px !important;
+  }
+
+  #toc-hero,
+  #toc-body {
+    padding: 20px 14px !important;
+  }
+
+  .toc-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #toc-quick {
+    gap: 6px !important;
+  }
+
+  .toc-quick-link {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+
+  /* ── 20. LECTURE-SPECIFIC RTL content ── */
+  #lec1 {
+    padding: 1rem 0.5rem 3rem !important;
+  }
+
+  #lec1 .page {
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  /* ── 21. PREVENT BODY-LEVEL HORIZONTAL SCROLL ── */
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ── 22. INLINE STYLED NAV LINKS — tighten spacing ── */
+  #main-nav a[style] {
+    padding: 6px 10px !important;
+    font-size: 10px !important;
+  }
+
+  /* ── 23. FOOTER ── */
+  .doc-footer {
+    padding: 10px 14px !important;
+    font-size: 0.55rem !important;
+  }
+
+  /* ── 24. SHEET3 specific wrapper ── */
+  #sheet3-wrapper {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  #sheet3-wrapper mjx-container {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  /* ── 25. PROB CARD ── */
+  .prob-card {
+    border-radius: 8px !important;
+    margin: 12px 0 !important;
+  }
+
+  .prob-header {
+    gap: 10px !important;
+  }
+
+  .prob-title {
+    font-size: 0.9rem !important;
+  }
+
+  /* ── 26. LECTURE WRAPPER ── */
+  .lecture-wrapper {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+  }
+
+  .lecture-wrapper > .lec-root {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ── 27. SECTION / PROBLEM BLOCK - sheet3 styles ── */
+  .section,
+  .problem-block {
+    padding: 16px 12px !important;
+  }
+
+  /* ── 28. FIX MATHJAX CONTAINER OVERFLOW ── */
+  .MJX-TEX {
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Make entire page content not overflow */
+  #top,
+  #lec1,
+  #lec2 {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ═══════════════════════════════════════════════
+     29. SHEET PROBLEM CARDS — tighter mobile padding
+  ═══════════════════════════════════════════════ */
+  .prob-header {
+    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+
+  .prob-num {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 13px !important;
+  }
+
+  .prob-title {
+    font-size: 0.88rem !important;
+  }
+
+  .question-box {
+    padding: 10px 14px !important;
+  }
+
+  .question-box p {
+    font-size: 13.5px !important;
+  }
+
+  .question-box .given {
+    padding: 6px 10px !important;
+    font-size: 12.5px !important;
+    word-break: break-word !important;
+  }
+
+  .q-label {
+    font-size: 10px !important;
+  }
+
+  /* ── 30. SOLUTION AREA — reduce padding on mobile ── */
+  .solution-area {
+    padding: 14px 10px !important;
+  }
+
+  .sol-title {
+    font-size: 11px !important;
+  }
+
+  /* ── 31. STEP — tighter layout ── */
+  .step {
+    gap: 8px !important;
+    margin: 8px 0 !important;
+  }
+
+  .step-num {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
+    margin-top: 2px !important;
+  }
+
+  .step-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .step-content strong {
+    font-size: 13px !important;
+  }
+
+  .step-content p {
+    font-size: 13px !important;
+  }
+
+  /* ── 32. EQUATION BOXES — scrollable, not clipped ── */
+  .eq {
+    padding: 8px 10px !important;
+    margin: 6px 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100% !important;
+  }
+
+  .eq.key {
+    padding: 8px 10px !important;
+    overflow-x: auto !important;
+    max-width: 100% !important;
+  }
+
+  .eq-note {
+    font-size: 11px !important;
+  }
+
+  /* ── 33. ANSWER BOXES — wrap on mobile ── */
+  .answer {
+    flex-wrap: wrap !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    gap: 8px !important;
+    border-radius: 8px !important;
+  }
+
+  .ans-icon {
+    font-size: 1.1rem !important;
+  }
+
+  .ans-values {
+    font-size: 12px !important;
+    word-break: break-all !important;
+    padding: 2px 8px !important;
+  }
+
+  /* ── 34. COVER — reduce mobile padding ── */
+  .cover {
+    padding: 32px 16px 28px !important;
+  }
+
+  .cover h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .cover h2 {
+    font-size: 0.95rem !important;
+  }
+
+  .cover .uni {
+    font-size: 11px !important;
+  }
+
+  /* ── 35. SHEET BAR — prevent overflow ── */
+  .sheet-bar {
+    padding: 12px 14px !important;
+    font-size: 1rem !important;
+    border-radius: 10px !important;
+    gap: 10px !important;
+  }
+
+  .sheet-bar .ico {
+    font-size: 1.2rem !important;
+  }
+
+  .sheet-header {
+    margin: 20px auto 0 !important;
+    padding: 0 8px !important;
+  }
+
+  /* ── 36. CONTAINER — tighter mobile padding ── */
+  .container {
+    padding: 8px 8px 40px !important;
+  }
+
+  /* ── 37. NOTE / WARNING / INFO boxes ── */
+  .note,
+  .info,
+  .tip {
+    padding: 8px 10px !important;
+    font-size: 12.5px !important;
+    gap: 8px !important;
+  }
+
+  /* ── 38. DATA TABLE ── */
+  .data-table {
+    font-size: 12px !important;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+  }
+}

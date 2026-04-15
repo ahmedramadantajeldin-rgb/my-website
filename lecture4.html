@@ -1,0 +1,3414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ME307 – Machine Design | Lecture 4: Simple Stress in Machine Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; padding: 0;
+  background: #e4e9f2;
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+}
+
+/* ── TOP NAV ── */
+#main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  background: #111b33;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  box-shadow: 0 3px 16px rgba(0,0,0,0.35);
+  scrollbar-width: none;
+}
+#main-nav::-webkit-scrollbar { display: none; }
+#main-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  line-height: 1.4;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.2px;
+}
+#main-nav a:hover { color: #fff; background: rgba(255,255,255,0.09); }
+#main-nav a.active { color: #fff; background: rgba(255,255,255,0.10); border-bottom-color: #f5c842 !important; }
+#main-nav a[href^="#sheet"] { font-style: italic; }
+#main-nav a[href^="#sheet"]:hover { background: rgba(255,255,255,0.06); }
+
+/* ── LECTURE WRAPPER ── */
+.lecture-wrapper {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+/* isolate each lecture's styles */
+.lecture-wrapper > .lec-root {
+  display: block;
+  isolation: isolate;
+}
+</style>
+<style id="style-lec4">
+
+  #lec4 {
+    --navy: #f0f4fb;
+    --steel: #c8d8ef;
+    --electric: #1a6fd4;
+    --cyan: #0077aa;
+    --gold: #a05500;
+    --text: #0f1e38;
+    --muted: #4a6080;
+    --card: #ffffff;
+    --border: #b8cceb;
+    --danger: #c0392b;
+    --success: #1a7a45;
+  }
+
+#lec4{ margin: 0; padding: 0; box-sizing: border-box; }
+
+#lec4{
+    background: #f0f4fb;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 17px;
+    line-height: 1.85;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+#lec4 .hero{
+    background: linear-gradient(135deg, #c8d8f0 0%, #a8c0e8 50%, #c8d8f0 100%);
+    border-bottom: 2px solid var(--electric);
+    padding: 70px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+#lec4 .hero::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(26,111,212,0.15) 0%, transparent 70%);
+  }
+#lec4 .hero-tag{
+    display: inline-block;
+    background: rgba(26,111,212,0.2);
+    border: 1px solid var(--electric);
+    color: var(--cyan);
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 6px 20px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+#lec4 .hero h1{
+    font-family: 'Amiri', serif;
+    font-size: clamp(28px, 5vw, 50px);
+    font-weight: 700;
+    color: #0d1e3c;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+#lec4 .hero h1 span{ color: var(--cyan); }
+#lec4 .hero .sub{
+    color: #4a6080;
+    font-size: 15px;
+    margin-top: 10px;
+  }
+#lec4 .hero .by{ color: var(--gold); font-weight: 700; font-size: 18px; margin-top: 8px; }
+
+  /* ── TOC ── */
+#lec4 .toc{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 40px;
+    margin: 50px auto;
+    max-width: 900px;
+  }
+#lec4 .toc h2{ color: var(--cyan); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+#lec4 .toc ol{ padding-right: 20px; }
+#lec4 .toc ol li{ margin: 8px 0; }
+#lec4 .toc ol li a{ color: var(--electric); text-decoration: none; transition: color .2s; }
+#lec4 .toc ol li a:hover{ color: var(--cyan); }
+
+  /* ── Main Layout ── */
+#lec4 .container{ max-width: 1000px; margin: 0 auto; padding: 0 30px 80px; }
+
+  /* ── Section ── */
+#lec4 .section{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 45px;
+    margin-bottom: 40px;
+    position: relative;
+    transition: border-color .3s;
+  }
+#lec4 .section:hover{ border-color: var(--electric); }
+#lec4 .section-number{
+    position: absolute;
+    top: -16px;
+    right: 30px;
+    background: var(--electric);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+#lec4 .section h2{
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+#lec4 .section h3{
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 24px 0 10px;
+  }
+#lec4 .section p{ margin-bottom: 14px; color: #1a2a48; }
+#lec4 .section ul, #lec4 .section ol{ padding-right: 24px; margin-bottom: 14px; }
+#lec4 .section li{ margin: 7px 0; color: #1a2a48; }
+
+  /* ── Equation Box ── */
+#lec4 .eq-box{
+    background: linear-gradient(135deg, #e0eaf8, #d0e0f4);
+    border: 1px solid var(--electric);
+    border-radius: 12px;
+    padding: 22px 30px;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 18px;
+  }
+#lec4 .eq-label{
+    font-size: 12px;
+    color: #4a6080;
+    text-align: right;
+    margin-top: 8px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* ── Highlight Box ── */
+#lec4 .highlight{
+    background: rgba(26,111,212,0.12);
+    border-right: 4px solid var(--electric);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 18px 0;
+    color: #0a2a5e;
+  }
+#lec4 .highlight.gold{
+    background: rgba(160,85,0,0.10);
+    border-right-color: var(--gold);
+    color: #5a3000;
+  }
+#lec4 .highlight.success{
+    background: rgba(26,122,69,0.10);
+    border-right-color: var(--success);
+    color: #003820;
+  }
+#lec4 .highlight.danger{
+    background: rgba(192,57,43,0.10);
+    border-right-color: var(--danger);
+    color: #5a0a1a;
+  }
+
+  /* ── Note Box ── */
+#lec4 .note{
+    background: rgba(0,119,170,0.10);
+    border: 1px dashed var(--cyan);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 18px 0;
+    font-size: 15px;
+    color: #005588;
+  }
+#lec4 .note strong{ color: var(--cyan); }
+
+  /* ── Figure ── */
+#lec4 .figure-box{
+    background: #eef4fc;
+    border: 1px solid #2a4870;
+    border-radius: 14px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+#lec4 .figure-box .fig-title{
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+#lec4 .figure-box .fig-title::before{
+    content: '◆';
+    color: var(--electric);
+    font-size: 10px;
+  }
+#lec4 .figure-desc{ color: #2a4060; font-size: 15px; line-height: 1.7; }
+
+  /* ── Table ── */
+#lec4 table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 15px;
+  }
+#lec4 thead tr{ background: var(--steel); }
+#lec4 thead th{ padding: 12px 16px; color: var(--cyan); font-weight: 700; text-align: center; border: 1px solid var(--border); }
+#lec4 tbody tr:nth-child(even){ background: rgba(0,0,0,0.02); }
+#lec4 tbody td{ padding: 11px 16px; border: 1px solid var(--border); text-align: center; color: #1a2a48; }
+#lec4 tbody tr:hover{ background: rgba(26,111,212,0.10); }
+
+  /* ── Term ── */
+#lec4 .term{
+    display: inline-block;
+    background: rgba(26,111,212,0.18);
+    border: 1px solid rgba(43,140,255,0.4);
+    color: #003f70;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* ── Solution Steps ── */
+#lec4 .steps{ counter-reset: step; }
+#lec4 .step{
+    display: flex;
+    gap: 16px;
+    margin: 14px 0;
+    align-items: flex-start;
+  }
+#lec4 .step-num{
+    min-width: 34px;
+    height: 34px;
+    background: var(--electric);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+#lec4 .step-body{ color: #1a2a48; padding-top: 5px; }
+
+  /* ── Answer badge ── */
+#lec4 .answer{
+    display: inline-block;
+    background: var(--success);
+    color: #003320;
+    font-weight: 900;
+    padding: 4px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-top: 6px;
+  }
+
+  /* ── Example block ── */
+#lec4 .example-block{
+    background: #e8f0fa;
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    padding: 28px 34px;
+    margin: 24px 0;
+  }
+#lec4 .example-block h3{
+    color: var(--gold);
+    font-size: 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+#lec4 .example-block h3::before{ content: '⚙'; font-size: 20px; }
+
+  /* ── Scrollbar ── */
+#lec4 ::-webkit-scrollbar{ width: 6px; }
+#lec4 ::-webkit-scrollbar-track{ background: var(--navy); }
+#lec4 ::-webkit-scrollbar-thumb{ background: var(--steel); border-radius: 3px; }
+
+  /* ── Footer ── */
+#lec4 footer{
+    text-align: center;
+    padding: 40px;
+    color: #4a6080;
+    font-size: 14px;
+    border-top: 1px solid #b8cceb;
+  }
+
+  @media (max-width: 600px) {
+#lec4 .section{ padding: 26px 20px; }
+#lec4 .hero{ padding: 40px 20px 30px; }
+#lec4 .container{ padding: 0 16px 60px; }
+  }
+
+</style>
+<style>/* Sheet 1 */ </style>
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #222;
+      background: #f5f6f8;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 32px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: linear-gradient(135deg, #1a3c6e 0%, #2563a8 100%);
+      color: #fff;
+      padding: 32px 40px 24px;
+    }
+    .doc-header .course { font-size: 20px; font-weight: 700; letter-spacing: .5px; }
+    .doc-header .subtitle { font-size: 14px; margin-top: 4px; opacity: .85; }
+    .doc-header .institution { font-size: 12px; margin-top: 8px; opacity: .70; }
+
+    /* ── Body wrapper ── */
+    .doc-body { padding: 36px 40px 48px; }
+
+    /* ── Questions ── */
+    .question {
+      margin-bottom: 36px;
+      border-left: 4px solid #2563a8;
+      padding-left: 16px;
+    }
+    .question-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a3c6e;
+      margin-bottom: 4px;
+    }
+    .question-meta {
+      font-size: 12.5px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .question-meta strong { color: #444; }
+
+    /* ── Solution heading ── */
+    .solution-heading {
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: underline;
+      color: #1a3c6e;
+      margin: 14px 0 6px;
+    }
+
+    /* ── Paragraphs ── */
+    p { margin-bottom: 10px; }
+
+    /* ── Lists ── */
+    ul { padding-left: 22px; margin-bottom: 10px; }
+    ul li { margin-bottom: 6px; }
+
+    /* ── Sub-headings within answers ── */
+    .sub-heading {
+      font-weight: 700;
+      text-decoration: underline;
+      color: #333;
+      margin: 14px 0 6px;
+      display: block;
+    }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 12px 0 16px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #c8d3e0;
+      padding: 8px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    thead th, tr:first-child td {
+      background: #dbe8f6;
+      font-weight: 700;
+      color: #1a3c6e;
+    }
+    tr:nth-child(even) td { background: #f4f8fd; }
+
+    /* ── Key summary box ── */
+    .key-answer {
+      background: #eef7ee;
+      border: 1px solid #5cb85c;
+      border-left: 5px solid #5cb85c;
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin: 14px 0 6px;
+      font-size: 13px;
+      color: #2c6c2c;
+    }
+
+    /* ── Footer ── */
+    .doc-footer {
+      border-top: 1px solid #e0e6f0;
+      padding: 14px 40px;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      background: #f9fafc;
+    }
+
+    @media (max-width: 640px) {
+      .doc-body { padding: 20px 16px 32px; }
+      .doc-header { padding: 24px 16px 18px; }
+    }
+  </style>
+<style>
+:root {
+  --bg:          #f2ede6;
+  --paper:       #fefcf8;
+  --ink:         #1c1917;
+  --ink-soft:    #44403c;
+  --rule:        #d6cfc4;
+  --amber:       #92400e;
+  --amber-light: #b45309;
+  --amber-pale:  #fef3c7;
+  --teal:        #134e4a;
+  --teal-mid:    #0f766e;
+  --teal-light:  #ccfbf1;
+  --rose:        #9f1239;
+  --rose-light:  #ffe4e6;
+  --blue:        #1e3a5f;
+  --blue-light:  #dbeafe;
+  --violet:      #4c1d95;
+  --violet-light:#ede9fe;
+  --mono:        'DM Mono', monospace;
+  --serif:       'Cormorant Garamond', Georgia, serif;
+  --sans:        'Outfit', system-ui, sans-serif;
+  --shadow-sm:   0 1px 3px rgba(28,25,23,.08);
+  --shadow-md:   0 4px 16px rgba(28,25,23,.10);
+  --shadow-lg:   0 8px 32px rgba(28,25,23,.13);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 40% at 15% 5%,  rgba(146,64,14,.07)  0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 85% 95%, rgba(19,78,74,.07)   0%, transparent 70%);
+  font-family: var(--sans);
+  color: var(--ink);
+  line-height: 1.65;
+  min-height: 100vh;
+  padding: 2rem 1rem 5rem;
+}
+
+/* ── PAGE ── */
+.page {
+  max-width: 1020px;
+  margin: 0 auto;
+  background: var(--paper);
+  box-shadow: var(--shadow-lg);
+  border-top: 6px solid var(--amber);
+  border-bottom: 3px solid var(--teal);
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: linear-gradient(135deg, #1c1917 0%, #292524 60%, #1c1917 100%);
+  padding: 3.2rem 3.5rem 2.8rem;
+  position: relative;
+  overflow: hidden;
+}
+.hdr::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    60deg, transparent, transparent 22px,
+    rgba(146,64,14,.05) 22px, rgba(146,64,14,.05) 23px
+  );
+}
+.hdr-stripe {
+  position:absolute; bottom:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--amber) 0%, #fbbf24 40%, var(--teal-mid) 70%, var(--teal) 100%);
+}
+.hdr-badge {
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  margin-bottom: 1rem;
+  display: block;
+}
+.hdr h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 700;
+  color: #fefcf8;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+.hdr h1 em {
+  font-style: normal;
+  color: #fbbf24;
+}
+.hdr-sub {
+  margin-top: .7rem;
+  font-size: 1rem;
+  color: rgba(254,252,248,.55);
+  font-weight: 300;
+  font-style: italic;
+  font-family: var(--serif);
+}
+.hdr-pills {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .28rem .8rem;
+  border: 1px solid rgba(251,191,36,.35);
+  color: rgba(251,191,36,.8);
+}
+
+/* ── TOC ── */
+.toc-wrap {
+  margin: 2.4rem 3rem 1rem;
+  border-left: 4px solid var(--amber);
+  background: var(--amber-pale);
+  padding: 1.6rem 2rem;
+}
+.toc-wrap h3 {
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 1rem;
+}
+.toc-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: .3rem 2.5rem;
+}
+.toc-row {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  text-decoration: none;
+  font-size: .84rem;
+  color: var(--amber);
+  transition: color .15s;
+}
+.toc-row:hover { color: var(--amber-light); }
+.toc-n {
+  font-family: var(--mono);
+  font-size: .65rem;
+  font-weight: 500;
+  min-width: 2rem;
+  color: var(--amber-light);
+}
+.toc-tag {
+  font-family: var(--mono);
+  font-size: .6rem;
+  padding: .1rem .4rem;
+  background: rgba(146,64,14,.1);
+  color: var(--amber);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── CONTENT WRAP ── */
+.content { padding: 1rem 3rem 3.5rem; }
+
+/* ── QUESTION CARD ── */
+.qcard {
+  margin-bottom: 3.2rem;
+  border: 1px solid var(--rule);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.qcard:last-of-type { margin-bottom: 0; }
+
+/* ── CARD HEADER ── */
+.qcard-hdr {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: .9rem 1.4rem;
+  background: var(--ink);
+  border-bottom: 2px solid var(--amber);
+}
+.q-num {
+  font-family: var(--serif);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  line-height: 1;
+}
+.q-title {
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #fefcf8;
+  line-height: 1.35;
+}
+.q-badge {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .22rem .65rem;
+  border: 1px solid rgba(251,191,36,.35);
+  color: rgba(251,191,36,.75);
+  white-space: nowrap;
+}
+
+/* ── CARD BODY ── */
+.qbody { padding: 1.5rem 1.8rem 1.8rem; }
+
+/* ── SECTION LABELS ── */
+.slabel {
+  font-family: var(--mono);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+  margin-top: 1.4rem;
+  margin-bottom: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.slabel::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background: var(--rule);
+}
+
+/* ── QUESTION TEXT ── */
+.q-text {
+  background: linear-gradient(135deg, var(--amber-pale) 0%, #fffbeb 100%);
+  border-left: 3px solid var(--amber);
+  padding: 1rem 1.3rem;
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ── GIVEN / REQUIRED GRID ── */
+.gr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: .4rem;
+}
+@media(max-width:600px){.gr-grid{grid-template-columns:1fr}}
+
+.gr-box {
+  border: 1px solid;
+  padding: .85rem 1.1rem;
+}
+.gr-box.given {
+  border-color: var(--teal-mid);
+  background: var(--teal-light);
+}
+.gr-box.reqd {
+  border-color: var(--rose);
+  background: var(--rose-light);
+}
+.gr-box h4 {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.gr-box.given h4 { color: var(--teal); }
+.gr-box.reqd  h4 { color: var(--rose); }
+.gr-box ul { list-style:none; }
+.gr-box ul li {
+  font-size: .88rem;
+  padding: .16rem 0;
+  display: flex;
+  gap: .45rem;
+  align-items: baseline;
+}
+.gr-box ul li::before {
+  content:'▸';
+  font-size: .58rem;
+  opacity: .5;
+  flex-shrink: 0;
+}
+
+/* ── DEFINITION BLOCK ── */
+.def-block {
+  background: var(--blue-light);
+  border-left: 3px solid var(--blue);
+  padding: 1rem 1.3rem;
+  margin: .5rem 0;
+  font-size: .92rem;
+  color: var(--ink);
+  line-height: 1.75;
+}
+.def-block strong { color: var(--blue); }
+
+/* ── EQUATION BOX ── */
+.eq-box {
+  background: #fffaf2;
+  border: 1px solid #e2c77a;
+  border-left: 3px solid var(--amber-light);
+  padding: .9rem 1.2rem;
+  margin: .5rem 0;
+  overflow-x: auto;
+  font-size: 1.02rem;
+}
+.eq-box.hi {
+  border-left-color: var(--teal-mid);
+  background: var(--teal-light);
+  border-color: var(--teal-mid);
+}
+.eq-box.blue {
+  border-left-color: var(--blue);
+  background: var(--blue-light);
+  border-color: #93c5fd;
+}
+.eq-box.violet {
+  border-left-color: var(--violet);
+  background: var(--violet-light);
+  border-color: #c4b5fd;
+}
+
+/* ── STEPS ── */
+.steps { margin-top: .4rem; }
+.step {
+  display: flex;
+  gap: .9rem;
+  margin-bottom: .95rem;
+  align-items: flex-start;
+}
+.step-num {
+  background: var(--ink);
+  color: #fbbf24;
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 500;
+  padding: .22rem .5rem;
+  flex-shrink: 0;
+  margin-top: .05rem;
+  letter-spacing: .05em;
+}
+.step-inner { flex:1; }
+.step-head {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: .35rem;
+}
+.step-body {
+  font-size: .89rem;
+  color: var(--ink-soft);
+  margin-top: .25rem;
+}
+
+/* ── COMPARISON TABLE ── */
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: .7rem 0;
+  font-size: .84rem;
+}
+.comp-table th {
+  background: var(--ink);
+  color: #fbbf24;
+  padding: .5rem .8rem;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.comp-table td {
+  padding: .45rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.comp-table tr:nth-child(even) td { background: #faf8f5; }
+.comp-table tr:hover td { background: var(--amber-pale); }
+
+/* ── MCQ PANEL ── */
+.mcq-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .5rem;
+  margin: .6rem 0;
+}
+@media(max-width:560px){.mcq-panel{grid-template-columns:1fr}}
+.mcq-opt {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem .9rem;
+  border: 1px solid var(--rule);
+  font-size: .88rem;
+}
+.mcq-opt.correct {
+  background: var(--teal-light);
+  border-color: var(--teal-mid);
+  font-weight: 600;
+  color: var(--teal);
+}
+.mcq-opt.wrong {
+  background: #fafafa;
+  color: #a8a29e;
+  text-decoration: line-through;
+  text-decoration-color: #d4b896;
+}
+.mcq-mark {
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 700;
+  min-width: 1.2rem;
+}
+.mcq-opt.correct .mcq-mark { color: var(--teal); }
+.mcq-opt.wrong   .mcq-mark { color: #d4b896; }
+
+/* ── JUSTIFICATION BOX ── */
+.just-box {
+  background: var(--violet-light);
+  border-left: 3px solid var(--violet);
+  padding: .85rem 1.1rem;
+  margin: .5rem 0;
+  font-size: .88rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.just-box strong { color: var(--violet); }
+
+/* ── ANSWER BOX ── */
+.ans-box {
+  margin-top: 1.3rem;
+  border: 2px solid var(--teal-mid);
+  background: var(--teal-light);
+  padding: 1rem 1.4rem;
+  position: relative;
+}
+.ans-box::before {
+  content: 'FINAL ANSWER';
+  position: absolute;
+  top: -.62rem;
+  left: 1rem;
+  background: var(--teal-light);
+  padding: 0 .5rem;
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  color: var(--teal-mid);
+}
+.ans-text {
+  font-size: .96rem;
+  color: var(--teal);
+  font-weight: 600;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+/* MCQ ANSWER BOX */
+.ans-box.mcq-ans {
+  border-color: var(--amber-light);
+  background: var(--amber-pale);
+}
+.ans-box.mcq-ans::before {
+  background: var(--amber-pale);
+  color: var(--amber-light);
+}
+.ans-box.mcq-ans .ans-text { color: var(--amber); }
+
+/* ── REMARK ── */
+.remark {
+  margin-top: .5rem;
+  padding: .55rem .9rem;
+  border-left: 2px solid #d97706;
+  background: rgba(217,119,6,.05);
+  font-size: .82rem;
+  color: #92400e;
+  font-style: italic;
+}
+
+/* ── IT GRADE TABLE ── */
+.it-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: .6rem 0;
+  font-size: .82rem;
+}
+.it-table th, .it-table td {
+  padding: .38rem .6rem;
+  border: 1px solid var(--rule);
+  text-align: center;
+}
+.it-table th {
+  background: var(--ink);
+  color: #fbbf24;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.it-table .cat-a { background: #fef3c7; }
+.it-table .cat-b { background: #dbeafe; }
+.it-table .cat-c { background: #d1fae5; }
+.it-table .cat-d { background: #ede9fe; }
+.it-table .cat-e { background: #ffe4e6; }
+
+/* ── FIT TABLE ── */
+.fit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin: .6rem 0;
+}
+.fit-table th {
+  background: var(--ink);
+  color: #fbbf24;
+  padding: .45rem .7rem;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.fit-table td {
+  padding: .42rem .7rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.fit-table .cl { background: #d1fae5; }
+.fit-table .tr { background: #fef3c7; }
+.fit-table .in { background: #ffe4e6; }
+.fit-table .desg {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: .82rem;
+}
+
+/* ── RENARD TABLE ── */
+.renard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin: .6rem 0;
+}
+.renard-table th {
+  background: var(--ink);
+  color: #fbbf24;
+  padding: .42rem .7rem;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.renard-table td {
+  padding: .4rem .7rem;
+  border-bottom: 1px solid var(--rule);
+}
+.renard-table tr:nth-child(even) td { background: #faf8f5; }
+
+/* ── SECTION DIVIDER ── */
+.sec-div {
+  border: none;
+  border-top: 2px dashed var(--rule);
+  margin: 1.2rem 0;
+}
+
+/* ── FOOTER ── */
+.doc-footer {
+  background: var(--ink);
+  color: rgba(254,252,248,.4);
+  text-align: center;
+  padding: 1.1rem;
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+/* Sub-heading */
+.sub-hd {
+  font-family: var(--serif);
+  font-size: 1.12rem;
+  font-weight: 600;
+  color: var(--amber);
+  margin: 1rem 0 .4rem;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: .2rem;
+}
+.body-p {
+  font-size: .92rem;
+  color: var(--ink-soft);
+  line-height: 1.75;
+  margin: .3rem 0;
+}
+ul.bd-list {
+  list-style: none;
+  margin: .4rem 0 .4rem 1rem;
+}
+ul.bd-list li {
+  font-size: .9rem;
+  color: var(--ink-soft);
+  padding: .18rem 0;
+  display: flex;
+  gap: .5rem;
+  align-items: baseline;
+}
+ul.bd-list li::before {
+  content: '◆';
+  font-size: .45rem;
+  color: var(--amber-light);
+  flex-shrink: 0;
+  margin-top: .25rem;
+}
+
+@media print {
+  body { background: white; padding: 0; }
+  .page { box-shadow: none; }
+  .qcard { page-break-inside: avoid; }
+}
+</style>
+<style>
+/* ════════════════ SHEET 3 — Stresses in Machine Members ════════════════ */
+/* Color palette — distinct from Sheet 4 (blue/gold) → using deep teal/crimson */
+
+#sheet3-root {
+  --bg3:       #f2f6f3;
+  --paper3:    #ffffff;
+  --primary3:  #1a5c45;
+  --accent3:   #c0392b;
+  --border3:   #c2d9cd;
+  --border3b:  #9cbfb0;
+  --text3:     #1a2a22;
+  --muted3:    #4a6a5a;
+  --light3:    #2a4a38;
+  --gold3:     #b07800;
+  --purple3:   #5a2d82;
+  --green3:    #1a7a4a;
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--text3);
+  background: var(--bg3);
+  direction: ltr;
+}
+
+/* ── Page Wrap ── */
+#sheet3-root .page-wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ── Doc Header ── */
+#sheet3-root .doc-header {
+  background: linear-gradient(160deg, #0d3d2a 0%, #1a5c45 55%, #0d5c3a 100%);
+  color: #fff;
+  text-align: center;
+  padding: 60px 40px 48px;
+  position: relative;
+  overflow: hidden;
+}
+#sheet3-root .doc-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 30px,
+    rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px
+  );
+}
+#sheet3-root .doc-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #c0392b, #e74c3c, #c0392b);
+}
+#sheet3-root .uni-badge {
+  font-size: 11.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: .7;
+  margin-bottom: 16px;
+  position: relative;
+}
+#sheet3-root .doc-header h1 {
+  font-size: clamp(22px, 4vw, 38px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  position: relative;
+}
+#sheet3-root .doc-header h1 span { color: #f5c842; }
+#sheet3-root .doc-subtitle {
+  font-size: 14.5px;
+  opacity: .82;
+  margin-top: 6px;
+  position: relative;
+}
+#sheet3-root .header-meta {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  position: relative;
+}
+#sheet3-root .meta-chip {
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 4px 16px;
+  font-size: 12px;
+  letter-spacing: .5px;
+}
+
+/* ── TOC Panel ── */
+#sheet3-root .toc-panel {
+  background: var(--paper3);
+  border: 1px solid var(--border3);
+  border-radius: 16px;
+  padding: 30px 36px;
+  margin: 40px 0 36px;
+  box-shadow: 0 2px 14px rgba(0,0,0,.06);
+}
+#sheet3-root .toc-panel h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary3);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--border3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#sheet3-root .toc-panel h3::before { content: '📋'; }
+#sheet3-root .toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 8px;
+}
+#sheet3-root .toc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: var(--light3);
+  font-size: 13.5px;
+  transition: all .2s;
+}
+#sheet3-root .toc-item:hover {
+  background: rgba(26,92,69,0.07);
+  border-color: var(--primary3);
+  color: var(--primary3);
+}
+#sheet3-root .toc-num {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary3);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Content wrapper ── */
+#sheet3-root .content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── Problem Card ── */
+#sheet3-root .problem {
+  background: var(--paper3);
+  border: 1.5px solid var(--border3);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 3px 18px rgba(0,0,0,.07);
+  transition: border-color .25s, box-shadow .25s;
+  animation: fadeUp3 .4s ease both;
+}
+#sheet3-root .problem:hover {
+  border-color: var(--border3b);
+  box-shadow: 0 6px 28px rgba(0,0,0,.11);
+}
+@keyframes fadeUp3 {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Problem Header ── */
+#sheet3-root .prob-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 26px;
+  background: linear-gradient(90deg, rgba(26,92,69,0.07), transparent);
+  border-bottom: 1.5px solid var(--border3);
+}
+#sheet3-root .prob-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: -1px;
+}
+#sheet3-root .prob-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary3);
+  flex: 1;
+}
+#sheet3-root .prob-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(192,57,43,0.1);
+  color: var(--accent3);
+  border: 1px solid rgba(192,57,43,0.25);
+  border-radius: 20px;
+  padding: 3px 12px;
+  white-space: nowrap;
+}
+
+/* ── Problem Body ── */
+#sheet3-root .prob-body {
+  padding: 26px 30px 28px;
+}
+
+/* ── Section labels ── */
+#sheet3-root .sec {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted3);
+  margin: 18px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#sheet3-root .sec::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border3);
+}
+
+/* ── Question Text ── */
+#sheet3-root .q-text {
+  background: rgba(26,92,69,0.05);
+  border-left: 4px solid var(--primary3);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 20px;
+  font-size: 15px;
+  color: var(--text3);
+  line-height: 1.8;
+}
+
+/* ── Data Grid ── */
+#sheet3-root .data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 10px 0;
+}
+@media (max-width: 640px) {
+  #sheet3-root .data-grid { grid-template-columns: 1fr; }
+}
+#sheet3-root .data-box {
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+#sheet3-root .data-box h4 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+#sheet3-root .data-box ul { padding-right: 18px; }
+#sheet3-root .data-box ul li { font-size: 14px; margin-bottom: 5px; color: var(--light3); }
+#sheet3-root .data-box.given {
+  background: rgba(26,92,69,0.06);
+  border: 1px solid rgba(26,92,69,0.2);
+}
+#sheet3-root .data-box.given h4 { color: var(--primary3); }
+#sheet3-root .data-box.reqd {
+  background: rgba(192,57,43,0.05);
+  border: 1px solid rgba(192,57,43,0.2);
+}
+#sheet3-root .data-box.reqd h4 { color: var(--accent3); }
+
+/* ── Governing Equations ── */
+#sheet3-root .gov-eq {
+  background: rgba(26,92,69,0.04);
+  border: 1px solid var(--border3);
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin: 10px 0;
+  direction: ltr;
+  text-align: center;
+}
+
+/* ── Steps ── */
+#sheet3-root .steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+}
+#sheet3-root .step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+#sheet3-root .step-badge {
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--primary3);
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+#sheet3-root .step-body {
+  flex: 1;
+  font-size: 14.5px;
+  color: var(--light3);
+}
+#sheet3-root .step-body strong {
+  color: var(--text3);
+  display: block;
+  margin-bottom: 4px;
+}
+#sheet3-root .step-desc {
+  font-size: 13.5px;
+  color: var(--muted3);
+  margin-top: 4px;
+}
+
+/* ── Equation lines ── */
+#sheet3-root .eq-line {
+  background: #f6faf8;
+  border: 1px solid var(--border3);
+  border-radius: 9px;
+  padding: 10px 18px;
+  margin: 6px 0;
+  direction: ltr;
+  text-align: center;
+  font-size: 15.5px;
+  overflow-x: auto;
+}
+#sheet3-root .eq-line.highlight {
+  background: rgba(26,92,69,0.07);
+  border-color: var(--primary3);
+  border-width: 1.5px;
+}
+#sheet3-root .eq-box {
+  background: #f6faf8;
+  border: 1px solid var(--border3);
+  border-radius: 9px;
+  padding: 12px 18px;
+  margin: 8px 0;
+  direction: ltr;
+  text-align: center;
+}
+#sheet3-root .eq-label {
+  font-size: 12px;
+  color: var(--muted3);
+  text-align: right;
+  margin-top: 4px;
+}
+
+/* ── Answer Box (Sheet 4 style upgrade) ── */
+#sheet3-root .answer-box {
+  background: linear-gradient(135deg, rgba(26,92,69,0.10), rgba(26,92,69,0.06));
+  border: 1.5px solid var(--primary3);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-top: 20px;
+  display: block;
+  position: relative;
+}
+#sheet3-root .answer-box::before {
+  content: '✅ FINAL ANSWER';
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--primary3);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+#sheet3-root .ans-content {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0a3a20;
+  direction: ltr;
+  background: var(--primary3);
+  color: #fff;
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* ── Highlight / Remark ── */
+#sheet3-root .highlight {
+  background: rgba(26,92,69,0.06);
+  border-right: 3px solid var(--primary3);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 18px;
+  margin: 10px 0;
+  font-size: 14.5px;
+}
+#sheet3-root .highlight.gold {
+  background: rgba(176,120,0,0.07);
+  border-right-color: var(--gold3);
+}
+#sheet3-root .remark {
+  background: rgba(90,45,130,0.06);
+  border: 1px dashed rgba(90,45,130,0.3);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 14px;
+  color: #3a1a60;
+  margin: 10px 0;
+}
+#sheet3-root .note {
+  background: #fff8e8;
+  border: 1px solid #e0c060;
+  border-left: 4px solid var(--gold3);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 18px;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+/* ── Term chip ── */
+#sheet3-root .term {
+  display: inline-block;
+  background: rgba(26,92,69,0.09);
+  border: 1px solid rgba(26,92,69,0.25);
+  color: var(--primary3);
+  padding: 1px 8px;
+  border-radius: 5px;
+  font-family: 'Consolas', monospace;
+  font-size: 13px;
+}
+
+/* ── Example block ── */
+#sheet3-root .example-block {
+  background: rgba(26,92,69,0.04);
+  border: 1px solid var(--border3);
+  border-radius: 14px;
+  padding: 20px 26px;
+  margin: 14px 0;
+}
+
+/* ── Figure ── */
+#sheet3-root .figure-box {
+  background: #eef6f1;
+  border: 1px solid var(--border3b);
+  border-radius: 14px;
+  padding: 22px 28px;
+  margin: 18px 0;
+}
+#sheet3-root .fig-title {
+  color: var(--gold3);
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-bottom: 10px;
+}
+#sheet3-root .figure-desc {
+  color: #2a4a38;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+
+/* ── Doc Footer ── */
+#sheet3-root .doc-footer {
+  text-align: center;
+  color: var(--muted3);
+  font-size: 13px;
+  padding: 30px 20px;
+  border-top: 1px solid var(--border3);
+  margin-top: 40px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 680px) {
+  #sheet3-root .prob-body { padding: 18px 16px; }
+  #sheet3-root .doc-header { padding: 40px 20px 36px; }
+  #sheet3-root .toc-panel { padding: 20px 16px; }
+  #sheet3-root .page-wrap { padding: 0 12px 60px; }
+}
+
+/* ── Sheet 4-style Final Answer (added for consistency) ── */
+#sheet3-root .final-ans {
+  background: linear-gradient(135deg, rgba(26,92,69,0.10), rgba(26,92,69,0.07));
+  border: 1.5px solid var(--primary3);
+  border-radius: 12px;
+  padding: 18px 26px;
+  margin-top: 20px;
+}
+#sheet3-root .ans-badge {
+  display: inline-block;
+  background: var(--primary3);
+  color: #fff;
+  font-weight: 900;
+  padding: 3px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+#sheet3-root .figure-placeholder {
+  background: #fffbe6;
+  border: 1.5px dashed #f59e0b;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  color: #92400e;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+#sheet3-root .figure-placeholder strong { color: #78350f; }
+  </style>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #e8eef5;
+    --card: #ffffff;
+    --card2: #f5f8fc;
+    --border: #c8d8e8;
+    --border2: #a8bfd4;
+    --primary: #1a6fc4;
+    --accent: #c87800;
+    --teal: #007a63;
+    --red: #c0392b;
+    --green: #1a8a4a;
+    --purple: #6a3db8;
+    --text: #1a2a3a;
+    --muted: #4a6a88;
+    --light: #2a4a68;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 16.5px;
+    line-height: 1.9;
+    direction: rtl;
+  }
+
+  /* ══ SCROLLBAR ══ */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+  /* ══ HERO ══ */
+  .hero {
+    background: linear-gradient(160deg, #dceaf7 0%, #b8d4f0 45%, #dceaf7 100%);
+    border-bottom: 2px solid var(--primary);
+    padding: 80px 40px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(26,111,196,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(26,111,196,0.05) 60px,
+      rgba(26,111,196,0.05) 61px
+    );
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(26,111,196,0.12);
+    border: 1px solid rgba(26,111,196,0.35);
+    color: var(--primary);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 22px;
+    border-radius: 40px;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'Amiri', serif;
+    font-size: clamp(30px, 5.5vw, 56px);
+    font-weight: 700;
+    color: #0d2040;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .hero h1 .hl { color: var(--accent); }
+  .hero p.subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  .hero-meta .chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border2);
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--light);
+  }
+  .hero-meta .chip strong { color: var(--accent); }
+
+  /* ══ LAYOUT ══ */
+  .wrapper { max-width: 1060px; margin: 0 auto; padding: 0 28px 100px; }
+
+  /* ══ TOC ══ */
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 34px 40px;
+    margin: 50px 0;
+  }
+  .toc-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: all .25s;
+    text-decoration: none;
+  }
+  .toc-item:hover {
+    background: rgba(61,142,248,0.08);
+    border-color: var(--primary);
+  }
+  .toc-num {
+    min-width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .toc-num.prob { background: var(--accent); }
+  .toc-text { color: var(--light); font-size: 14px; }
+
+  /* ══ SECTION ══ */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 42px 48px;
+    margin-bottom: 36px;
+    position: relative;
+    transition: border-color .3s;
+    animation: fadeUp .5s ease both;
+  }
+  .section:hover { border-color: var(--border2); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .sec-tag {
+    position: absolute;
+    top: -14px;
+    right: 28px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 16px;
+    border-radius: 20px;
+  }
+  .sec-tag.theory { background: var(--primary); color: #fff; }
+  .sec-tag.problem { background: var(--accent); color: #000; }
+  .sec-tag.summary { background: var(--teal); color: #000; }
+
+  .section h2 {
+    font-size: 23px;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.35;
+  }
+  .section h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 28px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section h3::before { content: '▸'; color: var(--primary); font-size: 13px; }
+  .section p { color: var(--light); margin-bottom: 14px; }
+  .section ul, .section ol { padding-right: 22px; margin-bottom: 14px; }
+  .section li { color: var(--light); margin: 7px 0; }
+
+  /* ══ EQUATION ══ */
+  .eq {
+    background: linear-gradient(135deg, #e8f0fa, #d8e8f5);
+    border: 1px solid rgba(26,111,196,0.3);
+    border-radius: 12px;
+    padding: 20px 28px;
+    margin: 18px 0;
+    text-align: center;
+    font-size: 19px;
+    overflow-x: auto;
+  }
+  .eq-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: left;
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 1px;
+  }
+  .eq-group { margin: 22px 0; }
+  .eq-group .eq { margin: 8px 0; }
+
+  /* ══ BOXES ══ */
+  .box {
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin: 16px 0;
+    border-right: 4px solid;
+  }
+  .box.blue  { background: rgba(26,111,196,0.08);  border-color: var(--primary); color: #1a3a6a; }
+  .box.amber { background: rgba(200,120,0,0.08);   border-color: var(--accent);  color: #6a3a00; }
+  .box.green { background: rgba(26,138,74,0.07);   border-color: var(--green);   color: #0a4020; }
+  .box.red   { background: rgba(192,57,43,0.07);   border-color: var(--red);     color: #6a1010; }
+  .box.teal  { background: rgba(0,122,99,0.07);    border-color: var(--teal);    color: #003a30; }
+  .box strong { color: inherit; }
+
+  /* ══ NOTE ══ */
+  .note {
+    background: rgba(106,61,184,0.07);
+    border: 1px dashed rgba(106,61,184,0.35);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: 16px 0;
+    color: #3a1a70;
+    font-size: 15px;
+  }
+  .note strong { color: var(--purple); }
+
+  /* ══ FIGURE ══ */
+  .fig {
+    background: #eaf2fc;
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 26px 30px;
+    margin: 24px 0;
+  }
+  .fig-title {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fig-title::before { content: '◈'; color: var(--primary); }
+  .fig-body { color: #2a4a6a; font-size: 15px; line-height: 1.8; }
+
+  /* ══ SVG DIAGRAMS ══ */
+  .diagram-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-wrap svg { max-width: 100%; }
+
+  /* ══ TABLE ══ */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 15px;
+  }
+  thead tr { background: #dce8f5; }
+  thead th {
+    padding: 12px 16px;
+    color: var(--teal);
+    font-weight: 700;
+    text-align: center;
+    border: 1px solid var(--border2);
+  }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.025); }
+  tbody td {
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    color: var(--light);
+  }
+  tbody tr:hover { background: rgba(61,142,248,0.06); }
+
+  /* ══ PROBLEM BLOCK ══ */
+  .problem-block {
+    background: linear-gradient(145deg, #fffbf0, #fff8e8);
+    border: 1.5px solid var(--accent);
+    border-radius: 18px;
+    padding: 34px 40px;
+    margin-bottom: 30px;
+  }
+  .prob-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(240,165,0,0.25);
+  }
+  .prob-num {
+    min-width: 48px;
+    height: 48px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .prob-title { color: var(--accent); font-size: 18px; font-weight: 700; }
+  .prob-q {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    color: var(--text);
+    font-size: 15.5px;
+    line-height: 1.8;
+    border-right: 3px solid var(--primary);
+  }
+
+  .given-block, .req-block, .sol-block {
+    border-radius: 12px;
+    padding: 18px 24px;
+    margin: 16px 0;
+  }
+  .given-block {
+    background: rgba(0,122,99,0.06);
+    border: 1px solid rgba(0,122,99,0.25);
+  }
+  .req-block {
+    background: rgba(26,111,196,0.06);
+    border: 1px solid rgba(26,111,196,0.25);
+  }
+  .sol-block {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid var(--border2);
+  }
+  .block-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .block-title.given { color: var(--teal); }
+  .block-title.req   { color: var(--primary); }
+  .block-title.sol   { color: var(--accent); }
+
+  /* Steps */
+  .steps { counter-reset: s; margin: 14px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+    align-items: flex-start;
+  }
+  .step-n {
+    min-width: 30px; height: 30px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+    flex-shrink: 0; margin-top: 4px;
+  }
+  .step-body { color: var(--light); flex: 1; }
+
+  /* Answer */
+  .final-ans {
+    background: linear-gradient(135deg, rgba(26,138,74,0.1), rgba(0,122,99,0.07));
+    border: 1.5px solid var(--green);
+    border-radius: 12px;
+    padding: 18px 26px;
+    margin-top: 20px;
+  }
+  .final-ans .ans-title {
+    color: var(--green);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .final-ans .ans-val {
+    color: #0a3a20;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .ans-badge {
+    display: inline-block;
+    background: var(--green);
+    color: #fff;
+    font-weight: 900;
+    padding: 3px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin: 4px 4px 0 0;
+  }
+
+  /* Intuition */
+  .intuition {
+    background: rgba(106,61,184,0.06);
+    border: 1px dashed rgba(106,61,184,0.3);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-top: 16px;
+    font-size: 14.5px;
+    color: #3a1a60;
+  }
+  .intuition strong { color: var(--purple); }
+
+  /* ══ FORMULA CARD ══ */
+  .formula-card {
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 22px 28px;
+    margin: 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .formula-card .fc-label {
+    color: var(--muted);
+    font-size: 13px;
+    min-width: 140px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .formula-card .fc-eq { font-size: 17px; flex: 1; }
+
+  /* ══ TERM CHIP ══ */
+  .term {
+    display: inline-block;
+    background: rgba(26,111,196,0.1);
+    border: 1px solid rgba(26,111,196,0.3);
+    color: #0a4090;
+    padding: 1px 9px;
+    border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13.5px;
+  }
+
+  /* ══ SECTION DIVIDER ══ */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0 36px;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ══ FOOTER ══ */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 13.5px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 650px) {
+    .section, .problem-block { padding: 24px 18px; }
+    .hero { padding: 50px 20px 40px; }
+    .wrapper { padding: 0 14px 60px; }
+    .toc { padding: 24px 18px; }
+  }
+</style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f8;color:#1a2340;font-size:15.5px;line-height:1.8}
+
+/* COVER */
+.cover{background:linear-gradient(135deg,#0d1b4b 0%,#1a3a8c 55%,#0077b6 100%);color:#fff;text-align:center;padding:56px 20px 44px}
+.cover .uni{font-size:12.5px;letter-spacing:.8px;opacity:.75;margin-bottom:8px}
+.cover h1{font-size:2.2rem;font-weight:700;margin-bottom:4px}
+.cover h2{font-size:1.15rem;font-weight:400;opacity:.85;margin-bottom:20px}
+.cover .pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cover .pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:20px;padding:5px 16px;font-size:12.5px}
+
+/* SHEET HEADER */
+.sheet-header{max-width:960px;margin:32px auto 0;padding:0 16px}
+.sheet-bar{background:linear-gradient(90deg,#0d1b4b,#1a3a8c);color:#fff;border-radius:14px;padding:18px 28px;font-size:1.25rem;font-weight:700;display:flex;align-items:center;gap:14px}
+.sheet-bar .ico{font-size:1.6rem}
+
+/* CONTAINER */
+.container{max-width:960px;margin:0 auto;padding:12px 16px 60px}
+
+/* PROBLEM CARD */
+.prob-card{background:#fff;border-radius:16px;margin:22px 0;box-shadow:0 3px 18px rgba(0,0,0,.07);overflow:hidden}
+.prob-header{display:flex;align-items:center;gap:14px;padding:16px 26px;border-bottom:1.5px solid #e8edf5}
+.prob-num{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
+.s5 .prob-num{background:#1a3a8c}
+.s6 .prob-num{background:#0077b6}
+.prob-title{font-size:1.05rem;font-weight:600;color:#0d1b4b}
+
+/* QUESTION BOX */
+.question-box{background:#f4f7ff;border-right:none;border-left:5px solid #1a3a8c;padding:14px 22px;margin:0}
+.sheet-fig-img{text-align:center;margin:14px 0 18px;padding:12px 16px;background:#f8f9fc;border:1.5px solid #c8d4e8;border-radius:10px;}
+.sheet-fig-img img{max-width:100%;max-height:420px;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.12);display:block;margin:0 auto;}
+.sheet-fig-img p{margin:8px 0 0;font-size:13px;color:#4a5a7a;font-weight:600;}
+/* Fix RTL/LTR mixed content in note boxes */
+.note div[style*="direction:ltr"]{unicode-bidi:isolate}
+/* Ensure formula boxes inside RTL notes display correctly */
+.section-body .note .MJX-TEX,
+.section .note .MJX-TEX{direction:ltr!important;unicode-bidi:isolate!important;}
+.s6 .question-box{border-left-color:#0077b6}
+.q-label{font-size:11px;font-weight:700;letter-spacing:.8px;color:#6b82aa;text-transform:uppercase;margin-bottom:6px}
+.question-box p{font-size:14.5px;color:#1a2340}
+.question-box .given{margin-top:8px;font-size:13.5px;color:#3a4a6b;background:#eaefff;padding:8px 14px;border-radius:8px}
+
+/* SOLUTION AREA */
+.solution-area{padding:22px 26px}
+.sol-title{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#888;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sol-title::after{content:'';flex:1;height:1px;background:#e2e8f0}
+
+/* STEPS */
+.step{display:flex;gap:14px;margin:12px 0;align-items:flex-start}
+.step-num{width:26px;height:26px;border-radius:50%;background:#1a3a8c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:4px}
+.s6 .step-num{background:#0077b6}
+.step-content{flex:1}
+.step-content strong{color:#0d1b4b;display:block;margin-bottom:4px;font-size:14.5px}
+.step-content p{font-size:14px;color:#3a4a6b;margin:2px 0}
+
+/* EQUATION */
+.eq{background:#f8faff;border:1px solid #c9d8f5;border-radius:10px;padding:12px 18px;margin:8px 0;text-align:center}
+.eq.key{background:#eaf3fe;border-color:#5fa8d3;border-width:2px}
+.eq-note{font-size:12px;color:#6b82aa;margin-top:5px;text-align:center}
+
+/* ANSWER */
+.answer{background:linear-gradient(90deg,#0d1b4b,#1a3a8c);color:#fff;border-radius:10px;padding:13px 22px;margin:18px 0 0;display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px}
+.s6 .answer{background:linear-gradient(90deg,#005a8e,#0077b6)}
+.ans-icon{font-size:1.3rem}
+.ans-values{font-family:'Consolas',monospace;font-size:14px;background:rgba(255,255,255,.18);padding:3px 12px;border-radius:12px;margin-right:8px}
+
+/* NOTE / WARNING */
+.note{display:flex;gap:10px;background:#fff8e6;border-left:4px solid #e08d00;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13.5px;color:#5a3e00}
+.info{background:#e8f4fd;border-left-color:#0077b6;color:#003d66}
+.tip{background:#e8f8f0;border-left-color:#2d9e6b;color:#0a3d22}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.data-table th{background:#1a3a8c;color:#fff;padding:9px 14px;text-align:center}
+.s6 .data-table th{background:#0077b6}
+.data-table td{padding:8px 14px;border-bottom:1px solid #dde4f0;text-align:center}
+.data-table tr:nth-child(even) td{background:#f4f6fb}
+
+/* DIVIDER */
+hr.sec{border:none;border-top:2px dashed #dde4f0;margin:10px 0}
+
+/* FOOTER */
+footer{background:#0d1b4b;color:#8a9bbf;text-align:center;padding:22px;font-size:13px}
+</style>
+<style>
+/* ── Combined Document Styles ── */
+body { margin: 0; padding: 0; }
+/* ═══════════════════ COMBINED TOC — Full Redesign ═══════════════════ */
+#combined-toc {
+  max-width: 1000px;
+  margin: 48px auto 56px;
+  font-family: 'Cairo', 'Segoe UI', Arial, sans-serif;
+}
+
+/* ── Hero Banner ── */
+#toc-hero {
+  background: linear-gradient(135deg, #0b1f4d 0%, #0d3d6e 50%, #0a5a8a 100%);
+  border-radius: 20px 20px 0 0;
+  padding: 48px 48px 40px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+#toc-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 25px,
+    rgba(255,255,255,0.025) 25px, rgba(255,255,255,0.025) 26px
+  );
+}
+#toc-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #f5c842, #e88a00, #f5c842);
+}
+#toc-hero-icon {
+  font-size: 52px;
+  display: block;
+  margin-bottom: 12px;
+  position: relative;
+}
+#toc-hero-title {
+  font-size: clamp(22px, 4vw, 36px);
+  font-weight: 800;
+  letter-spacing: .5px;
+  line-height: 1.2;
+  position: relative;
+}
+#toc-hero-title span { color: #f5c842; }
+#toc-hero-sub {
+  font-size: 14px;
+  opacity: .72;
+  margin-top: 8px;
+  position: relative;
+}
+#toc-hero-chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  position: relative;
+}
+.toc-hero-chip {
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 20px;
+  padding: 5px 18px;
+  font-size: 12px;
+  letter-spacing: .4px;
+}
+
+/* ── Body ── */
+#toc-body {
+  background: #f4f7fc;
+  border-radius: 0 0 20px 20px;
+  padding: 36px 48px 44px;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.12);
+}
+
+/* ── Intro text ── */
+#toc-intro {
+  background: #fff;
+  border: 1px solid #d0dcee;
+  border-left: 4px solid #1a6fb5;
+  border-radius: 0 12px 12px 0;
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #2a3a5a;
+  margin-bottom: 30px;
+  line-height: 1.7;
+}
+
+/* ── Section heading ── */
+.toc-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #6b82aa;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 14px;
+}
+.toc-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d0dcee;
+}
+
+/* ── Cards grid ── */
+.toc-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+/* ── Single card ── */
+.toc-card {
+  background: #fff;
+  border: 1.5px solid #d0dcee;
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: all .22s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.toc-card:hover {
+  border-color: #1a6fb5;
+  box-shadow: 0 6px 22px rgba(26,111,181,0.14);
+  transform: translateY(-2px);
+}
+.toc-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid #e8eef8;
+}
+.toc-card-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+.toc-card-type {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.toc-card-body {
+  padding: 12px 18px 14px;
+  flex: 1;
+}
+.toc-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a2a4a;
+  line-height: 1.4;
+  margin-bottom: 5px;
+}
+.toc-card-desc {
+  font-size: 12.5px;
+  color: #6b82aa;
+  line-height: 1.5;
+}
+.toc-card-footer {
+  padding: 8px 18px;
+  background: #f8faff;
+  border-top: 1px solid #e8eef8;
+  font-size: 11.5px;
+  color: #8ba0c0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.toc-card-footer::before { content: '→'; font-weight: 700; color: #1a6fb5; }
+
+/* Lecture cards — blue family */
+.toc-card.lec .toc-card-num    { background: linear-gradient(135deg, #0d3d6e, #1a6fb5); }
+.toc-card.lec .toc-card-type   { color: #1a6fb5; }
+.toc-card.lec:hover             { border-color: #1a6fb5; }
+
+/* Sheet cards — teal/green family */
+.toc-card.sht .toc-card-num    { background: linear-gradient(135deg, #0d4a30, #1a7a50); }
+.toc-card.sht .toc-card-type   { color: #1a7a50; }
+.toc-card.sht:hover             { border-color: #1a7a50; }
+.toc-card.sht                   { border-color: #c2ddd0; }
+
+/* ── Quick links row ── */
+#toc-quick {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid #d0dcee;
+}
+.toc-quick-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #b8cde8;
+  color: #1a4a8a;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .18s;
+  background: #fff;
+}
+.toc-quick-link:hover {
+  background: #1a6fb5;
+  color: #fff;
+  border-color: #1a6fb5;
+}
+.toc-quick-link .ql-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1a6fb5;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toc-quick-link:hover .ql-num {
+  background: rgba(255,255,255,0.28);
+}
+
+@media (max-width: 680px) {
+  #toc-hero, #toc-body { padding: 28px 20px; }
+  .toc-cards-grid { grid-template-columns: 1fr; }
+  #toc-quick { gap: 6px; }
+}
+
+/* ── Sheet separators ── */
+.sheet-section-anchor {
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+.sheet-divider {
+  max-width: 100%;
+  margin: 0;
+  padding: 14px 32px;
+  background: linear-gradient(90deg, #0b3d6e, #1a6fb5);
+  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+</style>
+  <script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)'], ['$','$']],
+    displayMath: [['\\[','\\]'], ['$$','$$']],
+    processEscapes: true
+  },
+  options: {
+    skipHtmlTags: ['script','noscript','style','textarea','pre']
+  },
+  startup: {
+    typeset: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+</head>
+<body>
+<nav id="main-nav">
+  <a href="index.html" class="home-link" style="color:#f5c842; border-top-color:transparent; border-bottom-color:transparent;">🏠 Home</a>
+  <a href="lecture1.html" style="border-top-color:#c0440a;border-bottom-color:transparent;">📖 Lec 1<br>Eng</a>
+  <a href="lecture2.html" style="border-top-color:#1e3a5f;border-bottom-color:transparent;">📖 Lec 2<br>Fits & Toleran</a>
+  <a href="lecture3.html" style="border-top-color:#0a3d6b;border-bottom-color:transparent;">📖 Lec 3<br>Stresses</a>
+  <a href="lecture4.html" class="active" style="border-top-color:#1a6fd4;border-bottom-color:#1a6fd4;">📖 Lec 4<br>Simple Stress</a>
+  <a href="lecture5.html" style="border-top-color:#0b3d6e;border-bottom-color:transparent;">📖 Lec 5<br>Stresses</a>
+  <a href="lecture6.html" style="border-top-color:#8a4e00;border-bottom-color:transparent;">📖 Lec 6<br>Riveted Jo</a>
+  <a href="lecture7.html" style="border-top-color:#1a3a5c; border-bottom-color:transparent;">📖 Lec 7<br>Shafts</a>
+</nav>
+<div class="lecture-wrapper" id="lec4">
+<div class="lec-root" id="lec4-root">
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero">
+  <div class="hero-tag">Lecture 4 · Machine Design</div>
+  <h1>Simple <span>Stress</span> in Machine Design</h1>
+  <p class="sub">ملاحظة: كل المصطلحات الهندسية مكتوبة بالإنجليزي كما في المحاضرة الأصلية</p>
+  
+</div>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<div class="toc">
+  <h2>📋 محتويات المحاضرة</h2>
+  <ol>
+    <li><a href="#s1">Thermal Stresses – الإجهادات الحرارية</a></li>
+    <li><a href="#s2">Linear Strain & Lateral Strain</a></li>
+    <li><a href="#s3">Poisson's Ratio</a></li>
+    <li><a href="#s4">Volumetric Strain</a></li>
+    <li><a href="#s5">Bulk Modulus & Young's Modulus</a></li>
+    <li><a href="#s6">Impact Stress</a></li>
+    <li><a href="#s7">Resilience & Strain Energy</a></li>
+    <li><a href="#ex1">Example 1 – Shrunk Tyre</a></li>
+    <li><a href="#ex2">Example 2 – Rod Sections</a></li>
+    <li><a href="#ex3">Example 3 – Impact Loading</a></li>
+    <li><a href="#ex4">Example 4 – Shock Energy</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="container">
+
+<!-- ─── SECTION 1 ─── -->
+<div class="section" id="s1">
+  <div class="section-number">Section 01</div>
+  <h2>🌡 Thermal Stresses – الإجهادات الحرارية</h2>
+
+  <p>
+    لما بنسخّن أو بنبرّد أي جسم، الجسم ده بيتمدد أو بيتقلص. لو سبنا الجسم يتمدد بحرية، مش هيحصل أي
+    <span class="term">stress</span> جوّاه. بس لو منعنا التمدد ده – مثلاً بتثبيت طرفين الجسم بدعامات صلبة –
+    هيتولّد <span class="term">stress</span> جوّا الجسم. الـ <span class="term">stress</span> ده
+    اسمه <strong>Thermal Stress</strong>.
+  </p>
+
+  <h3>المعادلات الأساسية</h3>
+
+  <p>فرضنا إن:</p>
+  <ul>
+    <li>\( l \) = الطول الأصلي للجسم (Original length)</li>
+    <li>\( t \) = مقدار التغيير في درجة الحرارة (Rise or fall of temperature)</li>
+    <li>\( \alpha \) = معامل التمدد الحراري (Coefficient of thermal expansion)</li>
+  </ul>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \delta l = l \cdot \alpha \cdot t
+    \]</div>
+    <div class="eq-label">Increase or decrease in length</div>
+  </div>
+
+  <p>لو الجسم مثبّت من طرفيه ومش قادر يتمدد، بيحصل <span class="term">compressive strain</span> جوّاه:</p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \varepsilon_c = \frac{\delta l}{l} = \frac{l \cdot \alpha \cdot t}{l} = \alpha \cdot t
+    \]</div>
+    <div class="eq-label">Compressive strain</div>
+  </div>
+
+  <p>وبالتالي الـ <span class="term">thermal stress</span> بيبقى:</p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \sigma_{th} = \varepsilon_c \cdot E = \alpha \cdot t \cdot E
+    \]</div>
+    <div class="eq-label">Thermal Stress</div>
+  </div>
+
+  <h3>ملاحظات مهمة</h3>
+
+  <div class="note">
+    <strong>Note 1:</strong> لو الجسم مكوّن من مادتين بمعاملات تمدد مختلفة، وحصلت زيادة في درجة الحرارة، فإن المادة اللي ليها
+    <span class="term">higher coefficient of thermal expansion</span> هتتعرض لـ
+    <span class="term">compressive stress</span>، والمادة اللي ليها
+    <span class="term">lower coefficient</span> هتتعرض لـ
+    <span class="term">tensile stress</span>.
+  </div>
+
+  <div class="note" style="overflow:hidden;">
+    <strong>Note 2 – Tyre على Wheel:</strong>
+    <p style="margin:8px 0 4px;">
+      لما بنسخّن إطار (tyre) قبل ما نركّبه على العجلة (wheel)، محيطه بيكبر من \( \pi d \) لـ \( \pi D \). لما بيبرد، بيرجع يقلص ويضغط على العجلة.
+    </p>
+    <p style="margin:8px 0 4px;">
+      الـ <span class="term">strain</span> الناتج اسمه <strong>circumferential strain</strong> أو <strong>hoop strain</strong>:
+    </p>
+    <div style="direction:ltr; text-align:center; margin:14px 0; overflow-x:auto; width:100%;">
+      \[
+        \varepsilon = \frac{\pi D - \pi d}{\pi d} = \frac{D - d}{d}
+      \]
+    </div>
+    <p style="margin:8px 0 4px;">
+      والـ <span class="term">hoop stress</span> بيكون:
+    </p>
+    <div style="direction:ltr; text-align:center; margin:14px 0; overflow-x:auto; width:100%;">
+      \[
+        \sigma = E \cdot \varepsilon = \frac{E(D - d)}{d}
+      \]
+    </div>
+  </div>
+
+  <div class="figure-box">
+    <div class="fig-title">شكل توضيحي: Tyre على Wheel</div>
+    <div class="figure-desc">
+      تخيّل إن عندك إطار (tyre) قطره الداخلي \(d\) أصغر شوية من قطر العجلة \(D\).
+      بنسخّن الإطار فيتمدد ومحيطه يكبر من \(\pi d\) لـ \(\pi D\) فنقدر نركّبه.
+      لما يبرد، بيحاول يرجع لمحيطه الأصلي بس العجلة الصلبة بتمنعه،
+      فبيتولّد فيه <span class="term">hoop stress</span> شادّ عليه من كل الاتجاهات.
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 2 ─── -->
+<div class="section" id="s2">
+  <div class="section-number">Section 02</div>
+  <h2>📏 Linear Strain & Lateral Strain</h2>
+
+  <p>
+    تخيّل عندك بار دائري (circular bar) قطره \(d\) وطوله \(l\) وبنشده بـ <span class="term">tensile force</span> \(P\).
+  </p>
+
+  <div class="figure-box">
+    <div class="fig-title">شكل 4.19 – Linear & Lateral Strain على bar</div>
+    <img src="data:image/png;base64,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" alt="Fig 4.19 – Linear and Lateral Strain on a bar under tensile force P" style="max-width:100%;border-radius:8px;margin:14px 0;display:block;box-shadow:0 2px 12px rgba(0,0,0,0.13);" loading="lazy"/>
+
+    <div class="figure-desc">
+      <strong>(a)</strong> الحالة الأصلية: bar بقطر \(d\) وطول \(l\).<br><br>
+      <strong>(b)</strong> بعد تطبيق الـ tensile force: الطول زاد بمقدار \(\delta l\) (الـ bar اتمدد في اتجاه القوة)
+      والقطر نقص بمقدار \(\delta d\) (انضغط في الاتجاه العمودي).<br><br>
+      <strong>المفهوم الأساسي:</strong> كل <span class="term">direct stress</span> بيولّد نوعين من الـ strain:
+      <ul style="margin-top:10px;">
+        <li><strong>Linear Strain:</strong> في نفس اتجاه القوة (الطول اتمدد)</li>
+        <li><strong>Lateral Strain:</strong> في الاتجاه العمودي عليها (القطر نقص)</li>
+      </ul>
+      ولو كانت القوة ضغط (compressive): الطول بيقل والقطر بيزيد – عكس اللي فوق تمامًا.
+    </div>
+  </div>
+
+  <div class="highlight">
+    كل <span class="term">direct stress</span> بيولّد:
+    <ul style="margin-top:8px;">
+      <li><strong>Linear Strain</strong> = في اتجاه الـ stress نفسه</li>
+      <li><strong>Lateral Strain</strong> = في الاتجاه العمودي عليه (ومعاكس له في النوع)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ─── SECTION 3 ─── -->
+<div class="section" id="s3">
+  <div class="section-number">Section 03</div>
+  <h2>🔢 Poisson's Ratio</h2>
+
+  <p>
+    من خلال التجارب اتضح إن جوّا الـ <span class="term">elastic limit</span>، النسبة بين الـ
+    <span class="term">lateral strain</span> والـ <span class="term">linear strain</span> بتفضل ثابتة.
+    الثابت ده اسمه <strong>Poisson's Ratio</strong> وبنرمزله بـ \(\mu\) أو \(\frac{1}{m}\).
+  </p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \mu = \frac{1}{m} = \frac{\text{Lateral Strain}}{\text{Linear Strain}} = \text{Constant}
+    \]</div>
+    <div class="eq-label">Poisson's Ratio Definition</div>
+  </div>
+
+  <h3>قيم Poisson's Ratio لمواد مختلفة</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Material</th>
+        <th>Poisson's Ratio (\(\mu\) or \(1/m\))</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Steel</td><td>0.25 – 0.33</td></tr>
+      <tr><td>2</td><td>Cast Iron</td><td>0.23 – 0.27</td></tr>
+      <tr><td>3</td><td>Copper</td><td>0.31 – 0.34</td></tr>
+      <tr><td>4</td><td>Brass</td><td>0.32 – 0.42</td></tr>
+      <tr><td>5</td><td>Aluminium</td><td>0.32 – 0.36</td></tr>
+      <tr><td>6</td><td>Concrete</td><td>0.08 – 0.18</td></tr>
+      <tr><td>7</td><td>Rubber</td><td>0.45 – 0.50</td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight gold">
+    ⚠ لاحظ إن الـ <span class="term">Poisson's Ratio</span> للـ Rubber قريب جدًا من 0.5، وده معناه إن حجمه بيفضل ثابت تقريبًا لما بيتضغط (incompressible material).
+  </div>
+</div>
+
+<!-- ─── SECTION 4 ─── -->
+<div class="section" id="s4">
+  <div class="section-number">Section 04</div>
+  <h2>📦 Volumetric Strain</h2>
+
+  <p>
+    لما بنطبّق قوى على جسم، حجمه بيتغير. النسبة بين التغيير في الحجم والحجم الأصلي اسمها
+    <strong>Volumetric Strain</strong>.
+  </p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \varepsilon_v = \frac{\delta V}{V}
+    \]</div>
+    <div class="eq-label">Volumetric Strain</div>
+  </div>
+
+  حيث: \(\delta V\) = التغيير في الحجم، \(V\) = الحجم الأصلي.
+
+  <h3>حالتان مهمتان:</h3>
+
+  <div class="highlight">
+    <strong>Case 1 – Rectangular body تحت axial force واحدة:</strong>
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \varepsilon_v = \frac{\delta V}{V} = \varepsilon\left(1 - \frac{2}{m}\right)
+    \]</div>
+    حيث \(\varepsilon\) = linear strain.
+  </div>
+
+  <div class="highlight">
+    <strong>Case 2 – Rectangular body تحت 3 forces عمودية على بعض:</strong>
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \varepsilon_v = \varepsilon_x + \varepsilon_y + \varepsilon_z
+    \]</div>
+    حيث \(\varepsilon_x, \varepsilon_y, \varepsilon_z\) هي الـ strains في المحاور الثلاثة.
+  </div>
+</div>
+
+<!-- ─── SECTION 5 ─── -->
+<div class="section" id="s5">
+  <div class="section-number">Section 05</div>
+  <h2>🔩 Bulk Modulus & Modulus of Rigidity</h2>
+
+  <h3>Bulk Modulus (K)</h3>
+  <p>
+    لو جسم اتعرض لـ 3 <span class="term">stresses</span> متعامدة على بعض وبنفس الشدة (equal intensity)،
+    فالنسبة بين الـ <span class="term">direct stress</span> والـ
+    <span class="term">volumetric strain</span> اسمها <strong>Bulk Modulus</strong>:
+  </p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      K = \frac{\text{Direct Stress}}{\text{Volumetric Strain}} = \frac{\sigma}{\delta V / V}
+    \]</div>
+    <div class="eq-label">Bulk Modulus Definition</div>
+  </div>
+
+  <h3>العلاقة بين Bulk Modulus (K) و Young's Modulus (E)</h3>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      K = \frac{mE}{3(m-2)} = \frac{E}{3(1 - 2\mu)}
+    \]</div>
+    <div class="eq-label">K in terms of E and Poisson's ratio</div>
+  </div>
+
+  <h3>العلاقة بين Young's Modulus (E) و Modulus of Rigidity (G)</h3>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      G = \frac{mE}{2(m+1)} = \frac{E}{2(1+\mu)}
+    \]</div>
+    <div class="eq-label">G in terms of E and Poisson's ratio</div>
+  </div>
+
+  <div class="highlight gold">
+    خلاصة العلاقات بين الـ elastic constants:
+    <ul style="margin-top:8px;">
+      <li>\(E\) = Young's Modulus (مقاومة التمدد)</li>
+      <li>\(G\) = Modulus of Rigidity / Shear Modulus (مقاومة القص)</li>
+      <li>\(K\) = Bulk Modulus (مقاومة التغيير في الحجم)</li>
+      <li>\(\mu\) = Poisson's Ratio (نسبة الانكماش الجانبي)</li>
+    </ul>
+    الأربعة دول مرتبطين ببعض ومش مستقلين.
+  </div>
+</div>
+
+<!-- ─── SECTION 6 ─── -->
+<div class="section" id="s6">
+  <div class="section-number">Section 06</div>
+  <h2>💥 Impact Stress</h2>
+
+  <p>
+    أحيانًا المكونات الميكانيكية بتتعرض لـ <span class="term">loads</span> بطريقة مفاجئة (impact).
+    الـ <span class="term">stress</span> اللي بيتولّد جراء حمل ساقط اسمه <strong>Impact Stress</strong>.
+  </p>
+
+  <div class="figure-box">
+    <div class="fig-title">شكل 4.20 – Impact Loading على vertical bar</div>
+    <img src="data:image/png;base64,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" alt="Fig 4.20 – Impact Loading on vertical bar with falling weight W and collar" style="max-width:100%;border-radius:8px;margin:14px 0;display:block;box-shadow:0 2px 12px rgba(0,0,0,0.13);" loading="lazy"/>
+
+    <div class="figure-desc">
+      الشكل بيوضّح bar رأسي مثبّت من فوق. في آخره collar. فيه حمل \(W\) بيوقع من ارتفاع \(h\) على الـ collar.
+      الـ bar بيتشوّه بمقدار \(\delta l\) وبيتولّد فيه <span class="term">impact stress</span> \(\sigma_i\).
+      <br><br>
+      المتغيرات:
+      <ul style="margin-top:8px;">
+        <li>\(A\) = Cross-sectional area of the bar</li>
+        <li>\(E\) = Young's modulus of the material</li>
+        <li>\(l\) = Length of the bar</li>
+        <li>\(\delta l\) = Deformation of the bar</li>
+        <li>\(W\) = The falling weight</li>
+        <li>\(h\) = Height through which the load falls</li>
+        <li>\(\sigma_i\) = Impact stress induced in the bar</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>الاشتقاق</h3>
+
+  <p>بنطبّق مبدأ حفظ الطاقة: الـ potential energy اللي الحمل خسرها = الـ strain energy اللي البار اكتسبها:</p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \frac{1}{2} P \cdot \delta l = W(h + \delta l)
+    \]</div>
+  </div>
+
+  <p>وبما إن \( P = \sigma_i \cdot A \) و \( \delta l = \frac{\sigma_i \cdot l}{E} \)، بنعوّض:</p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \frac{Al}{2E}(\sigma_i)^2 - \frac{Wl}{E}(\sigma_i) - Wh = 0
+    \]</div>
+  </div>
+
+  <p>بحل المعادلة التربيعية دي بنلاقي:</p>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \sigma_i = \frac{W}{A}\left(1 + \sqrt{1 + \frac{2hAE}{Wl}}\right)
+    \]</div>
+    <div class="eq-label">Impact Stress Formula (أخذنا الإشارة الموجبة للقيمة القصوى)</div>
+  </div>
+
+  <div class="note">
+    <strong>ملاحظة مهمة جدًا:</strong> لو \( h = 0 \) (يعني الحمل اتحط بشكل مفاجئ من غير ما يوقع)، بيبقى:
+    <div style="direction:ltr;text-align:center;margin:14px 0;overflow:visible;min-height:60px;padding:8px 0;">\[
+      \sigma_i = \frac{2W}{A}
+    \]</div>
+    يعني الـ <span class="term">stress</span> اللي بيحصل لما الحمل يتحط فجأة = ضعف الـ <span class="term">stress</span> لو اتحط بالتدريج!
+  </div>
+</div>
+
+<!-- ─── SECTION 7 ─── -->
+<div class="section" id="s7">
+  <div class="section-number">Section 07</div>
+  <h2>⚡ Resilience & Strain Energy</h2>
+
+  <p>
+    لما بنحمّل جسم جوّا الـ <span class="term">elastic limit</span>، الجسم بيشتغل زي الزنبرك: بيخزّن طاقة جوّاه.
+    لما بنشيل الحمل، الطاقة دي بترجع. الطاقة دي اسمها <strong>Strain Energy</strong>.
+  </p>
+
+  <div class="highlight">
+    <strong>المصطلحات:</strong>
+    <ul style="margin-top:8px;">
+      <li><strong>Strain Energy (U):</strong> الطاقة المخزونة في الجسم بسبب الحمل جوّا الـ elastic limit</li>
+      <li><strong>Resilience:</strong> نفس المعنى – الطاقة المخزونة بسبب الـ external loading جوّا الـ elastic limit</li>
+      <li><strong>Proof Resilience:</strong> أقصى طاقة ممكن تتخزن في الجسم لحدّ الـ elastic limit</li>
+      <li><strong>Modulus of Resilience:</strong> الـ Proof Resilience لكل وحدة حجم – بيدل على قدرة المادة على تحمّل الصدمات</li>
+    </ul>
+  </div>
+
+  <h3>معادلة Strain Energy (Tensile or Compressive)</h3>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      U = \frac{\sigma^2 \times V}{2E}
+    \]</div>
+    <div class="eq-label">Strain Energy stored in a body</div>
+  </div>
+
+  <div class="eq-box">
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \text{Modulus of Resilience} = \frac{\sigma^2}{2E}
+    \]</div>
+    <div class="eq-label">Strain Energy per unit volume</div>
+  </div>
+
+  <h3>حالات خاصة</h3>
+
+  <div class="highlight">
+    <strong>عند Shear Load:</strong>
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \text{Modulus of Resilience (shear)} = \frac{\tau^2}{2C}
+    \]</div>
+    حيث \(\tau\) = shear stress، \(C\) = modulus of rigidity.
+  </div>
+
+  <div class="highlight">
+    <strong>عند Torsion:</strong>
+    <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+      \text{Modulus of Resilience (torsion)} = \frac{\tau^2}{4C}
+    \]</div>
+  </div>
+</div>
+
+<!-- ═══════════════ EXAMPLES ═══════════════ -->
+
+<!-- ─── EXAMPLE 1 ─── -->
+<div class="section" id="ex1">
+  <div class="section-number">Example 1</div>
+  <h2>🔧 مثال 1 – Shrunk Steel Tyre على Locomotive Wheel</h2>
+
+  <div class="example-block">
+    <h3>المطلوب</h3>
+    <p>
+      إطار فولاذ رفيع (thin steel tyre) متركّب على عجلة قطرها \(D = 1.2\ \text{m}\).
+      لو الـ <span class="term">hoop stress</span> بعد التركيب = 100 MPa،
+      وبفرض \(E = 200\ \text{kN/mm}^2\) و \(\alpha = 6.5 \times 10^{-6}\ \text{per }°C\)، أوجد:
+    </p>
+    <ol>
+      <li>القطر الداخلي للإطار قبل التركيب</li>
+      <li>أقل درجة حرارة لازم نسخّن بيها الإطار عشان نقدر نركّبه</li>
+    </ol>
+  </div>
+
+  <h3>البيانات</h3>
+  <ul>
+    <li>\(D = 1.2\ \text{m} = 1200\ \text{mm}\)</li>
+    <li>\(\sigma = 100\ \text{MPa} = 100\ \text{N/mm}^2\)</li>
+    <li>\(E = 200\ \text{kN/mm}^2 = 200 \times 10^3\ \text{N/mm}^2\)</li>
+    <li>\(\alpha = 6.5 \times 10^{-6}\ \text{per }°C\)</li>
+  </ul>
+
+  <h3>الحل – القطر الداخلي للإطار (d)</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        نستخدم معادلة الـ hoop stress:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \sigma = \frac{E(D-d)}{d} \Rightarrow 100 = \frac{200 \times 10^3 (D-d)}{d}
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        نرتّب:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \frac{D-d}{d} = \frac{100}{200 \times 10^3} = \frac{1}{2 \times 10^3}
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \frac{D}{d} = 1 + \frac{1}{2000} = 1.0005
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          d = \frac{D}{1.0005} = \frac{1200}{1.0005} = 1199.4\ \text{mm} = 1.1994\ \text{m}
+        \]</div>
+        <div class="answer">✅ d = 1199.4 mm</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>الحل – درجة الحرارة (t)</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        لما بنسخّن الإطار، محيطه بيتمدد من \(\pi d\) لـ \(\pi D\):
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \pi D = \pi d + \pi d \cdot \alpha \cdot t = \pi d(1 + \alpha t)
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \alpha \cdot t = \frac{\pi D}{\pi d} - 1 = \frac{D-d}{d} = \frac{1}{2 \times 10^3}
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          t = \frac{1}{\alpha \times 2000} = \frac{1}{6.5 \times 10^{-6} \times 2000} = 76.9 \approx 77\ °C
+        \]</div>
+        <div class="answer">✅ t ≈ 77°C</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLE 2 ─── -->
+<div class="section" id="ex2">
+  <div class="section-number">Example 2</div>
+  <h2>🔧 مثال 2 – تحديد أبعاد bar بشكل مختلف</h2>
+
+  <div class="example-block">
+    <h3>المطلوب</h3>
+    <p>
+      bar من mild steel بيتحمل <span class="term">tensile load</span> = 50 kN،
+      والـ <span class="term">stress</span> المسموح بيه = 100 MPa.
+      أوجد أبعاد الـ bar لو مقطعه:
+    </p>
+    <ol>
+      <li>Circular</li>
+      <li>Square</li>
+      <li>Rectangular بحيث العرض = 3 × السُمك</li>
+    </ol>
+  </div>
+
+  <h3>البيانات</h3>
+  <ul>
+    <li>\(P = 50\ \text{kN} = 50 \times 10^3\ \text{N}\)</li>
+    <li>\(\sigma_t = 100\ \text{MPa} = 100\ \text{N/mm}^2\)</li>
+  </ul>
+
+  <h3>1. Circular Cross-section</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ A = \frac{\pi}{4} d^2 = 0.7854\, d^2 \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ P = \sigma_t \times A \Rightarrow 50 \times 10^3 = 100 \times 0.7854\, d^2 = 78.54\, d^2 \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ d^2 = \frac{50000}{78.54} = 636.6 \Rightarrow d = 25.23\ \text{mm} \]</div>
+        <div class="answer">✅ d = 25.23 mm</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>2. Square Cross-section</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ A = x^2 \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ 50 \times 10^3 = 100 \times x^2 \Rightarrow x^2 = 500 \Rightarrow x = 22.4\ \text{mm} \]</div>
+        <div class="answer">✅ x = 22.4 mm</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>3. Rectangular Cross-section (b = 3t)</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ A = b \times t = 3t \times t = 3t^2 \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ 50 \times 10^3 = 100 \times 3t^2 = 300\, t^2 \Rightarrow t^2 = 166.7 \Rightarrow t = 12.9\ \text{mm} \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[ b = 3t = 3 \times 12.9 = 38.7\ \text{mm} \]</div>
+        <div class="answer">✅ t = 12.9 mm &nbsp;|&nbsp; b = 38.7 mm</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLE 3 ─── -->
+<div class="section" id="ex3">
+  <div class="section-number">Example 3</div>
+  <h2>🔧 مثال 3 – Impact Loading على Vertical Bar</h2>
+
+  <div class="example-block">
+    <h3>المطلوب</h3>
+    <p>
+      حمل مجهول وقع من ارتفاع \(h = 10\ \text{mm}\) على collar مثبّت في آخر bar رأسي طوله \(l = 3\ \text{m}\)
+      ومساحة مقطعه \(A = 600\ \text{mm}^2\). لو الـ <span class="term">maximum instantaneous extension</span> =
+      2 mm وبفرض \(E = 200\ \text{kN/mm}^2\)، أوجد:
+    </p>
+    <ol>
+      <li>الـ stress في الـ bar</li>
+      <li>قيمة الحمل المجهول \(W\)</li>
+    </ol>
+  </div>
+
+  <h3>البيانات</h3>
+  <ul>
+    <li>\(h = 10\ \text{mm}\), \(l = 3\ \text{m} = 3000\ \text{mm}\)</li>
+    <li>\(A = 600\ \text{mm}^2\), \(\delta l = 2\ \text{mm}\)</li>
+    <li>\(E = 200\ \text{kN/mm}^2 = 200 \times 10^3\ \text{N/mm}^2\)</li>
+  </ul>
+
+  <h3>الحل – الـ Stress في الـ bar</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        من تعريف Young's Modulus:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          E = \frac{\sigma}{\varepsilon} = \frac{\sigma \cdot l}{\delta l}
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \sigma = \frac{E \cdot \delta l}{l} = \frac{200 \times 10^3 \times 2}{3000} = \frac{400}{3} = 133.3\ \text{N/mm}^2
+        \]</div>
+        <div class="answer">✅ σ = 133.3 N/mm²</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>الحل – قيمة الحمل (W)</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        نستخدم معادلة الـ impact stress:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \sigma = \frac{W}{A}\left(1 + \sqrt{1 + \frac{2hAE}{Wl}}\right)
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        نعوّض:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \frac{400}{3} = \frac{W}{600}\left(1 + \sqrt{1 + \frac{2 \times 10 \times 600 \times 200 \times 10^3}{W \times 3000}}\right)
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        بعد التبسيط:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \frac{80000}{W} - 1 = \sqrt{1 + \frac{800000}{W}}
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        بالتربيع وتبسيط المعادلة:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \frac{6400 \times 10^2}{W} = 96 \Rightarrow W = \frac{6400 \times 100}{96} = 6666.7\ \text{N}
+        \]</div>
+        <div class="answer">✅ W ≈ 6666.7 N</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLE 4 ─── -->
+<div class="section" id="ex4">
+  <div class="section-number">Example 4</div>
+  <h2>🔧 مثال 4 – Shock Energy في Wrought Iron Bar</h2>
+
+  <div class="example-block">
+    <h3>المطلوب</h3>
+    <p>
+      bar من wrought iron قطره \(d = 50\ \text{mm}\) وطوله \(l = 2.5\ \text{m}\)
+      بيتعرض لـ <span class="term">shock energy</span> = 100 N·m.
+      أوجد الـ <span class="term">maximum instantaneous stress</span> والـ elongation.
+      افرض \(E = 200\ \text{GN/m}^2\).
+    </p>
+  </div>
+
+  <h3>البيانات</h3>
+  <ul>
+    <li>\(d = 50\ \text{mm}\), \(l = 2500\ \text{mm}\)</li>
+    <li>\(U = 100\ \text{N·m} = 100 \times 10^3\ \text{N·mm}\)</li>
+    <li>\(E = 200 \times 10^3\ \text{N/mm}^2\)</li>
+  </ul>
+
+  <h3>الحل – Maximum Instantaneous Stress</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        نحسب حجم الـ bar:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          V = \frac{\pi}{4} d^2 \times l = \frac{\pi}{4}(50)^2 \times 2500 = 4.9 \times 10^6\ \text{mm}^3
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        الـ strain energy = الـ shock energy:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          U = \frac{\sigma^2 \times V}{2E} \Rightarrow 100 \times 10^3 = \frac{\sigma^2 \times 4.9 \times 10^6}{2 \times 200 \times 10^3} = 12.25\,\sigma^2
+        \]</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          \sigma^2 = \frac{100 \times 10^3}{12.25} = 8163 \Rightarrow \sigma = 90.3\ \text{N/mm}^2
+        \]</div>
+        <div class="answer">✅ σ = 90.3 N/mm²</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>الحل – Elongation (δl)</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        من Young's Modulus:
+        <div style="direction:ltr;text-align:center;margin:10px 0;overflow-x:auto;">\[
+          E = \frac{\sigma}{\delta l / l} \Rightarrow \delta l = \frac{\sigma \cdot l}{E} = \frac{90.3 \times 2500}{200 \times 10^3} = 1.13\ \text{mm}
+        \]</div>
+        <div class="answer">✅ δl = 1.13 mm</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Summary Card ─── -->
+<div class="section">
+  <div class="section-number">Summary</div>
+  <h2>📌 ملخص أهم المعادلات</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>الموضوع</th>
+        <th>المعادلة</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Thermal Stress</td>
+        <td>\(\sigma_{th} = \alpha \cdot t \cdot E\)</td>
+      </tr>
+      <tr>
+        <td>Hoop Stress</td>
+        <td>\(\sigma = \dfrac{E(D-d)}{d}\)</td>
+      </tr>
+      <tr>
+        <td>Poisson's Ratio</td>
+        <td>\(\mu = \dfrac{\text{Lateral Strain}}{\text{Linear Strain}}\)</td>
+      </tr>
+      <tr>
+        <td>Volumetric Strain (axial)</td>
+        <td>\(\varepsilon_v = \varepsilon\!\left(1 - \dfrac{2}{m}\right)\)</td>
+      </tr>
+      <tr>
+        <td>Bulk Modulus</td>
+        <td>\(K = \dfrac{E}{3(1-2\mu)}\)</td>
+      </tr>
+      <tr>
+        <td>Modulus of Rigidity</td>
+        <td>\(G = \dfrac{E}{2(1+\mu)}\)</td>
+      </tr>
+      <tr>
+        <td>Impact Stress</td>
+        <td>\(\sigma_i = \dfrac{W}{A}\!\left(1 + \sqrt{1 + \dfrac{2hAE}{Wl}}\right)\)</td>
+      </tr>
+      <tr>
+        <td>Strain Energy</td>
+        <td>\(U = \dfrac{\sigma^2 V}{2E}\)</td>
+      </tr>
+      <tr>
+        <td>Modulus of Resilience</td>
+        <td>\(= \dfrac{\sigma^2}{2E}\)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>📘 Simple Stress in Machine Design </p>
+  <p style="margin-top:8px; font-size:13px;">جميع المصطلحات الهندسية بالإنجليزية كما وردت في المحاضرة الأصلية</p>
+</footer>
+</div>
+</div>
+
+
+<!-- ────────────────── SHEET 3 ────────────────── -->
+
+<script>
+(function(){
+  const sections = document.querySelectorAll('.lecture-wrapper');
+  const links    = document.querySelectorAll('#main-nav a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+id));
+        links.forEach(a => {
+          if (a.getAttribute('href') === '#'+id) {
+            a.style.borderBottomColor = a.style.borderTopColor;
+          } else {
+            a.style.borderBottomColor = 'transparent';
+          }
+        });
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '-55px 0px -50% 0px' });
+  sections.forEach(s => obs.observe(s));
+  window.addEventListener('load', function() {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+    }
+  });
+})();
+</script>
+</body>
+</html>

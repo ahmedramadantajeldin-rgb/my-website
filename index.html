@@ -1,462 +1,848 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ME307 – Machine Design — All Sheets</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Machine Design — ME307</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:       #0b1829;
+    --navy-mid:   #0e2038;
+    --navy-card:  #112040;
+    --gold:       #e8a020;
+    --gold-light: #f5b835;
+    --gold-dim:   #c48818;
+    --orange:     #d44f18;
+    --blue-badge: #2563eb;
+    --blue-badge-bg: #1e3a8a;
+    --bg-page:    #eceef2;
+    --white:      #ffffff;
+    --text-body:  #2c3e50;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --card-shadow: 0 2px 16px rgba(0,0,0,.09);
+    --card-border: 4px solid var(--gold);
+    --radius:     6px;
+    --transition: .22s ease;
+  }
 
-    body {
-      font-family: 'Cairo', 'Segoe UI', sans-serif;
-      background: #eef1f7;
-      color: #1c1917;
-      line-height: 1.7;
-      min-height: 100vh;
-    }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── HERO HEADER ── */
-    .hero {
-      background: #1a2744;
-      position: relative;
-      overflow: hidden;
-      padding: 60px 40px 50px;
-      text-align: center;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        -45deg,
-        transparent, transparent 20px,
-        rgba(192,68,10,.04) 20px, rgba(192,68,10,.04) 21px
-      );
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #c0440a 0%, #f5a623 50%, #c0440a 100%);
-    }
-    .hero-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #f5a623;
-      display: inline-block;
-      margin-bottom: 16px;
-      border: 1px solid rgba(245,166,35,0.3);
-      padding: 4px 16px;
-    }
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 800;
-      color: #fefcf9;
-      line-height: 1.2;
-      margin-bottom: 12px;
-      position: relative;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: #f5a623;
-    }
-    .hero-sub {
-      font-size: 1.05rem;
-      color: rgba(254,252,249,0.55);
-      font-weight: 400;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .hero-pills {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-    .hero-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      padding: 4px 14px;
-      border: 1px solid rgba(245,166,35,0.3);
-      color: rgba(245,166,35,0.75);
-    }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg-page);
+    color: var(--text-body);
+    min-height: 100vh;
+  }
 
-    /* ── CONTAINER ── */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 24px 60px;
-    }
+  /* ─── HEADER ─── */
+  header {
+    background: var(--navy);
+    padding: 0 0 28px;
+    position: relative;
+  }
 
-    /* ── SECTION TITLE ── */
-    .section-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #92600a;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #ddd8d0;
-    }
+  .header-tag {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 3px;
+    margin: 28px auto 0;
+    display: block;
+    width: fit-content;
+  }
 
-    /* ── CARDS GRID ── */
-    .sheets-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
+  .header-title-wrap {
+    text-align: center;
+    margin-top: 12px;
+  }
 
-    .sheet-card {
-      background: #fefcf9;
-      border: 1px solid #ddd8d0;
-      border-top: 5px solid #1a2744;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .sheet-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(26,39,68,0.15);
-      border-top-color: #e06428;
-    }
-    .sheet-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(245,166,35,0.03) 0%, transparent 50%);
-      pointer-events: none;
-    }
+  .header-title-en {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(38px, 5vw, 62px);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 2px;
+    line-height: 1;
+    display: block;
+  }
 
-    .card-header {
-      padding: 24px 24px 0;
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-    }
-    .card-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #f5a623;
-      line-height: 1;
-      min-width: 48px;
-    }
-    .card-info {
-      flex: 1;
-    }
-    .card-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      background: #e8ecf4;
-      color: #1a2744;
-      padding: 2px 10px;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #1a2744;
-      line-height: 1.4;
-    }
+  .header-subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(22px, 3vw, 36px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 2px;
+  }
 
-    .card-body {
-      padding: 16px 24px 20px;
-    }
-    .card-desc {
-      font-size: 0.88rem;
-      color: #44403c;
-      line-height: 1.7;
-    }
+  .header-desc {
+    color: var(--text-light);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 300;
+  }
 
-    .card-footer {
-      padding: 0 24px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .card-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border: 1px solid rgba(192,68,10,0.2);
-      color: #c0440a;
-    }
-    .card-arrow {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #ddd8d0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #44403c;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-    .sheet-card:hover .card-arrow {
-      background: #1a2744;
-      border-color: #1a2744;
-      color: #f5a623;
-    }
+  /* NAV PILLS */
+  .header-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 0 20px;
+  }
 
-    /* ── FOOTER ── */
-    .page-footer {
-      background: #1a2744;
-      color: rgba(254,252,249,0.35);
-      text-align: center;
-      padding: 20px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
+  .nav-pill {
+    border: 1px solid rgba(255,255,255,.25);
+    color: rgba(255,255,255,.7);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    background: transparent;
+    transition: var(--transition);
+  }
 
-    /* ── SIDEBAR NAV ── */
-    .side-nav {
-      position: fixed;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 99999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .side-nav a {
-      width: 42px;
-      height: 42px;
-      background: #fefcf9;
-      border: 1px solid #ddd8d0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      color: #1a2744;
-      font-size: 16px;
-      transition: all 0.25s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .side-nav a:hover {
-      background: #1a2744;
-      color: #f5a623;
-      border-color: #1a2744;
-      transform: scale(1.1);
-      box-shadow: 0 4px 16px rgba(26,39,68,0.25);
-    }
-    .side-nav a .tooltip {
-      position: absolute;
-      right: calc(100% + 10px);
-      background: #1a2744;
-      color: #fefcf9;
-      padding: 4px 12px;
-      font-size: 0.72rem;
-      font-family: 'Cairo', sans-serif;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-    .side-nav a:hover .tooltip {
-      opacity: 1;
-    }
+  .nav-pill:hover,
+  .nav-pill.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(232,160,32,.08);
+  }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      .hero { padding: 40px 20px 35px; }
-      .hero h1 { font-size: 1.8rem; }
-      .sheets-grid { grid-template-columns: 1fr; }
-      .container { padding: 24px 16px 40px; }
-      .side-nav {
-        left: 8px;
-      }
-      .side-nav a {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
-      }
-    }
-  </style>
+  /* orange accent line */
+  .header-line {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--orange) 30%, var(--gold) 60%, transparent);
+    margin-top: 0;
+  }
+
+  /* ─── PAGE WRAPPER ─── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ─── SECTION BAR ─── */
+  .section-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-bar-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-bar-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .section-bar-right {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* separator */
+  .sep-line {
+    width: calc(100% - 96px);
+    max-width: 1104px;
+    margin: 0 auto 24px;
+    height: 1px;
+    background: rgba(0,0,0,.1);
+  }
+
+  /* ─── CARD GRID ─── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 48px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2,1fr); padding: 0 24px 40px; } }
+  @media (max-width: 580px) { .card-grid { grid-template-columns: 1fr; padding: 0 16px 32px; } }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--white);
+    border-left: var(--card-border);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    padding: 22px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: linear-gradient(225deg, rgba(232,160,32,.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,.13);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    background: var(--blue-badge-bg);
+    color: #93c5fd;
+    padding: 3px 9px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .card-number {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: .3px;
+    line-height: 1.2;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0,0,0,.06);
+  }
+
+  .btn-arrow {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--text-light);
+    border-radius: 3px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: var(--transition);
+  }
+
+  .btn-arrow:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .btn-main {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1.5px solid var(--gold);
+    background: transparent;
+    padding: 6px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-main:hover {
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  /* ─── HOME PAGE ─── */
+  .home-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 40px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-intro {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .home-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    width: 100%;
+    max-width: 680px;
+  }
+
+  @media (max-width: 520px) { .home-options { grid-template-columns: 1fr; } }
+
+  .home-card {
+    background: var(--white);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    padding: 36px 28px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,160,32,.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .home-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,.13);
+  }
+
+  .home-card-icon {
+    width: 52px; height: 52px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-card) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    border: 1.5px solid rgba(232,160,32,.3);
+    position: relative;
+  }
+
+  .home-card-number {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    position: absolute;
+    top: -8px; right: -6px;
+    font-size: 14px;
+    background: var(--gold);
+    color: var(--navy);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .home-card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: .5px;
+    line-height: 1;
+  }
+
+  .home-card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .home-card-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .home-card-cta svg { transition: transform var(--transition); }
+  .home-card:hover .home-card-cta svg { transform: translateX(4px); }
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 48px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .breadcrumb span { cursor: pointer; transition: var(--transition); }
+  .breadcrumb span:hover { color: var(--gold); }
+  .breadcrumb-sep { color: var(--text-light); }
+  .breadcrumb-current { color: var(--navy); font-weight: 600; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy);
+    text-align: center;
+    padding: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,.25);
+    text-transform: uppercase;
+    margin-top: 40px;
+  }
+
+  /* ─── SIDE DOTS ─── */
+  .side-dots {
+    position: fixed;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .side-dot {
+    width: 28px;
+    height: 28px;
+    background: var(--white);
+    border: 1.5px solid rgba(0,0,0,.12);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    transition: var(--transition);
+  }
+
+  .side-dot:hover, .side-dot.active {
+    background: var(--gold);
+    color: var(--navy);
+    border-color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card, .home-card {
+    animation: fadeUp .4s ease both;
+  }
+
+  .card:nth-child(1), .home-card:nth-child(1) { animation-delay: .05s; }
+  .card:nth-child(2), .home-card:nth-child(2) { animation-delay: .10s; }
+  .card:nth-child(3) { animation-delay: .15s; }
+  .card:nth-child(4) { animation-delay: .20s; }
+  .card:nth-child(5) { animation-delay: .25s; }
+  .card:nth-child(6) { animation-delay: .30s; }
+  .card:nth-child(7) { animation-delay: .35s; }
+</style>
 </head>
 <body>
 
-  <!-- ── SIDEBAR NAVIGATION ── -->
-  <nav class="side-nav" id="sideNav">
-    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" title="Scroll to Top">
-      <span>⬆</span>
-      <span class="tooltip">أعلى الصفحة</span>
-    </a>
-    <a href="#" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return false;" title="Scroll to Bottom">
-      <span>⬇</span>
-      <span class="tooltip">أسفل الصفحة</span>
-    </a>
-    <a href="index.html" title="Home" style="background:#1a2744;color:#f5a623;border-color:#1a2744;">
-      <span>🏠</span>
-      <span class="tooltip">الصفحة الرئيسية</span>
-    </a>
+<!-- SIDE DOTS -->
+<div class="side-dots" id="sideDots"></div>
+
+<!-- ════════════════════════════════
+     HEADER (shared)
+════════════════════════════════ -->
+<header>
+  <div class="header-tag">ME307 · Machine Design</div>
+  <div class="header-title-wrap">
+    <span class="header-title-en" id="headerTitle">Machine Design</span>
+    <span class="header-subtitle" id="headerSubtitle">Study Resources</span>
+  </div>
+  <p class="header-desc" id="headerDesc">All lectures & sheets — full solutions &amp; model answers</p>
+
+  <nav class="header-nav" id="headerNav">
+    <button class="nav-pill active" onclick="showPage('home')">Home</button>
+    <button class="nav-pill" onclick="showPage('lectures')">Lectures</button>
+    <button class="nav-pill" onclick="showPage('sheets')">Sheets</button>
   </nav>
+</header>
+<div class="header-line"></div>
 
-  <!-- ── HERO SECTION ── -->
-  <header class="hero">
-    <div class="hero-badge">ME307 · Machine Design</div>
-    <h1>تصميم الآلات<br><em>Model Answers</em></h1>
-    <p class="hero-sub">جميع الشيتات (Sheet 1 – Sheet 6) — حلول نموذجية كاملة</p>
-    <div class="hero-pills">
-      <span class="hero-pill">MATERIALS</span>
-      <span class="hero-pill">TOLERANCES</span>
-      <span class="hero-pill">STRESSES</span>
-      <span class="hero-pill">TORSION</span>
-      <span class="hero-pill">BENDING</span>
-      <span class="hero-pill">RIVETED JOINTS</span>
+
+<!-- ════════════════════════════════
+     PAGE: HOME
+════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="home-wrap">
+    <p class="home-intro">Select a section to begin</p>
+
+    <div class="home-options">
+      <!-- Lectures -->
+      <div class="home-card" onclick="showPage('lectures')">
+        <div class="home-card-icon">
+          <!-- Open Book SVG -->
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e8a020" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <span class="home-card-number">7</span>
+        </div>
+        <div class="home-card-title">Lectures</div>
+        <div class="home-card-desc">Course lecture notes covering all topics — theory, derivations, and key concepts.</div>
+        <div class="home-card-cta">
+          View Lectures
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Sheets -->
+      <div class="home-card" onclick="showPage('sheets')">
+        <div class="home-card-icon">
+          <!-- Document / Worksheet SVG -->
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e8a020" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span class="home-card-number">6</span>
+        </div>
+        <div class="home-card-title">Sheets</div>
+        <div class="home-card-desc">Problem sheets with full model answers and complete worked solutions.</div>
+        <div class="home-card-cta">
+          View Sheets
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </div>
+      </div>
     </div>
-  </header>
+  </div>
+</div>
 
-  <!-- ── CONTENT ── -->
-  <main class="container">
-    <div class="section-label">📂 ALL SHEETS — جميع الشيتات</div>
 
-    <div class="sheets-grid">
+<!-- ════════════════════════════════
+     PAGE: LECTURES
+════════════════════════════════ -->
+<div class="page" id="page-lectures">
 
-      <!-- SHEET 1 -->
-      <a class="sheet-card" href="sheet1.html" id="link-sheet1">
-        <div class="card-header">
-          <div class="card-num">01</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 1</div>
-            <div class="card-title">Engineering Materials</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">خواص المواد الهندسية — التصنيف، الخصائص الميكانيكية، اختيار المواد المناسبة للتصميم.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">MODEL ANSWER</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
+  <div class="breadcrumb">
+    <span onclick="showPage('home')">Home</span>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">Lectures</span>
+  </div>
 
-      <!-- SHEET 2 -->
-      <a class="sheet-card" href="sheet2.html" id="link-sheet2">
-        <div class="card-header">
-          <div class="card-num">02</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 2</div>
-            <div class="card-title">Limits, Fits & Tolerances</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">حدود التفاوتات والتوافقات — أنظمة ISO، حسابات Clearance و Interference fits.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
+  <div class="section-bar">
+    <span class="section-bar-label">All Lectures</span>
+    <span class="section-bar-right">7 Items</span>
+  </div>
+  <div class="sep-line"></div>
 
-      <!-- SHEET 3 -->
-      <a class="sheet-card" href="sheet3.html" id="link-sheet3">
-        <div class="card-header">
-          <div class="card-num">03</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 3</div>
-            <div class="card-title">Stresses in Machine Members</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">الإجهادات في أجزاء الماكينات — إجهادات الشد، الضغط، القص والإجهادات المركبة.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
+  <div class="card-grid" id="lecturesGrid">
+    <!-- JS fills this -->
+  </div>
 
-      <!-- SHEET 4 -->
-      <a class="sheet-card" href="sheet4.html" id="link-sheet4">
-        <div class="card-header">
-          <div class="card-num">04</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 4</div>
-            <div class="card-title">Torsional & Bending Stresses</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">إجهادات اللي والانحناء — حسابات العزم، الإجهادات في الأعمدة والكمرات.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
+</div>
 
-      <!-- SHEET 5 -->
-      <a class="sheet-card" href="sheet5.html" id="link-sheet5">
-        <div class="card-header">
-          <div class="card-num">05</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 5</div>
-            <div class="card-title">Bending & Torsional Stresses</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">إجهادات الانحناء واللي المتقدمة — تطبيقات Mohr's Circle والتصميم الآمن.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
 
-      <!-- SHEET 6 -->
-      <a class="sheet-card" href="sheet6.html" id="link-sheet6">
-        <div class="card-header">
-          <div class="card-num">06</div>
-          <div class="card-info">
-            <div class="card-badge">SHEET 6</div>
-            <div class="card-title">Riveted Joints</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">وصلات المسامير البرشام — تصميم الوصلات، حسابات القوة والكفاءة.</p>
-        </div>
-        <div class="card-footer">
-          <span class="card-tag">FULL SOLUTIONS</span>
-          <span class="card-arrow">←</span>
-        </div>
-      </a>
+<!-- ════════════════════════════════
+     PAGE: SHEETS
+════════════════════════════════ -->
+<div class="page" id="page-sheets">
 
-    </div>
-  </main>
+  <div class="breadcrumb">
+    <span onclick="showPage('home')">Home</span>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">Sheets</span>
+  </div>
 
-  <!-- ── FOOTER ── -->
-  <footer class="page-footer">
-    ME307 Machine Design — All Sheets Combined — Model Answers & Full Solutions
-  </footer>
+  <div class="section-bar">
+    <span class="section-bar-label">All Sheets</span>
+    <span class="section-bar-right">6 Sheets</span>
+  </div>
+  <div class="sep-line"></div>
 
+  <div class="card-grid" id="sheetsGrid">
+    <!-- JS fills this -->
+  </div>
+
+</div>
+
+
+<!-- ─── FOOTER ─── -->
+<footer>ME307 Machine Design — All Sheets Combined — Model Answers &amp; Full Solutions</footer>
+
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
+const LECTURES = [
+  {
+    num: "01",
+    badge: "LEC 1",
+    title: "Engineering Materials",
+    desc:  "Properties of engineering materials — classification, mechanical characteristics, and material selection for design applications.",
+    btn:   "View Notes",
+    link:  "lecture1.html",
+  },
+  {
+    num: "02",
+    badge: "LEC 2",
+    title: "Fits & Tolerances",
+    desc:  "Limits, fits, and tolerances — ISO systems, clearance & interference fits, geometric dimensioning and tolerance analysis.",
+    btn:   "View Notes",
+    link:  "lecture2.html",
+  },
+  {
+    num: "03",
+    badge: "LEC 3",
+    title: "Stresses in Machine Members",
+    desc:  "Stress analysis in machine elements — tensile, compressive, shear stresses and combined loading conditions.",
+    btn:   "View Notes",
+    link:  "lecture3.html",
+  },
+  {
+    num: "04",
+    badge: "LEC 4",
+    title: "Simple Stress in Machine Design",
+    desc:  "Fundamental stress calculations — direct stress, bearing stress, and factor of safety in practical design scenarios.",
+    btn:   "View Notes",
+    link:  "lecture4.html",
+  },
+  {
+    num: "05",
+    badge: "LEC 5",
+    title: "Stresses in Machine Members — Part II",
+    desc:  "Advanced stress analysis — Mohr's circle, principal stresses, combined bending and torsion in machine components.",
+    btn:   "View Notes",
+    link:  "lecture5.html",
+  },
+  {
+    num: "06",
+    badge: "LEC 6",
+    title: "Riveted Joints",
+    desc:  "Design of riveted connections — joint types, strength calculations, efficiency analysis, and failure modes.",
+    btn:   "View Notes",
+    link:  "lecture6.html",
+  },
+  {
+    num: "07",
+    badge: "LEC 7",
+    title: "Design of Shafts & Keys",
+    desc:  "Shaft and key design — torque transmission, keyway stresses, shaft sizing under combined loads and fatigue considerations.",
+    btn:   "View Notes",
+    link:  "lecture7.html",
+  },
+];
+
+const SHEETS = [
+  {
+    num: "01",
+    badge: "SHEET 1",
+    title: "Engineering Materials",
+    desc:  "Problems on material properties — classification, mechanical testing, hardness, and material selection criteria.",
+    btn:   "Model Answer",
+    link:  "sheet1.html",
+  },
+  {
+    num: "02",
+    badge: "SHEET 2",
+    title: "Limits, Fits & Tolerances",
+    desc:  "Practice problems on ISO tolerance systems — calculating clearance fits, interference fits, and tolerance stack-up.",
+    btn:   "Full Solutions",
+    link:  "sheet2.html",
+  },
+  {
+    num: "03",
+    badge: "SHEET 3",
+    title: "Stresses in Machine Members",
+    desc:  "Stress analysis problems — tensile, compressive, shear stresses and combined stress calculations in machine parts.",
+    btn:   "Full Solutions",
+    link:  "sheet3.html",
+  },
+  {
+    num: "04",
+    badge: "SHEET 4",
+    title: "Torsional & Bending Stresses",
+    desc:  "Problems on torsion and bending — shaft moment calculations, beam stresses, and column design problems.",
+    btn:   "Full Solutions",
+    link:  "sheet4.html",
+  },
+  {
+    num: "05",
+    badge: "SHEET 5",
+    title: "Bending & Torsional Stresses",
+    desc:  "Advanced bending and torsion problems — Mohr's circle applications, principal stresses, and safe design criteria.",
+    btn:   "Full Solutions",
+    link:  "sheet5.html",
+  },
+  {
+    num: "06",
+    badge: "SHEET 6",
+    title: "Riveted Joints",
+    desc:  "Riveted joint design problems — joint strength, efficiency calculations, and failure mode analysis.",
+    btn:   "Full Solutions",
+    link:  "sheet6.html",
+  },
+];
+
+/* ═══════════════════════════════════════════
+   RENDER CARDS
+═══════════════════════════════════════════ */
+function makeCard(item) {
+  return `
+    <div class="card" onclick="window.location.href='${item.link}'" role="link" tabindex="0">
+      <div class="card-top">
+        <span class="card-badge">${item.badge}</span>
+        <span class="card-number">${item.num}</span>
+      </div>
+      <div class="card-title">${item.title}</div>
+      <div class="card-desc">${item.desc}</div>
+      <div class="card-actions">
+        <button class="btn-arrow" title="Open" onclick="event.stopPropagation();window.location.href='${item.link}'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+        <button class="btn-main" onclick="event.stopPropagation();window.location.href='${item.link}'">${item.btn}</button>
+      </div>
+    </div>`;
+}
+
+document.getElementById('lecturesGrid').innerHTML = LECTURES.map(makeCard).join('');
+document.getElementById('sheetsGrid').innerHTML   = SHEETS.map(makeCard).join('');
+
+/* ═══════════════════════════════════════════
+   SIDE DOTS
+═══════════════════════════════════════════ */
+const pages = ['home','lectures','sheets'];
+const dotLabels = {home:'⌂', lectures:'L', sheets:'S'};
+const sideDots = document.getElementById('sideDots');
+
+pages.forEach(p => {
+  const d = document.createElement('div');
+  d.className = 'side-dot';
+  d.id = `dot-${p}`;
+  d.title = p.charAt(0).toUpperCase() + p.slice(1);
+  d.textContent = dotLabels[p];
+  d.onclick = () => showPage(p);
+  sideDots.appendChild(d);
+});
+
+/* ═══════════════════════════════════════════
+   NAV / PAGE SWITCHING
+═══════════════════════════════════════════ */
+const headerMeta = {
+  home:     { sub: 'Study Resources',   desc: 'All lectures & sheets — full solutions & model answers' },
+  lectures: { sub: 'Lecture Notes',     desc: 'Lecture 1 – 7 — course content & theory' },
+  sheets:   { sub: 'Machine Design Sheets', desc: 'Sheet 1 – Sheet 6 — full solutions & model answers' },
+};
+
+function showPage(id) {
+  pages.forEach(p => {
+    document.getElementById(`page-${p}`).classList.toggle('active', p === id);
+    document.getElementById(`dot-${p}`).classList.toggle('active', p === id);
+  });
+
+  document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
+  const pills = document.querySelectorAll('.nav-pill');
+  const idx = pages.indexOf(id);
+  if (pills[idx]) pills[idx].classList.add('active');
+
+  // Update header subtitle/desc
+  const meta = headerMeta[id];
+  document.getElementById('headerSubtitle').textContent = meta.sub;
+  document.getElementById('headerDesc').textContent = meta.desc;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Re-trigger card animations by cloning grid
+  const grids = document.querySelectorAll(`#page-${id} .card, #page-${id} .home-card`);
+  grids.forEach((c,i) => {
+    c.style.animation = 'none';
+    void c.offsetWidth; // reflow
+    c.style.animation = '';
+    c.style.animationDelay = `${0.05 + i * 0.06}s`;
+  });
+}
+</script>
 </body>
 </html>
+

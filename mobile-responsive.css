@@ -1543,4 +1543,324 @@
     padding: 18px 14px !important;
     margin: 20px 0 !important;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     46. LECTURE 4 — DEFINITIVE NOTES FIX (OVERRIDES SECTIONS 2 & 44)
+     ═══════════════════════════════════════════════════════════════════
+     The global `div { word-break: break-word !important }` rule (sec 2)
+     breaks English .term elements letter-by-letter in RTL context.
+     These rules use higher-specificity selectors to permanently override
+     that global rule for Lec4 content.
+  ═══════════════════════════════════════════════════════════════════ */
+
+  /* 46a. Override global break-word for ALL of lec4 */
+  #lec4 div,
+  #lec4 p,
+  #lec4 li,
+  #lec4 span,
+  #lec4 strong {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+  }
+
+  /* 46b. Section containers */
+  #lec4 .section {
+    padding: 20px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 46c. Notes: block layout, never flex-squeezes, scrollable */
+  #lec4 .note {
+    display: block !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    padding: 14px 14px !important;
+    line-height: 2.1 !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  #lec4 .note p,
+  #lec4 .note li,
+  #lec4 .note strong {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    display: block !important;
+    max-width: 100% !important;
+    line-height: 2.1 !important;
+  }
+
+  /* 46d. .term: never split, scroll parent if too wide */
+  #lec4 .term {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    vertical-align: baseline !important;
+    font-size: 13px !important;
+    padding: 2px 8px !important;
+    line-height: 1.6 !important;
+    max-width: none !important;
+  }
+
+  /* 46e. LTR equation wrappers inside notes */
+  #lec4 .note div[style*="direction:ltr"],
+  #lec4 .note div[style*="direction: ltr"] {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    text-align: center !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    max-width: 100% !important;
+    padding: 8px 0 !important;
+  }
+
+  /* 46f. eq-box inside lec4 sections */
+  #lec4 .eq-box {
+    display: block !important;
+    text-align: center !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    padding: 10px 8px !important;
+  }
+
+  /* 46g. Section text and lists */
+  #lec4 .section p,
+  #lec4 .section li {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    line-height: 2.1 !important;
+    max-width: 100% !important;
+  }
+
+  /* 46h. Figure description */
+  #lec4 .figure-desc,
+  #lec4 .figure-desc .term {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    line-height: 2 !important;
+  }
+
+  #lec4 .figure-box {
+    overflow: visible !important;
+    max-width: 100% !important;
+    padding: 16px 12px !important;
+  }
+
+  /* 46i. MathJax direction fix in RTL context */
+  #lec4 mjx-container,
+  #lec4 mjx-container[jax="CHTML"] {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #lec4 mjx-container * {
+    max-width: none !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     47. LECTURE 5 — DEFINITIVE EQUATIONS & SOLUTION BOX FIX
+         (OVERRIDES SECTION 45)
+     ═══════════════════════════════════════════════════════════════════
+     .sec and .ex have overflow:hidden in their inline <style> in the
+     HTML. External stylesheets cannot beat inline styles without
+     !important. These rules use !important with high-specificity
+     selectors to guarantee the fix applies.
+  ═══════════════════════════════════════════════════════════════════ */
+
+  /* 47a. Section wrapper: remove overflow clip */
+  #lec5 .sec {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 47b. Section body */
+  #lec5 .sec-bd {
+    padding: 16px 10px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 47c. Example block: remove overflow clip, center it */
+  #lec5 .ex {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 47d. Example body */
+  #lec5 .ex-bd {
+    padding: 14px 10px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 47e. FBOX: the scroll container — the ONLY element that clips */
+  #lec5 .fbox {
+    display: block !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 14px 10px !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(11, 61, 110, 0.3) transparent;
+  }
+
+  /* 47f. MathJax inside fbox: natural width, no clip */
+  #lec5 .fbox mjx-container,
+  #lec5 .fbox mjx-container[jax="CHTML"],
+  #lec5 .fbox mjx-container[jax="CHTML"][display="true"] {
+    max-width: none !important;
+    width: auto !important;
+    overflow: visible !important;
+    display: inline-block !important;
+  }
+
+  #lec5 .fbox mjx-math,
+  #lec5 .fbox mjx-container *,
+  #lec5 .fbox mjx-container *::before,
+  #lec5 .fbox mjx-container *::after {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  /* 47g. Answer box: centered + scrollable */
+  #lec5 .ans-box {
+    display: block !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 14px 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  #lec5 .ans-box mjx-container,
+  #lec5 .ans-box mjx-container[jax="CHTML"][display="true"] {
+    max-width: none !important;
+    overflow: visible !important;
+    display: inline-block !important;
+  }
+
+  #lec5 .ans-box mjx-container * {
+    max-width: none !important;
+  }
+
+  /* 47h. Step layout: keep step number beside content */
+  #lec5 .step {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  #lec5 .sn {
+    flex-shrink: 0 !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
+  }
+
+  #lec5 .step > div:last-child {
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 47i. Inline ltr equation wrappers in step/ex-bd */
+  #lec5 .step div[style*="direction:ltr"],
+  #lec5 .step div[style*="direction: ltr"],
+  #lec5 .ex-bd div[style*="direction:ltr"],
+  #lec5 .ex-bd div[style*="direction: ltr"] {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  /* 47j. Given / Required boxes */
+  #lec5 .given,
+  #lec5 .req {
+    padding: 10px 12px !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 13px !important;
+  }
+
+  #lec5 .given mjx-container,
+  #lec5 .req mjx-container {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  /* 47k. Global MathJax in lec5 (outside .fbox) */
+  #lec5 mjx-container,
+  #lec5 mjx-container[jax="CHTML"] {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #lec5 mjx-frac, #lec5 mjx-msqrt, #lec5 mjx-sqrt,
+  #lec5 mjx-mfrac, #lec5 mjx-msub, #lec5 mjx-msup,
+  #lec5 mjx-msubsup, #lec5 mjx-mrow, #lec5 mjx-mo,
+  #lec5 mjx-mi, #lec5 mjx-mn, #lec5 mjx-mtext,
+  #lec5 mjx-box, #lec5 mjx-num, #lec5 mjx-den,
+  #lec5 mjx-texatom, #lec5 mjx-dtable, #lec5 mjx-dbox {
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
+  /* 47l. Wrap container */
+  #lec5 .wrap {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
 }

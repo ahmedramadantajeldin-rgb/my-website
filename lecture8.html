@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lecture 8 — Shaft Design</title>
+
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg: #f3f8fd;
+  --bg-2: #eaf3fb;
+  --surface: #ffffff;
+  --surface-soft: #f7fbff;
+  --border: #d6e5f2;
+  --border-soft: #e5eef7;
+  --primary: #2d6cb0;
+  --primary-dark: #1e4f87;
+  --primary-soft: #e3eef9;
+  --accent: #4a90c7;
+  --accent-soft: #dbeaf6;
+  --text: #1b2a3a;
+  --text-soft: #46617b;
+  --text-muted: #7389a1;
+  --success: #2f855a;
+  --success-soft: #e1f0e7;
+  --warn: #b77b28;
+  --warn-soft: #fbf0dc;
+  --code-bg: #eef5fb;
+  --shadow-sm: 0 1px 2px rgba(30,79,135,.05), 0 1px 3px rgba(30,79,135,.06);
+  --shadow-md: 0 4px 10px rgba(30,79,135,.06), 0 2px 4px rgba(30,79,135,.04);
+  --shadow-lg: 0 12px 28px rgba(30,79,135,.08), 0 4px 10px rgba(30,79,135,.05);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+}
+
+/* Arabic text defaults */
+.ar{
+  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.9;
+  color: var(--text);
+  font-size: 1rem;
+}
+.ar strong, .ar b { color: var(--primary-dark); }
+.ar code, .ar .en { direction: ltr; unicode-bidi: isolate; font-family: 'JetBrains Mono', monospace; color: var(--primary-dark); background: var(--code-bg); padding: 1px 6px; border-radius: 4px; font-size: .92em; }
+
+/* Header */
+header{
+  background: linear-gradient(135deg, #2d6cb0 0%, #4a90c7 100%);
+  color: white;
+  padding: 48px 20px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+header::before{
+  content:'';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,.12) 0, transparent 40%),
+                    radial-gradient(circle at 80% 70%, rgba(255,255,255,.08) 0, transparent 40%);
+  pointer-events:none;
+}
+header .tag{
+  display:inline-block;
+  background: rgba(255,255,255,.18);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  backdrop-filter: blur(6px);
+}
+header h1{
+  margin: 0;
+  font-size: clamp(1.8rem, 5vw, 2.9rem);
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+header .sub{
+  margin-top: 10px;
+  font-weight: 400;
+  opacity: .92;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-family: 'Cairo', sans-serif;
+}
+
+/* Nav */
+nav.toc{
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 10px 0;
+}
+nav.toc .inner{
+  max-width: 1100px; margin: 0 auto;
+  display: flex; gap: 6px; overflow-x: auto;
+  padding: 0 16px;
+  scrollbar-width: thin;
+}
+nav.toc a{
+  white-space: nowrap;
+  color: var(--text-soft);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 100px;
+  font-size: .88rem;
+  font-weight: 500;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+nav.toc a:hover{ background: var(--primary-soft); color: var(--primary-dark); }
+
+/* Container */
+main{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px 20px 60px;
+}
+
+section{ margin-bottom: 48px; scroll-margin-top: 72px; }
+
+h2{
+  font-size: clamp(1.4rem, 3.6vw, 1.9rem);
+  color: var(--primary-dark);
+  margin: 0 0 6px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+h2 .num{
+  display:inline-flex;
+  align-items:center; justify-content: center;
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+h3{
+  font-size: clamp(1.1rem, 2.6vw, 1.3rem);
+  color: var(--primary-dark);
+  margin: 28px 0 12px;
+  font-weight: 600;
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+}
+h4{
+  font-size: 1.05rem;
+  color: var(--primary-dark);
+  margin: 18px 0 10px;
+  font-weight: 600;
+}
+
+.intro{
+  color: var(--text-soft);
+  font-size: 1rem;
+  margin-bottom: 20px;
+  padding-left: 54px;
+}
+
+/* Card */
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .25s;
+}
+.card:hover{ box-shadow: var(--shadow-md); }
+
+.card.highlight{
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  border-left: 4px solid var(--primary);
+}
+
+/* Theory block */
+.theory{
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+.theory .lbl{
+  font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--primary); font-weight: 700; margin-bottom: 10px;
+}
+
+/* Example card */
+.example{
+  background: linear-gradient(180deg, #fff 0%, #fafdff 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 22px 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.example .ex-head{
+  background: linear-gradient(90deg, var(--primary-soft) 0%, var(--accent-soft) 100%);
+  padding: 12px 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.example .ex-head .ex-num{
+  background: var(--primary);
+  color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: .85rem;
+  flex-shrink: 0;
+}
+.example .ex-head h4{
+  margin: 0;
+  color: var(--primary-dark);
+  font-size: 1.05rem;
+}
+.example .ex-body{ padding: 20px 22px; }
+.example .q{
+  background: var(--surface-soft);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+  color: var(--text);
+  font-size: .97rem;
+}
+.example .q .qlbl{
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--primary); display: block; margin-bottom: 4px;
+}
+.example .solution{
+  background: #fdfefe;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin-top: 6px;
+}
+.example .solution .slbl{
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--success); display: block; margin-bottom: 6px;
+}
+.ans{
+  display: inline-block;
+  background: var(--success-soft);
+  color: var(--success);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .95em;
+}
+
+/* Equations */
+.eq{
+  background: var(--code-bg);
+  border-left: 3px solid var(--primary);
+  padding: 12px 18px;
+  margin: 12px 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  overflow-x: auto;
+  font-size: 1.02rem;
+}
+.eq.centered{ text-align: center; }
+.eqrow{
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+  margin: 6px 0;
+}
+
+/* Definition list */
+.deflist{
+  margin: 10px 0;
+  padding: 12px 16px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+}
+.deflist dt{
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .95em;
+  margin-top: 6px;
+}
+.deflist dt:first-child{ margin-top: 0; }
+.deflist dd{
+  margin: 2px 0 0 0;
+  color: var(--text-soft);
+  font-size: .95rem;
+}
+
+/* Tables */
+.tbl-wrap{ overflow-x: auto; margin: 14px 0; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
+table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+  font-size: .95rem;
+  min-width: 480px;
+}
+table caption{
+  caption-side: top;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, var(--primary-soft), var(--accent-soft));
+  color: var(--primary-dark);
+  font-weight: 700;
+  text-align: left;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border: 1px solid var(--border-soft);
+  border-bottom: none;
+}
+thead th{
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+tbody td{
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-soft);
+}
+tbody tr:last-child td{ border-bottom: none; }
+tbody tr:nth-child(even){ background: var(--surface-soft); }
+tbody tr:hover{ background: var(--primary-soft); }
+
+/* Figures */
+figure{
+  margin: 18px 0;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+figure img{
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+figcaption{
+  margin-top: 10px;
+  font-size: .88rem;
+  color: var(--text-soft);
+  font-style: italic;
+}
+
+/* Lists */
+ol.numbered{
+  counter-reset: item;
+  list-style: none;
+  padding-left: 0;
+}
+ol.numbered > li{
+  counter-increment: item;
+  position: relative;
+  padding: 10px 10px 10px 46px;
+  margin-bottom: 8px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary);
+}
+ol.numbered > li::before{
+  content: counter(item);
+  position: absolute;
+  left: 10px; top: 10px;
+  width: 26px; height: 26px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: .82rem;
+}
+
+ul.clean{ padding-left: 22px; }
+ul.clean li{ margin-bottom: 6px; }
+
+.note{
+  background: var(--warn-soft);
+  border-left: 4px solid var(--warn);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 14px 0;
+  font-size: .95rem;
+  color: var(--text);
+}
+.note .nlbl{
+  font-weight: 700;
+  color: var(--warn);
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.callout{
+  background: linear-gradient(135deg, var(--primary-soft) 0%, var(--accent-soft) 100%);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  margin: 14px 0;
+}
+.callout .clbl{
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: .82rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Two-column for cases */
+.cases{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 14px 0;
+}
+.case{
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-left: 4px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  font-size: .96rem;
+}
+.case .tag{
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--primary-dark);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+/* footer */
+footer{
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--text-muted);
+  font-size: .88rem;
+  border-top: 1px solid var(--border-soft);
+  margin-top: 40px;
+}
+
+@media (max-width: 720px){
+  main{ padding: 24px 14px 40px; }
+  .card, .theory{ padding: 16px 18px; }
+  .example .ex-body{ padding: 16px; }
+  .intro{ padding-left: 0; }
+  h2{ flex-direction: column; align-items: flex-start; gap: 10px; }
+  .eq{ font-size: .95rem; padding: 10px 12px; }
+}
+
+/* MathJax sizing on mobile */
+@media (max-width: 480px){
+  mjx-container{ font-size: 92% !important; }
+}
+</style>
+<link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+<nav id="main-nav">
+  <a href="index.html" class="home-link" style="color:#f5c842; border-top-color:transparent; border-bottom-color:transparent;">🏠 Home</a>
+  <a href="lecture1.html" style="border-top-color:#c0440a;border-bottom-color:transparent;">📖 Lec 1<br>Eng</a>
+  <a href="lecture2.html" style="border-top-color:#1e3a5f;border-bottom-color:transparent;">📖 Lec 2<br>Fits & Toleran</a>
+  <a href="lecture3.html" style="border-top-color:#0a3d6b;border-bottom-color:transparent;">📖 Lec 3<br>Stresses</a>
+  <a href="lecture4.html" style="border-top-color:#1a6fd4;border-bottom-color:transparent;">📖 Lec 4<br>Simple Stress</a>
+  <a href="lecture5.html" style="border-top-color:#0b3d6e;border-bottom-color:transparent;">📖 Lec 5<br>Stresses</a>
+  <a href="lecture6.html" style="border-top-color:#8a4e00;border-bottom-color:transparent;">📖 Lec 6<br>Riveted Jo</a>
+  <a href="lecture7.html" style="border-top-color:#1a3a5c; border-bottom-color:transparent;">📖 Lec 7<br>Shafts</a>
+  <a href="lecture8.html" class="active" style="border-top-color:#2c5282; border-bottom-color:#2c5282;">📖 Lec 8<br>Shaft Design</a>
+</nav>
+
+<header>
+  <div class="tag">Machine Design</div>
+  <h1>Lecture 8 — Shaft Design</h1>
+  <div class="sub">تصميم الأعمدة الدوّارة — نظري + أمثلة محلولة</div>
+</header>
+
+<nav class="toc">
+  <div class="inner">
+    <a href="#s1">1. Materials</a>
+    <a href="#s2">2. Design Basis</a>
+    <a href="#s3">3. Twisting Only</a>
+    <a href="#s4">4. Bending Only</a>
+    <a href="#s5">5. Combined M &amp; T</a>
+    <a href="#s6">6. Fluctuating Loads</a>
+    <a href="#s7">7. Axial + Combined</a>
+    <a href="#s8">8. Rigidity</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== SECTION 1 ==================== -->
+<section id="s1">
+  <h2><span class="num">1</span> Material Used for Shafts</h2>
+  <p class="intro ar">اختيار مادة ال <span class="en">shaft</span> من أهم خطوات ال <span class="en">design</span>، لأن المادة هي المسؤولة عن تحمّل ال <span class="en">twisting</span> و ال <span class="en">bending</span> و ال <span class="en">axial loads</span> أثناء التشغيل.</p>
+
+  <div class="card">
+    <h3>Required Properties of Shaft Materials</h3>
+    <p class="ar">لازم مادة ال <span class="en">shaft</span> تتوفّر فيها ال <span class="en">properties</span> التالية حتى تقدر تشتغل بكفاءة تحت ال <span class="en">loads</span> المختلفة:</p>
+    <ol class="numbered">
+      <li><strong>High strength</strong> — <span class="ar"><span class="en">مقاومة عالية</span> حتى يتحمل ال <span class="en">stresses</span> الناتجة من ال <span class="en">torque</span> و ال <span class="en">bending moments</span> بدون <span class="en">failure</span>.</span></li>
+      <li><strong>Good machinability</strong> — <span class="ar">سهولة التشغيل والتصنيع على المخارط وآلات ال <span class="en">CNC</span> لتشكيل ال <span class="en">keyways</span>، ال <span class="en">grooves</span>، وال <span class="en">steps</span>.</span></li>
+      <li><strong>Low notch sensitivity factor</strong> — <span class="ar">عامل <span class="en">sensitivity</span> منخفض عند وجود <span class="en">notches</span> أو <span class="en">keyways</span>، لأن ال <span class="en">stress concentration</span> بيقل تأثيره في المادة ذات ال <span class="en">low notch sensitivity</span>.</span></li>
+      <li><strong>Good heat treatment properties</strong> — <span class="ar">قابلية جيدة للمعالجة الحرارية مثل ال <span class="en">hardening</span>، ال <span class="en">tempering</span>، و ال <span class="en">case hardening</span> لتحسين ال <span class="en">surface hardness</span> و ال <span class="en">wear resistance</span>.</span></li>
+      <li><strong>High wear resistance</strong> — <span class="ar">مقاومة عالية للتآكل خاصة عند أماكن ال <span class="en">bearings</span>، ال <span class="en">seals</span>، و ال <span class="en">gears</span>.</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Common Steel Grades for Ordinary Shafts</h3>
+    <p class="ar">الشائع في ال <span class="en">ordinary shafts</span> استخدام <strong>carbon steel</strong> بدرجات: <span class="en">40 C 8</span>، <span class="en">45 C 8</span>، <span class="en">50 C 4</span>، و <span class="en">50 C 12</span>. أما في حالات ال <span class="en">high strength</span> فنستخدم <strong>alloy steels</strong> مثل <span class="en">nickel</span>، <span class="en">nickel–chromium</span>، أو <span class="en">chrome–vanadium steel</span>.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <caption>Table 14.1 — Mechanical Properties of Steels Used for Shafts</caption>
+        <thead>
+          <tr>
+            <th>Indian Standard Designation</th>
+            <th>Ultimate Tensile Strength (MPa)</th>
+            <th>Yield Strength (MPa)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>40 C 8</td><td>560 – 670</td><td>320</td></tr>
+          <tr><td>45 C 8</td><td>610 – 700</td><td>350</td></tr>
+          <tr><td>50 C 4</td><td>640 – 760</td><td>370</td></tr>
+          <tr><td>50 C 12</td><td>700 Min.</td><td>390</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 2 ==================== -->
+<section id="s2">
+  <h2><span class="num">2</span> Design of Shafts — Basis</h2>
+  <p class="intro ar">ال <span class="en">shafts</span> ممكن تتصمم على أساس <strong>Strength</strong> أو على أساس <strong>Rigidity &amp; Stiffness</strong>. وفي كل حالة عندنا أكثر من <span class="en">loading case</span>.</p>
+
+  <div class="card">
+    <h3>Design Criteria</h3>
+    <ol class="numbered">
+      <li><strong>Strength-based design</strong> — <span class="ar">بنصمم ال <span class="en">shaft</span> بحيث ال <span class="en">stresses</span> الناتجة تكون أقل من ال <span class="en">allowable stress</span> للمادة.</span></li>
+      <li><strong>Rigidity &amp; Stiffness-based design</strong> — <span class="ar">بنصمم ال <span class="en">shaft</span> بحيث ال <span class="en">deflection</span> (سواء <span class="en">torsional</span> أو <span class="en">lateral</span>) أقل من قيمة مسموح بها.</span></li>
+    </ol>
+
+    <h4>Loading Cases Considered in Strength Design</h4>
+    <div class="cases">
+      <div class="case">
+        <span class="tag">Case (a)</span>
+        <strong>Twisting moment (torque) only</strong><br>
+        <span class="ar" style="font-size:.92rem">ال <span class="en">shaft</span> بس بيتعرض ل <span class="en">torque</span> — مثل ال <span class="en">transmission shafts</span> البسيطة.</span>
+      </div>
+      <div class="case">
+        <span class="tag">Case (b)</span>
+        <strong>Bending moment only</strong><br>
+        <span class="ar" style="font-size:.92rem">ال <span class="en">shaft</span> بيتعرض ل <span class="en">bending</span> فقط — مثل <span class="en">axles</span> السيارة غير الدوارة.</span>
+      </div>
+      <div class="case">
+        <span class="tag">Case (c)</span>
+        <strong>Combined twisting &amp; bending</strong><br>
+        <span class="ar" style="font-size:.92rem">ال <span class="en">shaft</span> بيحمل <span class="en">gears</span> أو <span class="en">pulleys</span>، فبيبقى عليه ال <span class="en">torque</span> + <span class="en">bending</span> معاً.</span>
+      </div>
+      <div class="case">
+        <span class="tag">Case (d)</span>
+        <strong>Axial + combined torsion &amp; bending</strong><br>
+        <span class="ar" style="font-size:.92rem">في ال <span class="en">propeller shafts</span> و <span class="en">worm drives</span> نضيف ال <span class="en">axial load</span>.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 3 ==================== -->
+<section id="s3">
+  <h2><span class="num">3</span> Shafts Subjected to Twisting Moment Only</h2>
+  <p class="intro ar">لما ال <span class="en">shaft</span> يكون تحت <span class="en">torque only</span>، بنستخدم ال <span class="en">torsion equation</span> الأساسية لإيجاد ال <span class="en">diameter</span>.</p>
+
+  <div class="theory">
+    <div class="lbl">Torsion Equation</div>
+    <p class="ar">المعادلة الأساسية لل <span class="en">torsion</span>:</p>
+    <div class="eq centered">
+      $$ \frac{T}{J} = \frac{\tau}{r} $$
+    </div>
+
+    <dl class="deflist">
+      <dt>T</dt><dd>Twisting moment (torque) acting on the shaft, in N·mm</dd>
+      <dt>J</dt><dd>Polar moment of inertia about the axis of rotation</dd>
+      <dt>τ</dt><dd>Torsional shear stress, in N/mm²</dd>
+      <dt>r</dt><dd>Distance from neutral axis to outermost fibre = d/2</dd>
+    </dl>
+
+    <h4>For a Round Solid Shaft</h4>
+    <p class="ar">ال <span class="en">polar moment of inertia</span>:</p>
+    <div class="eq centered">$$ J = \frac{\pi}{32}\, d^{4} $$</div>
+
+    <p class="ar">بالتعويض في ال <span class="en">torsion equation</span> نحصل على:</p>
+    <div class="eq centered">$$ \boxed{\; T = \frac{\pi}{16}\,\tau\,d^{3} \;} $$</div>
+    <p class="ar">ومنها يمكن إيجاد قطر ال <span class="en">solid shaft</span>.</p>
+
+    <h4>For a Hollow Shaft</h4>
+    <p class="ar">ال <span class="en">polar moment</span> لل <span class="en">hollow shaft</span>:</p>
+    <div class="eq centered">$$ J = \frac{\pi}{32}\left[(d_o)^{4} - (d_i)^{4}\right] $$</div>
+
+    <p class="ar">حيث <span class="en">d<sub>o</sub></span> و <span class="en">d<sub>i</sub></span> هما ال <span class="en">outside</span> و ال <span class="en">inside diameters</span>، و <span class="en">r = d<sub>o</sub>/2</span>. بتعريف <strong>k = d<sub>i</sub>/d<sub>o</sub></strong>:</p>
+    <div class="eq centered">
+      $$ T = \frac{\pi}{16}\,\tau\left[\frac{(d_o)^{4} - (d_i)^{4}}{d_o}\right] = \frac{\pi}{16}\,\tau\,(d_o)^{3}\,(1 - k^{4}) $$
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="clbl">Important Notes</span>
+    <ul class="clean">
+      <li><strong>Hollow shafts</strong> — <span class="ar">بتستخدم في ال <span class="en">marine work</span>. أقوى لكل <span class="en">kg</span> من المادة، وبتتشكل على <span class="en">mandrel</span> فتكون المادة أكثر <span class="en">homogeneous</span>.</span></li>
+      <li><strong>Equal strength (hollow = solid)</strong>: $\;(d_o)^{3}(1 - k^{4}) = d^{3}\;$</li>
+      <li><strong>Power transmitted</strong> (in Watts):
+        $$ P = \frac{2\pi N\, T}{60} \quad\Rightarrow\quad T = \frac{P \times 60}{2\pi N} $$
+        <span class="ar">حيث <span class="en">N</span> سرعة ال <span class="en">shaft</span> بال <span class="en">r.p.m</span>.</span>
+      </li>
+      <li><strong>In belt drives</strong>: $\; T = (T_{1} - T_{2})\,R \;$<br>
+        <span class="ar">حيث <span class="en">T<sub>1</sub></span> و <span class="en">T<sub>2</sub></span> هم ال <span class="en">tight side</span> و ال <span class="en">slack side tensions</span>، و <span class="en">R</span> نصف قطر ال <span class="en">pulley</span>.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Example 1 -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">1</span>
+      <h4>Line Shaft — Diameter for Torque Only</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        A line shaft rotating at <strong>200 r.p.m.</strong> is to transmit <strong>20 kW</strong>. The shaft may be assumed to be made of mild steel with an allowable shear stress of <strong>42 MPa</strong>. Determine the diameter of the shaft, neglecting the bending moment on the shaft.
+      </div>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">N = 200 r.p.m., P = 20 kW = 20 × 10³ W, τ = 42 N/mm²</span></p>
+
+        <p class="ar"><strong>Step 1 —</strong> حساب ال <span class="en">torque</span> الناتج من ال <span class="en">power</span>:</p>
+        <div class="eq">
+          $$ T = \frac{P \times 60}{2\pi N} = \frac{20 \times 10^{3} \times 60}{2\pi \times 200} = 955 \text{ N·m} = 955 \times 10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 2 —</strong> تطبيق معادلة ال <span class="en">torsion</span> لإيجاد القطر:</p>
+        <div class="eq">
+          $$ T = \frac{\pi}{16}\,\tau\,d^{3} $$
+          $$ 955 \times 10^{3} = \frac{\pi}{16} \times 42 \times d^{3} = 8.25\, d^{3} $$
+          $$ d^{3} = \frac{955 \times 10^{3}}{8.25} = 115\,733 \;\Rightarrow\; d = 48.7 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Answer:</strong> <span class="ans">d ≈ 50 mm</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 2 -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">2</span>
+      <h4>Solid Shaft — Max Torque Exceeds Mean Torque</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        A solid shaft is transmitting <strong>1 MW</strong> at <strong>240 r.p.m.</strong> Determine the diameter of the shaft if the maximum torque transmitted exceeds the mean torque by <strong>20%</strong>. Take the maximum allowable shear stress as <strong>60 MPa</strong>.
+      </div>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">P = 1 × 10⁶ W, N = 240 r.p.m., T<sub>max</sub> = 1.2 T<sub>mean</sub>, τ = 60 N/mm²</span></p>
+
+        <p class="ar"><strong>Step 1 —</strong> حساب ال <span class="en">mean torque</span>:</p>
+        <div class="eq">
+          $$ T_{mean} = \frac{P \times 60}{2\pi N} = \frac{1 \times 10^{6} \times 60}{2\pi \times 240} = 39\,784 \text{ N·m} $$
+        </div>
+
+        <p class="ar"><strong>Step 2 —</strong> حساب ال <span class="en">maximum torque</span>:</p>
+        <div class="eq">
+          $$ T_{max} = 1.2 \times T_{mean} = 1.2 \times 39\,784 \times 10^{3} = 47\,741 \times 10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 3 —</strong> تطبيق معادلة ال <span class="en">torsion</span> باستخدام ال <span class="en">T<sub>max</sub></span>:</p>
+        <div class="eq">
+          $$ T_{max} = \frac{\pi}{16}\,\tau\,d^{3} \;\Rightarrow\; 47\,741 \times 10^{3} = \frac{\pi}{16} \times 60 \times d^{3} = 11.78\, d^{3} $$
+          $$ d^{3} = 4053 \times 10^{3} \;\Rightarrow\; d = 159.4 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Answer:</strong> <span class="ans">d ≈ 160 mm</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 3 -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">3</span>
+      <h4>Solid vs Hollow Shaft — Same Power</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        Find the diameter of a solid steel shaft to transmit <strong>20 kW</strong> at <strong>200 r.p.m.</strong> The ultimate shear stress for the steel may be taken as <strong>360 MPa</strong> and a factor of safety as <strong>8</strong>. If a hollow shaft is to be used in place of the solid shaft, find the inside and outside diameter when the ratio of inside to outside diameters is <strong>0.5</strong>.
+      </div>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">P = 20 kW, N = 200 r.p.m., τ<sub>u</sub> = 360 N/mm², F.S. = 8, k = d<sub>i</sub>/d<sub>o</sub> = 0.5</span></p>
+
+        <p class="ar"><strong>Step 1 —</strong> حساب ال <span class="en">allowable shear stress</span>:</p>
+        <div class="eq">
+          $$ \tau = \frac{\tau_{u}}{F.S.} = \frac{360}{8} = 45 \text{ N/mm}^{2} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark); margin-top:14px">▸ Solid Shaft Diameter</h4>
+        <p class="ar"><strong>Step 2 —</strong> ال <span class="en">torque</span>:</p>
+        <div class="eq">
+          $$ T = \frac{P \times 60}{2\pi N} = \frac{20 \times 10^{3} \times 60}{2\pi \times 200} = 955 \text{ N·m} = 955 \times 10^{3} \text{ N·mm} $$
+        </div>
+
+        <div class="eq">
+          $$ 955 \times 10^{3} = \frac{\pi}{16} \times 45 \times d^{3} = 8.84\, d^{3} $$
+          $$ d^{3} = 108\,032 \;\Rightarrow\; d = 47.6 \text{ mm} \approx 50 \text{ mm} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark); margin-top:14px">▸ Hollow Shaft Diameters</h4>
+        <p class="ar"><strong>Step 3 —</strong> تطبيق معادلة ال <span class="en">hollow shaft</span>:</p>
+        <div class="eq">
+          $$ T = \frac{\pi}{16}\,\tau\,(d_o)^{3}\,(1 - k^{4}) $$
+          $$ 955 \times 10^{3} = \frac{\pi}{16} \times 45 \times (d_o)^{3} \times \left[1 - (0.5)^{4}\right] = 8.3\,(d_o)^{3} $$
+          $$ (d_o)^{3} = 115\,060 \;\Rightarrow\; d_o = 48.6 \text{ mm} \approx 50 \text{ mm} $$
+          $$ d_i = 0.5 \times d_o = 0.5 \times 50 = 25 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Answers:</strong> <span class="ans">d<sub>o</sub> = 50 mm</span> &nbsp;&nbsp; <span class="ans">d<sub>i</sub> = 25 mm</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 4 ==================== -->
+<section id="s4">
+  <h2><span class="num">4</span> Shafts Subjected to Bending Moment Only</h2>
+  <p class="intro ar">في هذه الحالة بيكون ال <span class="en">shaft</span> تحت <span class="en">bending moment</span> فقط (زي ال <span class="en">non-rotating axles</span>)، فنستخدم ال <span class="en">bending equation</span>.</p>
+
+  <div class="theory">
+    <div class="lbl">Bending Equation</div>
+    <div class="eq centered">$$ \frac{M}{I} = \frac{\sigma_{b}}{y} $$</div>
+
+    <dl class="deflist">
+      <dt>M</dt><dd>Bending moment in N·mm</dd>
+      <dt>I</dt><dd>Moment of inertia of cross-sectional area about axis of rotation</dd>
+      <dt>σ<sub>b</sub></dt><dd>Bending stress (tensile or compressive)</dd>
+      <dt>y</dt><dd>Distance from neutral axis to outer-most fibre</dd>
+    </dl>
+
+    <h4>For a Round Solid Shaft</h4>
+    <p class="ar">ال <span class="en">moment of inertia</span> لل <span class="en">circular cross-section</span>:</p>
+    <div class="eq centered">
+      $$ I = \frac{\pi}{64}\,d^{4}, \qquad y = \frac{d}{2} $$
+    </div>
+
+    <p class="ar">وبالتعويض:</p>
+    <div class="eq centered">$$ \boxed{\; M = \frac{\pi}{32}\,\sigma_{b}\,d^{3} \;} $$</div>
+
+    <h4>For a Hollow Shaft</h4>
+    <div class="eq centered">
+      $$ I = \frac{\pi}{64}\left[(d_o)^{4} - (d_i)^{4}\right] = \frac{\pi}{64}\,(d_o)^{4}(1 - k^{4}) $$
+      $$ y = \frac{d_o}{2} $$
+    </div>
+    <div class="eq centered">
+      $$ M = \frac{\pi}{32}\,\sigma_{b}\,(d_o)^{3}(1 - k^{4}) $$
+    </div>
+
+    <p class="ar">ومنها يُحسب ال <span class="en">outside diameter</span>.</p>
+  </div>
+</section>
+
+<!-- ==================== SECTION 5 ==================== -->
+<section id="s5">
+  <h2><span class="num">5</span> Shafts Subjected to Combined Twisting &amp; Bending</h2>
+  <p class="intro ar">أغلب ال <span class="en">shafts</span> الحقيقية (مثل اللي تحمل <span class="en">gears</span> أو <span class="en">pulleys</span>) بيكون عليها <span class="en">twisting</span> و <span class="en">bending</span> في نفس الوقت، فلازم نصممها على أساس الاثنين معاً باستخدام إحدى <span class="en">failure theories</span>.</p>
+
+  <div class="card highlight">
+    <h3>Two Major Failure Theories</h3>
+    <ol class="numbered">
+      <li><strong>Maximum Shear Stress Theory (Guest's Theory)</strong> — <span class="ar">تستخدم لل <span class="en">ductile materials</span> مثل <span class="en">mild steel</span>.</span></li>
+      <li><strong>Maximum Normal Stress Theory (Rankine's Theory)</strong> — <span class="ar">تستخدم لل <span class="en">brittle materials</span> مثل <span class="en">cast iron</span>.</span></li>
+    </ol>
+    <p class="ar" style="margin-top:10px"><strong>Let:</strong> <span class="en">τ</span> = shear stress from twisting, and <span class="en">σ<sub>b</sub></span> = bending stress from bending moment.</p>
+  </div>
+
+  <div class="theory">
+    <h3 style="border:none; padding:0; margin-top:0">1) Maximum Shear Stress Theory (Guest's)</h3>
+    <p class="ar">بحسب هذه النظرية، أقصى <span class="en">shear stress</span> في ال <span class="en">shaft</span>:</p>
+    <div class="eq centered">
+      $$ \tau_{max} = \tfrac{1}{2}\sqrt{(\sigma_{b})^{2} + 4\tau^{2}} $$
+    </div>
+
+    <p class="ar">بتعويض <span class="en">σ<sub>b</sub> = 32M/(πd³)</span> و <span class="en">τ = 16T/(πd³)</span>:</p>
+    <div class="eq centered">
+      $$ \tau_{max} = \frac{1}{2}\sqrt{\left(\frac{32M}{\pi d^{3}}\right)^{2} + 4\left(\frac{16T}{\pi d^{3}}\right)^{2}} = \frac{16}{\pi d^{3}}\sqrt{M^{2}+T^{2}} $$
+    </div>
+
+    <p class="ar">أي:</p>
+    <div class="eq centered">
+      $$ \frac{\pi}{16}\,\tau_{max}\,d^{3} = \sqrt{M^{2} + T^{2}} $$
+    </div>
+
+    <div class="callout">
+      <span class="clbl">Equivalent Twisting Moment</span>
+      <p class="ar" style="margin:6px 0 10px"><strong>T<sub>e</sub></strong> = ال <span class="en">twisting moment</span> اللي لو اشتغل لوحده سينتج نفس <span class="en">τ</span> الفعلي:</p>
+      <div class="eq centered" style="background:white">
+        $$ \boxed{\; T_{e} = \sqrt{M^{2} + T^{2}} = \frac{\pi}{16}\,\tau\,d^{3} \;} $$
+      </div>
+      <p class="ar" style="margin-top:8px">ومنها يُحسب ال <span class="en">diameter</span>.</p>
+    </div>
+  </div>
+
+  <div class="theory">
+    <h3 style="border:none; padding:0; margin-top:0">2) Maximum Normal Stress Theory (Rankine's)</h3>
+    <p class="ar">أقصى <span class="en">normal stress</span>:</p>
+    <div class="eq centered">
+      $$ \sigma_{b(max)} = \tfrac{1}{2}\,\sigma_{b} + \tfrac{1}{2}\sqrt{(\sigma_{b})^{2} + 4\tau^{2}} $$
+    </div>
+
+    <p class="ar">بالتعويض:</p>
+    <div class="eq centered">
+      $$ \sigma_{b(max)} = \frac{32}{\pi d^{3}}\left[\tfrac{1}{2}(M + \sqrt{M^{2}+T^{2}})\right] $$
+    </div>
+
+    <div class="callout">
+      <span class="clbl">Equivalent Bending Moment</span>
+      <p class="ar" style="margin:6px 0 10px"><strong>M<sub>e</sub></strong> = ال <span class="en">moment</span> اللي لو اشتغل لوحده سينتج نفس <span class="en">σ<sub>b</sub></span>:</p>
+      <div class="eq centered" style="background:white">
+        $$ \boxed{\; M_{e} = \tfrac{1}{2}\left[M + \sqrt{M^{2}+T^{2}}\right] = \frac{\pi}{32}\,\sigma_{b}\,d^{3} \;} $$
+      </div>
+    </div>
+
+    <h4>For Hollow Shafts</h4>
+    <div class="eq centered">
+      $$ T_{e} = \sqrt{M^{2}+T^{2}} = \frac{\pi}{16}\,\tau\,(d_{o})^{3}(1-k^{4}) $$
+      $$ M_{e} = \tfrac{1}{2}\left[M + \sqrt{M^{2}+T^{2}}\right] = \frac{\pi}{32}\,\sigma_{b}\,(d_{o})^{3}(1-k^{4}) $$
+    </div>
+
+    <div class="note">
+      <span class="nlbl">Rule</span>
+      <span class="ar">يُفضّل حساب قطر ال <span class="en">shaft</span> باستخدام <strong>النظريتين معاً</strong> واختيار أكبر قيمة للأمان.</span>
+    </div>
+  </div>
+
+  <!-- Example 1 Combined -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">1</span>
+      <h4>Solid Circular Shaft — 45 C 8 Steel</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        A solid circular shaft is subjected to a bending moment of <strong>3000 N·m</strong> and a torque of <strong>10 000 N·m</strong>. The shaft is made of <strong>45 C 8 steel</strong> having ultimate tensile stress of <strong>700 MPa</strong> and an ultimate shear stress of <strong>500 MPa</strong>. Assuming a factor of safety as <strong>6</strong>, determine the diameter of the shaft.
+      </div>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">M = 3 × 10⁶ N·mm, T = 10 × 10⁶ N·mm, σ<sub>tu</sub> = 700 N/mm², τ<sub>u</sub> = 500 N/mm², F.S. = 6</span></p>
+
+        <p class="ar"><strong>Step 1 —</strong> حساب ال <span class="en">allowable stresses</span>:</p>
+        <div class="eq">
+          $$ \sigma_{t} = \sigma_{b} = \frac{\sigma_{tu}}{F.S.} = \frac{700}{6} = 116.7 \text{ N/mm}^{2} $$
+          $$ \tau = \frac{\tau_{u}}{F.S.} = \frac{500}{6} = 83.3 \text{ N/mm}^{2} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark)">▸ Using Maximum Shear Stress Theory</h4>
+        <div class="eq">
+          $$ T_{e} = \sqrt{M^{2}+T^{2}} = \sqrt{(3\times10^{6})^{2} + (10\times10^{6})^{2}} = 10.44 \times 10^{6} \text{ N·mm} $$
+          $$ T_{e} = \frac{\pi}{16}\,\tau\,d^{3} \;\Rightarrow\; 10.44\times10^{6} = \frac{\pi}{16} \times 83.3 \times d^{3} = 16.36\,d^{3} $$
+          $$ d^{3} = 0.636 \times 10^{6} \;\Rightarrow\; d = 86 \text{ mm} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark)">▸ Using Maximum Normal Stress Theory</h4>
+        <div class="eq">
+          $$ M_{e} = \tfrac{1}{2}(M + T_{e}) = \tfrac{1}{2}(3\times10^{6} + 10.44\times10^{6}) = 6.72\times10^{6} \text{ N·mm} $$
+          $$ M_{e} = \frac{\pi}{32}\,\sigma_{b}\,d^{3} \;\Rightarrow\; 6.72\times10^{6} = \frac{\pi}{32} \times 116.7 \times d^{3} = 11.46\,d^{3} $$
+          $$ d^{3} = 0.586\times10^{6} \;\Rightarrow\; d = 83.7 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Taking the larger of the two values:</strong></p>
+        <p class="ar"><strong>Answer:</strong> <span class="ans">d ≈ 90 mm</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 2 Combined -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">2</span>
+      <h4>Shaft with Central Gear Between Bearings</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        A shaft supported at the ends in ball bearings carries a straight tooth spur gear at its mid span and is to transmit <strong>7.5 kW</strong> at <strong>300 r.p.m.</strong> The pitch circle diameter of the gear is <strong>150 mm</strong>. The distances between the center line of bearings and gear are <strong>100 mm</strong> each. If the shaft is made of steel and the allowable shear stress is <strong>45 MPa</strong>, determine the diameter of the shaft. Show how the gear will be mounted and indicate bearing ends. The pressure angle of the gear may be taken as <strong>20°</strong>.
+      </div>
+
+      <figure>
+        <img src="data:image/png;base64,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" alt="Fig. 14.2 — Shaft with spur gear mounted between two bearings" />
+        <figcaption>Fig. 14.2 — Shaft with spur gear mounted centrally on two ball bearings (span = 200 mm)</figcaption>
+      </figure>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">P = 7500 W, N = 300 r.p.m., D = 150 mm, L = 200 mm, τ = 45 N/mm², α = 20°</span></p>
+
+        <p class="ar"><strong>Step 1 —</strong> ال <span class="en">torque</span> المنقول من ال <span class="en">shaft</span>:</p>
+        <div class="eq">
+          $$ T = \frac{P \times 60}{2\pi N} = \frac{7500 \times 60}{2\pi \times 300} = 238.7 \text{ N·m} $$
+        </div>
+
+        <p class="ar"><strong>Step 2 —</strong> ال <span class="en">tangential force</span> على ال <span class="en">gear</span>:</p>
+        <div class="eq">
+          $$ F_{t} = \frac{2T}{D} = \frac{2 \times 238.7}{0.15} = 3182.7 \text{ N} $$
+        </div>
+
+        <p class="ar"><strong>Step 3 —</strong> ال <span class="en">normal load</span> على ال <span class="en">tooth</span> (مع مراعاة ال <span class="en">pressure angle</span>):</p>
+        <div class="eq">
+          $$ W = \frac{F_{t}}{\cos\alpha} = \frac{3182.7}{\cos 20°} = \frac{3182.7}{0.9397} = 3387 \text{ N} $$
+        </div>
+
+        <p class="ar"><strong>Step 4 —</strong> لأن ال <span class="en">gear</span> في منتصف ال <span class="en">shaft</span>، أقصى <span class="en">bending moment</span> في المنتصف:</p>
+        <div class="eq">
+          $$ M = \frac{W \cdot L}{4} = \frac{3387 \times 0.2}{4} = 169.4 \text{ N·m} $$
+        </div>
+
+        <p class="ar"><strong>Step 5 —</strong> ال <span class="en">equivalent twisting moment</span>:</p>
+        <div class="eq">
+          $$ T_{e} = \sqrt{M^{2}+T^{2}} = \sqrt{(169.4)^{2} + (238.7)^{2}} = 292.7 \text{ N·m} = 292.7\times10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 6 —</strong> إيجاد ال <span class="en">diameter</span>:</p>
+        <div class="eq">
+          $$ 292.7\times10^{3} = \frac{\pi}{16} \times 45 \times d^{3} = 8.84\,d^{3} $$
+          $$ d^{3} = 33 \times 10^{3} \;\Rightarrow\; d = 32 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Answer:</strong> <span class="ans">d ≈ 35 mm</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 3 Combined -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">3</span>
+      <h4>Shaft with Two Pulleys — Vertical + Horizontal Loads</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        A shaft is supported by two bearings placed <strong>1 m</strong> apart. A <strong>600 mm</strong> diameter pulley is mounted at a distance of <strong>300 mm</strong> to the right of the left hand bearing and this drives a pulley directly below it with the help of a belt having maximum tension of <strong>2.25 kN</strong>. Another pulley <strong>400 mm</strong> diameter is placed <strong>200 mm</strong> to the left of the right hand bearing and is driven with the help of an electric motor and belt, placed horizontally to the right. The angle of contact for both pulleys is <strong>180°</strong> and <strong>μ = 0.24</strong>. Determine the suitable diameter for a solid shaft, allowing working stress of <strong>63 MPa</strong> in tension and <strong>42 MPa</strong> in shear. Assume torque on one pulley equals torque on the other.
+      </div>
+
+      <figure>
+        <img src="data:image/png;base64,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" alt="Fig. 14.5 — Space, torque, load and bending moment diagrams" />
+        <figcaption>Fig. 14.5 — (a) Space diagram, (b) Torque diagram, (c) Vertical load, (d) Horizontal load, (e) Vertical B.M., (f) Horizontal B.M., (g) Resultant B.M. diagram</figcaption>
+      </figure>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">AB = 1 m, D<sub>C</sub> = 600 mm, AC = 300 mm, T<sub>1</sub> = 2250 N, D<sub>D</sub> = 400 mm, BD = 200 mm, θ = π rad, μ = 0.24, σ<sub>b</sub> = 63 N/mm², τ = 42 N/mm²</span></p>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 1: Belt Tensions on Pulley C (Vertical Belt)</h4>
+        <div class="eq">
+          $$ 2.3 \log\!\left(\frac{T_{1}}{T_{2}}\right) = \mu\theta = 0.24 \times \pi = 0.754 $$
+          $$ \log\!\left(\frac{T_{1}}{T_{2}}\right) = \frac{0.754}{2.3} = 0.3278 \;\Rightarrow\; \frac{T_{1}}{T_{2}} = 2.127 $$
+          $$ T_{2} = \frac{2250}{2.127} = 1058 \text{ N} $$
+        </div>
+
+        <p class="ar"><strong>Vertical load at C:</strong></p>
+        <div class="eq">
+          $$ W_{C} = T_{1} + T_{2} = 2250 + 1058 = 3308 \text{ N} $$
+        </div>
+        <p class="ar"><strong>Vertical load at D = 0</strong> (because belt on D is horizontal).</p>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 2: Torque Acting on the Shaft</h4>
+        <div class="eq">
+          $$ T = (T_{1} - T_{2})\,R_{C} = (2250 - 1058) \times 0.3 = 357.6 \text{ N·m} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 3: Belt Tensions on Pulley D (Horizontal Belt)</h4>
+        <p class="ar">بما أن ال <span class="en">torque</span> نفسه على ال <span class="en">pulley D</span>:</p>
+        <div class="eq">
+          $$ (T_{3} - T_{4})\,R_{D} = 357.6 \;\Rightarrow\; T_{3} - T_{4} = \frac{357.6}{0.2} = 1788 \text{ N} $$
+          $$ \frac{T_{3}}{T_{4}} = 2.127 \;\Rightarrow\; T_{3} = 2.127\,T_{4} $$
+        </div>
+        <p class="ar">بحل المعادلتين:</p>
+        <div class="eq">
+          $$ T_{3} = 3376 \text{ N}, \qquad T_{4} = 1588 \text{ N} $$
+        </div>
+        <p class="ar"><strong>Horizontal load at D:</strong></p>
+        <div class="eq">
+          $$ W_{D} = T_{3} + T_{4} = 3376 + 1588 = 4964 \text{ N} $$
+        </div>
+        <p class="ar"><strong>Horizontal load at C = 0</strong>.</p>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 4: Reactions &amp; B.M. — Vertical Loading</h4>
+        <p class="ar">بأخذ ال <span class="en">moments about A</span>:</p>
+        <div class="eq">
+          $$ R_{BV} \times 1 = 3308 \times 0.3 \;\Rightarrow\; R_{BV} = 992.4 \text{ N} $$
+          $$ R_{AV} = 3308 - 992.4 = 2315.6 \text{ N} $$
+        </div>
+        <p class="ar"><strong>Vertical B.M. at C &amp; D:</strong></p>
+        <div class="eq">
+          $$ M_{CV} = R_{AV} \times 0.3 = 2315.6 \times 0.3 = 694.7 \text{ N·m} $$
+          $$ M_{DV} = R_{BV} \times 0.2 = 992.4 \times 0.2 = 198.5 \text{ N·m} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 5: Reactions &amp; B.M. — Horizontal Loading</h4>
+        <div class="eq">
+          $$ R_{BH} \times 1 = 4964 \times 0.8 \;\Rightarrow\; R_{BH} = 3971 \text{ N} $$
+          $$ R_{AH} = 4964 - 3971 = 993 \text{ N} $$
+        </div>
+        <p class="ar"><strong>Horizontal B.M. at C &amp; D:</strong></p>
+        <div class="eq">
+          $$ M_{CH} = R_{AH} \times 0.3 = 993 \times 0.3 = 297.9 \text{ N·m} $$
+          $$ M_{DH} = R_{BH} \times 0.2 = 3971 \times 0.2 = 794.2 \text{ N·m} $$
+        </div>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 6: Resultant Bending Moments</h4>
+        <div class="eq">
+          $$ M_{C} = \sqrt{(M_{CV})^{2} + (M_{CH})^{2}} = \sqrt{(694.7)^{2} + (297.9)^{2}} = 756 \text{ N·m} $$
+          $$ M_{D} = \sqrt{(M_{DV})^{2} + (M_{DH})^{2}} = \sqrt{(198.5)^{2} + (794.2)^{2}} = 819.2 \text{ N·m} $$
+        </div>
+        <p class="ar">أقصى <span class="en">bending moment</span> عند <span class="en">D</span>: <strong>M = 819.2 N·m</strong></p>
+
+        <h4 style="color:var(--primary-dark)">▸ Step 7: Diameter — Using Both Theories</h4>
+        <div class="eq">
+          $$ T_{e} = \sqrt{M^{2}+T^{2}} = \sqrt{(819.2)^{2} + (357.6)^{2}} = 894 \text{ N·m} $$
+        </div>
+        <p class="ar"><strong>Shear stress theory:</strong></p>
+        <div class="eq">
+          $$ 894\times10^{3} = \frac{\pi}{16} \times 42 \times d^{3} = 8.25\,d^{3} $$
+          $$ d^{3} = 108 \times 10^{3} \;\Rightarrow\; d = 47.6 \text{ mm} $$
+        </div>
+
+        <div class="eq">
+          $$ M_{e} = \tfrac{1}{2}(M + T_{e}) = \tfrac{1}{2}(819.2 + 894) = 856.6 \text{ N·m} $$
+        </div>
+        <p class="ar"><strong>Normal stress theory:</strong></p>
+        <div class="eq">
+          $$ 856.6\times10^{3} = \frac{\pi}{32} \times 63 \times d^{3} = 6.2\,d^{3} $$
+          $$ d^{3} = 138.2 \times 10^{3} \;\Rightarrow\; d = 51.7 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Taking the larger value:</strong></p>
+        <p class="ar"><strong>Answer:</strong> <span class="ans">d ≈ 55 mm</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 6 ==================== -->
+<section id="s6">
+  <h2><span class="num">6</span> Shafts Subjected to Fluctuating Loads</h2>
+  <p class="intro ar">في ال <span class="en">practice</span>، ال <span class="en">torque</span> و ال <span class="en">bending moment</span> مش ثابتين، بل <strong>fluctuating</strong>. لذا لازم نضيف <span class="en">shock &amp; fatigue factors</span> على القيم المحسوبة.</p>
+
+  <div class="theory">
+    <div class="lbl">Modified Equivalent Moments</div>
+
+    <p class="ar">ال <span class="en">equivalent twisting moment</span>:</p>
+    <div class="eq centered">
+      $$ T_{e} = \sqrt{(K_{m}\cdot M)^{2} + (K_{t}\cdot T)^{2}} $$
+    </div>
+
+    <p class="ar">ال <span class="en">equivalent bending moment</span>:</p>
+    <div class="eq centered">
+      $$ M_{e} = \tfrac{1}{2}\left[K_{m}\cdot M + \sqrt{(K_{m}\cdot M)^{2} + (K_{t}\cdot T)^{2}}\right] $$
+    </div>
+
+    <dl class="deflist">
+      <dt>K<sub>m</sub></dt><dd>Combined shock and fatigue factor for <strong>bending</strong></dd>
+      <dt>K<sub>t</sub></dt><dd>Combined shock and fatigue factor for <strong>torsion</strong></dd>
+    </dl>
+
+    <div class="tbl-wrap">
+      <table>
+        <caption>Table 14.2 — Recommended Values for K<sub>m</sub> and K<sub>t</sub></caption>
+        <thead>
+          <tr><th>Nature of Load</th><th>K<sub>m</sub></th><th>K<sub>t</sub></th></tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="3" style="background:var(--accent-soft); font-weight:600; color:var(--primary-dark)">1. Stationary Shafts</td></tr>
+          <tr><td>(a) Gradually applied load</td><td>1.0</td><td>1.0</td></tr>
+          <tr><td>(b) Suddenly applied load</td><td>1.5 – 2.0</td><td>1.5 – 2.0</td></tr>
+          <tr><td colspan="3" style="background:var(--accent-soft); font-weight:600; color:var(--primary-dark)">2. Rotating Shafts</td></tr>
+          <tr><td>(a) Gradually applied or steady load</td><td>1.5</td><td>1.0</td></tr>
+          <tr><td>(b) Suddenly applied load with minor shocks only</td><td>1.5 – 2.0</td><td>1.5 – 2.0</td></tr>
+          <tr><td>(c) Suddenly applied load with heavy shocks</td><td>2.0 – 3.0</td><td>1.5 – 3.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Fluctuating Example 1 -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">1</span>
+      <h4>Mild Steel Shaft — With &amp; Without Shock Factors</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        A mild steel shaft transmits <strong>20 kW</strong> at <strong>200 r.p.m.</strong> It carries a central load of <strong>900 N</strong> and is simply supported between bearings <strong>2.5 metres</strong> apart. Determine the size of the shaft, if the allowable shear stress is <strong>42 MPa</strong> and the maximum tensile or compressive stress is not to exceed <strong>56 MPa</strong>. What size of shaft will be required if it is subjected to gradually applied loads?
+      </div>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">P = 20 kW, N = 200 r.p.m., W = 900 N, L = 2.5 m, τ = 42 N/mm², σ<sub>b</sub> = 56 N/mm²</span></p>
+
+        <h4 style="color:var(--primary-dark)">▸ Part A: Without Shock Factors (K<sub>m</sub> = K<sub>t</sub> = 1)</h4>
+        <p class="ar"><strong>Step 1 —</strong> ال <span class="en">torque</span>:</p>
+        <div class="eq">
+          $$ T = \frac{P \times 60}{2\pi N} = \frac{20\times10^{3} \times 60}{2\pi \times 200} = 955 \text{ N·m} = 955\times10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 2 —</strong> أقصى <span class="en">bending moment</span> لحمل مركزي على <span class="en">simply supported shaft</span>:</p>
+        <div class="eq">
+          $$ M = \frac{W \times L}{4} = \frac{900 \times 2.5}{4} = 562.5 \text{ N·m} = 562.5\times10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 3 —</strong> ال <span class="en">equivalent twisting moment</span>:</p>
+        <div class="eq">
+          $$ T_{e} = \sqrt{M^{2}+T^{2}} = \sqrt{(562.5\times10^{3})^{2} + (955\times10^{3})^{2}} = 1108\times10^{3} \text{ N·mm} $$
+        </div>
+        <div class="eq">
+          $$ 1108\times10^{3} = \frac{\pi}{16} \times 42 \times d^{3} = 8.25\,d^{3} $$
+          $$ d^{3} = 134.3\times10^{3} \;\Rightarrow\; d = 51.2 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 4 —</strong> ال <span class="en">equivalent bending moment</span>:</p>
+        <div class="eq">
+          $$ M_{e} = \tfrac{1}{2}(M + T_{e}) = \tfrac{1}{2}(562.5\times10^{3} + 1108\times10^{3}) = 835.25\times10^{3} \text{ N·mm} $$
+        </div>
+        <div class="eq">
+          $$ 835.25\times10^{3} = \frac{\pi}{32} \times 56 \times d^{3} = 5.5\,d^{3} $$
+          $$ d^{3} = 152\times10^{3} \;\Rightarrow\; d = 53.4 \text{ mm} $$
+        </div>
+        <p class="ar"><strong>Taking the larger:</strong> <span class="ans">d ≈ 55 mm</span></p>
+
+        <h4 style="color:var(--primary-dark)">▸ Part B: With Gradually Applied Loads — K<sub>m</sub> = 1.5, K<sub>t</sub> = 1.0</h4>
+        <p class="ar">من <strong>Table 14.2</strong> لل <span class="en">rotating shafts</span> مع <span class="en">gradually applied load</span>.</p>
+
+        <div class="eq">
+          $$ T_{e} = \sqrt{(K_{m}M)^{2} + (K_{t}T)^{2}} $$
+          $$ T_{e} = \sqrt{(1.5 \times 562.5\times10^{3})^{2} + (1 \times 955\times10^{3})^{2}} = 1274\times10^{3} \text{ N·mm} $$
+        </div>
+        <div class="eq">
+          $$ 1274\times10^{3} = \frac{\pi}{16} \times 42 \times d^{3} = 8.25\,d^{3} $$
+          $$ d^{3} = 154.6\times10^{3} \;\Rightarrow\; d = 53.6 \text{ mm} $$
+        </div>
+
+        <div class="eq">
+          $$ M_{e} = \tfrac{1}{2}\left[K_{m}M + T_{e}\right] = \tfrac{1}{2}\left[1.5\times562.5\times10^{3} + 1274\times10^{3}\right] = 1059\times10^{3} \text{ N·mm} $$
+        </div>
+        <div class="eq">
+          $$ 1059\times10^{3} = \frac{\pi}{32} \times 56 \times d^{3} = 5.5\,d^{3} $$
+          $$ d^{3} = 192.5\times10^{3} \;\Rightarrow\; d = 57.7 \text{ mm} $$
+        </div>
+        <p class="ar"><strong>Taking the larger:</strong> <span class="ans">d ≈ 60 mm</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fluctuating Example 2 -->
+  <div class="example">
+    <div class="ex-head">
+      <span class="ex-num">2</span>
+      <h4>Shaft with Overhung Pulley — Motor → Lathe</h4>
+    </div>
+    <div class="ex-body">
+      <div class="q">
+        <span class="qlbl">Problem</span>
+        Design a shaft to transmit power from an electric motor to a lathe head stock through a pulley by means of a belt drive. The pulley weighs <strong>200 N</strong> and is located at <strong>300 mm</strong> from the centre of the bearing. The diameter of the pulley is <strong>200 mm</strong> and the maximum power transmitted is <strong>1 kW</strong> at <strong>120 r.p.m.</strong> The angle of lap of the belt is <strong>180°</strong> and coefficient of friction between the belt and pulley is <strong>0.3</strong>. The shock and fatigue factors for bending and twisting are <strong>1.5</strong> and <strong>2.0</strong> respectively. The allowable shear stress in the shaft may be taken as <strong>35 MPa</strong>.
+      </div>
+
+      <figure>
+        <img src="data:image/png;base64,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" alt="Fig. 14.9 — Shaft with overhung pulley cantilevered from bearing" />
+        <figcaption>Fig. 14.9 — Overhung pulley mounted on a shaft (L = 300 mm, D = 200 mm)</figcaption>
+      </figure>
+
+      <div class="solution">
+        <span class="slbl">Solution</span>
+        <p class="ar"><strong>Given:</strong> <span class="en">W = 200 N, L = 300 mm, D = 200 mm, R = 100 mm, P = 1000 W, N = 120 r.p.m., θ = π rad, μ = 0.3, K<sub>m</sub> = 1.5, K<sub>t</sub> = 2, τ = 35 N/mm²</span></p>
+
+        <p class="ar"><strong>Step 1 —</strong> ال <span class="en">torque</span>:</p>
+        <div class="eq">
+          $$ T = \frac{P \times 60}{2\pi N} = \frac{1000 \times 60}{2\pi \times 120} = 79.6 \text{ N·m} = 79.6\times10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 2 —</strong> فرق ال <span class="en">belt tensions</span>:</p>
+        <div class="eq">
+          $$ T = (T_{1} - T_{2})\,R \;\Rightarrow\; T_{1} - T_{2} = \frac{79.6\times10^{3}}{100} = 796 \text{ N} $$
+        </div>
+
+        <p class="ar"><strong>Step 3 —</strong> نسبة ال <span class="en">tensions</span>:</p>
+        <div class="eq">
+          $$ 2.3\log\!\left(\frac{T_{1}}{T_{2}}\right) = \mu\theta = 0.3\pi = 0.9426 $$
+          $$ \log\!\left(\frac{T_{1}}{T_{2}}\right) = 0.4098 \;\Rightarrow\; \frac{T_{1}}{T_{2}} = 2.57 $$
+        </div>
+
+        <p class="ar"><strong>Step 4 —</strong> حل المعادلتين:</p>
+        <div class="eq">
+          $$ T_{1} = 1303 \text{ N}, \qquad T_{2} = 507 \text{ N} $$
+        </div>
+
+        <p class="ar"><strong>Step 5 —</strong> ال <span class="en">total vertical load</span> على ال <span class="en">pulley</span>:</p>
+        <div class="eq">
+          $$ W_{T} = T_{1} + T_{2} + W = 1303 + 507 + 200 = 2010 \text{ N} $$
+        </div>
+
+        <p class="ar"><strong>Step 6 —</strong> ال <span class="en">bending moment</span> (للعمود ال <span class="en">cantilever</span>):</p>
+        <div class="eq">
+          $$ M = W_{T} \times L = 2010 \times 300 = 603\times10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 7 —</strong> ال <span class="en">equivalent twisting moment</span> مع ال <span class="en">shock factors</span>:</p>
+        <div class="eq">
+          $$ T_{e} = \sqrt{(K_{m}M)^{2} + (K_{t}T)^{2}} $$
+          $$ T_{e} = \sqrt{(1.5 \times 603\times10^{3})^{2} + (2 \times 79.6\times10^{3})^{2}} = 918\times10^{3} \text{ N·mm} $$
+        </div>
+
+        <p class="ar"><strong>Step 8 —</strong> إيجاد ال <span class="en">diameter</span>:</p>
+        <div class="eq">
+          $$ 918\times10^{3} = \frac{\pi}{16} \times 35 \times d^{3} = 6.87\,d^{3} $$
+          $$ d^{3} = 133.6\times10^{3} \;\Rightarrow\; d = 51.1 \text{ mm} $$
+        </div>
+
+        <p class="ar"><strong>Answer:</strong> <span class="ans">d ≈ 55 mm</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 7 ==================== -->
+<section id="s7">
+  <h2><span class="num">7</span> Axial Load + Combined Torsion &amp; Bending</h2>
+  <p class="intro ar">في حالة وجود <span class="en">axial load F</span> بالإضافة لل <span class="en">torsion</span> و ال <span class="en">bending</span> (مثل <span class="en">propeller shafts</span> في السفن و ال <span class="en">worm gear shafts</span>)، لازم نضيف ال <span class="en">axial stress</span> لل <span class="en">bending stress</span>.</p>
+
+  <div class="theory">
+    <div class="lbl">Resultant Stress Formulation</div>
+
+    <p class="ar">ال <span class="en">bending stress</span>:</p>
+    <div class="eq centered">$$ \sigma_{b} = \frac{M \cdot y}{I} = \frac{32M}{\pi d^{3}} $$</div>
+
+    <p class="ar">ال <span class="en">stress due to axial load</span>:</p>
+    <div class="eq centered">
+      $$ \sigma_{a} = \frac{F}{\tfrac{\pi}{4}d^{2}} = \frac{4F}{\pi d^{2}} \qquad \text{(solid)} $$
+      $$ \sigma_{a} = \frac{4F}{\pi\left[(d_o)^{2} - (d_i)^{2}\right]} = \frac{F}{\pi (d_o)^{2}(1 - k^{2})} \qquad \text{(hollow)} $$
+    </div>
+
+    <p class="ar"><strong>Resultant stress (solid shaft):</strong></p>
+    <div class="eq centered">
+      $$ \sigma_{1} = \frac{32M}{\pi d^{3}} + \frac{4F}{\pi d^{2}} = \frac{32}{\pi d^{3}}\left(M + \frac{F \cdot d}{8}\right) = \frac{32\, M_{1}}{\pi d^{3}} $$
+    </div>
+    <p class="ar">حيث: $\;M_{1} = M + \dfrac{F \cdot d}{8}\;$ (Modified bending moment)</p>
+
+    <p class="ar"><strong>Resultant stress (hollow shaft):</strong></p>
+    <div class="eq centered">
+      $$ \sigma_{1} = \frac{32\, M_{1}}{\pi (d_{o})^{3}(1 - k^{4})}, \qquad M_{1} = M + \frac{F \, d_{o}\,(1 + k^{2})}{8} $$
+    </div>
+  </div>
+
+  <div class="theory">
+    <div class="lbl">Column Factor α (for Slender Shafts in Compression)</div>
+    <p class="ar">عند ال <span class="en">long slender shafts</span> المعرضة ل <span class="en">compressive loads</span>، لازم نضيف <strong>column factor α</strong> لأخذ <span class="en">buckling effect</span> في الاعتبار.</p>
+
+    <p class="ar"><strong>Stress due to compressive load:</strong></p>
+    <div class="eq centered">
+      $$ \sigma_{c} = \frac{\alpha \times 4F}{\pi d^{2}} \qquad \text{(solid)}; \quad \sigma_{c} = \frac{\alpha \times 4F}{\pi (d_o)^{2}(1 - k^{2})} \quad \text{(hollow)} $$
+    </div>
+
+    <h4>Column Factor Formulae</h4>
+    <p class="ar">عند <span class="en">slenderness ratio L/K &lt; 115</span>:</p>
+    <div class="eq centered">
+      $$ \alpha = \frac{1}{1 - 0.0044\,(L/K)} $$
+    </div>
+
+    <p class="ar">عند <span class="en">L/K &gt; 115</span>:</p>
+    <div class="eq centered">
+      $$ \alpha = \frac{\sigma_{y}\,(L/K)^{2}}{C\,\pi^{2}\,E} $$
+    </div>
+
+    <dl class="deflist">
+      <dt>L</dt><dd>Length of shaft between the bearings</dd>
+      <dt>K</dt><dd>Least radius of gyration</dd>
+      <dt>σ<sub>y</sub></dt><dd>Compressive yield point stress of shaft material</dd>
+      <dt>C</dt><dd>Euler coefficient depending on end conditions</dd>
+    </dl>
+
+    <h4>Values of C for Different End Conditions</h4>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>End Condition</th><th>C</th></tr></thead>
+        <tbody>
+          <tr><td>Hinged ends</td><td>1</td></tr>
+          <tr><td>Fixed ends</td><td>2.25</td></tr>
+          <tr><td>Partly restrained (as in bearings)</td><td>1.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="nlbl">General Formula</span>
+    <span class="ar">لل <span class="en">hollow shaft</span> ال معرض ل <span class="en">fluctuating torsion</span>، <span class="en">bending</span>، و <span class="en">axial load</span> معاً:</span>
+    <div class="eq centered" style="margin-top:10px; background:white">
+      $$ T_{e} = \sqrt{\left[K_{m}M + \frac{\alpha F\, d_{o}(1 + k^{2})}{8}\right]^{2} + (K_{t}T)^{2}} = \frac{\pi}{16}\,\tau\,(d_o)^{3}(1 - k^{4}) $$
+      $$ M_{e} = \tfrac{1}{2}\left[K_{m}M + \frac{\alpha F\, d_{o}(1+k^{2})}{8} + \sqrt{\left\{K_{m}M + \frac{\alpha F d_o (1+k^2)}{8}\right\}^{2} + (K_{t}T)^{2}}\right] = \frac{\pi}{32}\,\sigma_{b}\,(d_o)^{3}(1 - k^{4}) $$
+    </div>
+    <p class="ar" style="margin-top:10px"><strong>Special cases:</strong> لل <span class="en">solid shaft</span> <span class="en">k = 0</span> و <span class="en">d<sub>o</sub> = d</span>. بدون <span class="en">axial load</span> <span class="en">F = 0</span>. ولو ال <span class="en">axial load</span> <span class="en">tensile</span> فقط فإن <strong>α = 1</strong>.</p>
+  </div>
+</section>
+
+<!-- ==================== SECTION 8 ==================== -->
+<section id="s8">
+  <h2><span class="num">8</span> Design of Shafts on Basis of Rigidity</h2>
+  <p class="intro ar">في بعض الحالات لا يكفي التصميم على أساس ال <span class="en">strength</span>، بل لازم نضمن أن ال <span class="en">deflection</span> (<span class="en">torsional</span> أو <span class="en">lateral</span>) لا تتجاوز قيمة مسموح بها.</p>
+
+  <div class="theory">
+    <h3 style="border:none; padding:0; margin-top:0">1) Torsional Rigidity</h3>
+    <p class="ar">ال <span class="en">torsional rigidity</span> مهمة في <strong>camshafts</strong> محركات ال <span class="en">I.C. engines</span> لأن ال <span class="en">twist</span> بيأثر على <span class="en">valve timing</span>.</p>
+
+    <div class="callout">
+      <span class="clbl">Permissible Twist Limits</span>
+      <ul class="clean">
+        <li><strong>Camshafts (I.C. engines):</strong> <span class="ar">لا يتجاوز <strong>0.25° / metre</strong>.</span></li>
+        <li><strong>Line shafts / Transmission shafts:</strong> <span class="ar">من <strong>2.5° إلى 3° / metre</strong>.</span></li>
+        <li><strong>Widely-used deflection limit:</strong> <span class="ar"><strong>1° في طول = 20 × d</strong> (أي 20 ضعف القطر).</span></li>
+      </ul>
+    </div>
+
+    <h4>Torsional Deflection Equation</h4>
+    <div class="eq centered">
+      $$ \frac{T}{J} = \frac{G \cdot \theta}{L} \;\Rightarrow\; \boxed{\; \theta = \frac{T \cdot L}{J \cdot G} \;} $$
+    </div>
+
+    <dl class="deflist">
+      <dt>θ</dt><dd>Torsional deflection / angle of twist (radians)</dd>
+      <dt>T</dt><dd>Twisting moment / torque on the shaft</dd>
+      <dt>J</dt><dd>Polar moment of inertia of cross-sectional area:<br>
+        • Solid: $J = \tfrac{\pi}{32}\,d^{4}$<br>
+        • Hollow: $J = \tfrac{\pi}{32}\left[(d_{o})^{4} - (d_{i})^{4}\right]$
+      </dd>
+      <dt>G</dt><dd>Modulus of rigidity of shaft material</dd>
+      <dt>L</dt><dd>Length of the shaft</dd>
+    </dl>
+  </div>
+
+  <div class="theory">
+    <h3 style="border:none; padding:0; margin-top:0">2) Lateral Rigidity</h3>
+    <p class="ar">ال <span class="en">lateral rigidity</span> مهمة في:</p>
+    <ul class="clean">
+      <li><span class="ar"><strong>Transmission shafts</strong> و ال <span class="en">high-speed shafts</span> — أي <span class="en">lateral deflection</span> صغيرة تنتج <span class="en">out-of-balance forces</span> كبيرة جداً.</span></li>
+      <li><span class="ar">المحافظة على <span class="en">bearing clearances</span> الصحيحة.</span></li>
+      <li><span class="ar">محاذاة <span class="en">gear teeth</span> بشكل صحيح (<span class="en">gear teeth alignment</span>).</span></li>
+    </ul>
+
+    <h4>Deflection Calculation Approach</h4>
+    <div class="cases">
+      <div class="case">
+        <span class="tag">Uniform Shaft</span>
+        <span class="ar"><span class="en">cross-section</span> ثابت → استخدام <span class="en">deflection formulae</span> من <strong>Strength of Materials</strong> مباشرة.</span>
+      </div>
+      <div class="case">
+        <span class="tag">Variable Shaft</span>
+        <span class="ar"><span class="en">cross-section</span> متغير → استخدام المعادلة التفاضلية الأساسية ل <span class="en">elastic curve</span>.</span>
+      </div>
+    </div>
+
+    <p class="ar">المعادلة التفاضلية الأساسية ل <span class="en">beam deflection</span>:</p>
+    <div class="eq centered">
+      $$ \frac{d^{2}y}{dx^{2}} = \frac{M}{E \cdot I} $$
+    </div>
+
+    <dl class="deflist">
+      <dt>y</dt><dd>Lateral deflection at position x</dd>
+      <dt>M</dt><dd>Bending moment at section x</dd>
+      <dt>E</dt><dd>Modulus of elasticity of shaft material</dd>
+      <dt>I</dt><dd>Second moment of area (moment of inertia)</dd>
+    </dl>
+
+    <p class="ar">تُحل هذه المعادلة بالتكامل المزدوج مع تطبيق ال <span class="en">boundary conditions</span> للحصول على شكل ال <span class="en">elastic curve</span> و أقصى <span class="en">deflection</span>.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Lecture 8 — Shaft Design &nbsp;•&nbsp; Strength, Rigidity &amp; Fluctuating Loads
+</footer>
+
+</body>
+</html>

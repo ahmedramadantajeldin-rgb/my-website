@@ -645,22 +645,40 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     39. MASTER EQUATION OVERFLOW FIX
-     Override ALL embedded overflow:hidden on containers that
-     wrap MathJax equations across lecture1–7 & sheet1–7.
-     These rules must be at the END so they win specificity.
-  ═══════════════════════════════════════════════════════════ */
+     39. MASTER EQUATION OVERFLOW FIX — SOLVED EXAMPLES FOCUS
+     Lectures 3–7 use different class names for solved examples.
+     This section overrides ALL embedded overflow:hidden that
+     clips long equations inside solved-problem sections.
+     ─────────────────────────────────────────────────────────
+     Lecture 3: .example-card (overflow:hidden), .example-body,
+                .example-step, .formula-box
+     Lecture 4: .example-block, .step, .step-body, .eq-box
+     Lecture 5: .ex (overflow:hidden), .ex-bd, .formula-box
+     Lecture 6: .example-block, .example-body
+     Lecture 7: .example-box, .slide-section, .solution-step
+     ═══════════════════════════════════════════════════════════ */
 
-  /* Lecture section containers — override embedded <style> blocks */
+  /* ── 39a. PARENT WRAPPERS: force overflow visible ──
+     These are the outer containers that have overflow:hidden
+     in embedded <style> blocks. We MUST override to visible
+     so child equation content is never clipped vertically. */
+  .example-card,
+  .example-block,
+  .example-body,
+  .example-box,
+  .ex,
+  .ex-bd,
+  .ex-body,
   .sec,
   .sec-body,
   .section,
   .section-body,
+  .section-card,
   .slide-section,
   .prob-card,
   .solution-area,
   .solution-step,
-  .example-box,
+  .subsection,
   .note,
   .info,
   .tip,
@@ -670,41 +688,74 @@
   .note-box,
   .key-answer,
   .summary,
-  .ex,
-  .ex-body,
   [class*="sec-body"],
   [class*="section-body"] {
-    overflow-y: visible !important;
+    overflow: visible !important;
   }
 
-  /* Lecture-specific IDs — override embedded <style> blocks */
-  #lec1 .sec,
-  #lec1 .sec-body,
-  #lec2 .section,
-  #lec2 .section-body,
-  #lec3 .section,
+  /* ── 39b. LECTURE-SPECIFIC ID OVERRIDES ──
+     Higher specificity to beat embedded #lecN .class rules */
+  #lec3 .example-card,
+  #lec3 .example-body,
+  #lec3 .example-step,
+  #lec3 .section-card,
   #lec3 .section-body,
+  #lec4 .example-block,
   #lec4 .section,
-  #lec4 .section-body,
+  #lec4 .step-body,
+  #lec5 .ex,
+  #lec5 .ex-bd,
   #lec5 .sec,
   #lec5 .sec-body,
-  #lec5 .ex,
+  #lec6 .example-block,
+  #lec6 .example-body,
   #lec6 .section,
-  #lec6 .section-body {
-    overflow-y: visible !important;
-  }
-
-  /* Ensure MathJax containers inside ANY overflow:hidden parent
-     are still rendered fully */
-  * > mjx-container,
-  * > mjx-container[jax="CHTML"],
-  * > mjx-container[jax="CHTML"][display="true"] {
+  #lec6 .section-body,
+  #lec7 .example-box,
+  #lec7 .slide-section,
+  #lec7 .solution-step {
     overflow: visible !important;
-    clip: auto !important;
-    clip-path: none !important;
   }
 
-  /* Formula containers in lectures */
+  /* ── 39c. EQUATION SCROLL CONTAINERS ──
+     Every element that directly contains a long MathJax equation
+     must allow horizontal scrolling. This is the CORE fix for
+     "equation cut off from left/right" on mobile. */
+  .formula-box,
+  .eq,
+  .eq.key,
+  .eq-box,
+  .eq-line,
+  .eq-line.highlight,
+  .example-step > div,
+  .example-step > div > .formula-box,
+  .example-body .formula-box,
+  .example-block .eq-box,
+  .ex-bd .formula-box,
+  .step-body,
+  .step-body .eq-box,
+  .step-content,
+  .step-content .formula-box,
+  .solution-step .formula-box,
+  .slide-section .formula-box {
+    display: block !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* ── 39d. MathJax CONTAINERS — inside solved examples ──
+     Ensure MathJax containers inside ANY parent render fully,
+     never get clipped by a parent's overflow:hidden. */
+  .example-card mjx-container,
+  .example-block mjx-container,
+  .example-body mjx-container,
+  .example-step mjx-container,
+  .example-box mjx-container,
+  .ex mjx-container,
+  .ex-bd mjx-container,
+  .step-body mjx-container,
   .formula-box mjx-container,
   .eq mjx-container,
   .eq-box mjx-container,
@@ -714,32 +765,82 @@
   .note mjx-container,
   .def mjx-container,
   .key mjx-container,
-  .example-box mjx-container {
+  .slide-section mjx-container,
+  * > mjx-container,
+  * > mjx-container[jax="CHTML"],
+  * > mjx-container[jax="CHTML"][display="true"] {
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+  }
+
+  /* MathJax internal math element — must not be width-constrained */
+  mjx-container mjx-math,
+  mjx-container * {
+    max-width: none !important;
+  }
+
+  /* Block-display MathJax — full height, scrollable wrapper */
+  mjx-container[display="true"],
+  mjx-container[jax="CHTML"][display="true"] {
+    display: block !important;
+    min-height: fit-content !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 8px 4px !important;
+    margin: 8px 0 !important;
+    text-align: center !important;
+  }
+
+  /* Inline MathJax — allow wrapping naturally */
+  mjx-container:not([display="true"]) {
     display: inline-block !important;
     overflow: visible !important;
     vertical-align: middle !important;
   }
 
-  /* Block-display MathJax — ensure full height rendering */
-  mjx-container[display="true"] {
-    min-height: fit-content !important;
-    overflow: visible !important;
-    margin: 10px 0 !important;
-  }
-
-  /* Scrollbar hint for wide equations */
+  /* ── 39e. SCROLL INDICATOR — thin scrollbar for touch ── */
+  .formula-box::-webkit-scrollbar,
   .eq::-webkit-scrollbar,
   .eq-box::-webkit-scrollbar,
-  .formula-box::-webkit-scrollbar,
-  mjx-container::-webkit-scrollbar {
-    height: 3px;
+  .step-body::-webkit-scrollbar,
+  .step-content::-webkit-scrollbar,
+  .example-step > div::-webkit-scrollbar,
+  mjx-container[display="true"]::-webkit-scrollbar {
+    height: 4px;
   }
 
+  .formula-box::-webkit-scrollbar-thumb,
   .eq::-webkit-scrollbar-thumb,
   .eq-box::-webkit-scrollbar-thumb,
-  .formula-box::-webkit-scrollbar-thumb,
-  mjx-container::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.15);
+  .step-body::-webkit-scrollbar-thumb,
+  .step-content::-webkit-scrollbar-thumb,
+  .example-step > div::-webkit-scrollbar-thumb,
+  mjx-container[display="true"]::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.18);
     border-radius: 4px;
+  }
+
+  .formula-box::-webkit-scrollbar-track,
+  .eq::-webkit-scrollbar-track,
+  .eq-box::-webkit-scrollbar-track,
+  .step-body::-webkit-scrollbar-track,
+  .step-content::-webkit-scrollbar-track,
+  .example-step > div::-webkit-scrollbar-track,
+  mjx-container[display="true"]::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.04);
+    border-radius: 4px;
+  }
+
+  /* Firefox scrollbar styling */
+  .formula-box,
+  .eq,
+  .eq-box,
+  .step-body,
+  .step-content,
+  mjx-container[display="true"] {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.18) rgba(0,0,0,0.04);
   }
 }

@@ -509,21 +509,378 @@ footer{
 @media (max-width: 480px){
   mjx-container{ font-size: 92% !important; }
 }
+
+/* ============================================================
+   TOP NAVIGATION BAR — Complete Redesign
+   ============================================================ */
+
+#main-nav {
+  background: #162040;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 12px rgba(0,0,0,.45);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  min-height: 52px;
+}
+
+#main-nav::-webkit-scrollbar { display: none; }
+
+#main-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 7px 14px;
+  min-width: 82px;
+  text-decoration: none;
+  color: #8dacc8;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid transparent;
+  transition: background .18s, color .18s, border-color .18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+#main-nav a:hover {
+  background: rgba(255,255,255,.07);
+  color: #cde2f5;
+}
+
+#main-nav a .nav-lec {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #b8d0e8;
+  letter-spacing: .01em;
+  line-height: 1;
+}
+
+#main-nav a .nav-lec .nav-icon {
+  display: inline-flex;
+  width: 13px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+#main-nav a .nav-lec .nav-icon svg {
+  width: 13px;
+  height: 15px;
+}
+
+#main-nav a .nav-topic {
+  font-size: .63rem;
+  color: #607a93;
+  font-weight: 500;
+  letter-spacing: .005em;
+  line-height: 1;
+  text-align: center;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Active tab */
+#main-nav a.active {
+  background: rgba(180,210,240,.10);
+  border-bottom-color: #e2ecf8;
+  color: #fff;
+}
+
+#main-nav a.active .nav-lec {
+  color: #ffffff;
+}
+
+#main-nav a.active .nav-topic {
+  color: #c8dff0;
+}
+
+#main-nav a.active .nav-icon svg path,
+#main-nav a.active .nav-icon svg rect,
+#main-nav a.active .nav-icon svg polygon {
+  stroke: #ffffff;
+  fill: rgba(255,255,255,.12);
+}
+
+/* Home link special colour */
+#main-nav a.home-link {
+  min-width: 62px;
+  padding: 7px 16px 7px 12px;
+  color: #f0c040;
+}
+
+#main-nav a.home-link .nav-lec {
+  color: #f0c040;
+  font-size: .78rem;
+  font-weight: 700;
+  gap: 6px;
+}
+
+#main-nav a.home-link:hover {
+  background: rgba(240,192,64,.09);
+  color: #ffd55a;
+}
+
+#main-nav a.home-link:hover .nav-lec {
+  color: #ffd55a;
+}
+
+/* ---- Responsive ---- */
+
+/* Hamburger toggle (hidden by default) */
+#nav-hamburger {
+  display: none;
+  position: fixed;
+  top: 0; right: 0;
+  z-index: 300;
+  background: #162040;
+  border: none;
+  color: #b8d0e8;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  box-shadow: -2px 0 8px rgba(0,0,0,.3);
+}
+
+#nav-hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+  margin: 4px 0;
+  transition: transform .22s, opacity .22s;
+  border-radius: 2px;
+}
+
+/* Mobile menu overlay */
+#nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8,16,30,.72);
+  z-index: 250;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  #main-nav {
+    position: fixed;
+    top: 0; right: -260px;
+    width: 240px;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: right .28s cubic-bezier(.4,0,.2,1);
+    box-shadow: -4px 0 24px rgba(0,0,0,.5);
+    z-index: 260;
+    padding-top: 56px;
+  }
+
+  #main-nav.nav-open {
+    right: 0;
+  }
+
+  #main-nav a {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 12px 20px;
+    min-width: unset;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    border-right: none;
+    border-top: none;
+  }
+
+  #main-nav a.active {
+    border-left-color: #e2ecf8;
+    border-bottom: none;
+  }
+
+  #main-nav a .nav-lec {
+    font-size: .8rem;
+    gap: 8px;
+  }
+
+  #main-nav a .nav-topic {
+    font-size: .7rem;
+    max-width: unset;
+    text-align: left;
+  }
+
+  #nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 52px;
+    width: 52px;
+  }
+
+  #nav-overlay.active {
+    display: block;
+  }
+
+  /* Push body content down to account for hamburger button */
+  body {
+    padding-top: 52px;
+  }
+
+  /* Sticky TOC needs to account for the body padding-top reset */
+  nav.toc {
+    top: 0;
+  }
+}
 </style>
 <link rel="stylesheet" href="mobile-responsive.css">
 </head>
 <body>
-<nav id="main-nav">
-  <a href="index.html" class="home-link" style="color:#f5c842; border-top-color:transparent; border-bottom-color:transparent;">🏠 Home</a>
-  <a href="lecture1.html" style="border-top-color:#c0440a;border-bottom-color:transparent;">📖 Lec 1<br>Eng</a>
-  <a href="lecture2.html" style="border-top-color:#1e3a5f;border-bottom-color:transparent;">📖 Lec 2<br>Fits & Toleran</a>
-  <a href="lecture3.html" style="border-top-color:#0a3d6b;border-bottom-color:transparent;">📖 Lec 3<br>Stresses</a>
-  <a href="lecture4.html" style="border-top-color:#1a6fd4;border-bottom-color:transparent;">📖 Lec 4<br>Simple Stress</a>
-  <a href="lecture5.html" style="border-top-color:#0b3d6e;border-bottom-color:transparent;">📖 Lec 5<br>Stresses</a>
-  <a href="lecture6.html" style="border-top-color:#8a4e00;border-bottom-color:transparent;">📖 Lec 6<br>Riveted Jo</a>
-  <a href="lecture7.html" style="border-top-color:#1a3a5c; border-bottom-color:transparent;">📖 Lec 7<br>Shafts</a>
-  <a href="lecture8.html" class="active" style="border-top-color:#2c5282; border-bottom-color:#2c5282;">📖 Lec 8<br>Shaft Design</a>
+
+<!-- Mobile hamburger toggle -->
+<button id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleNav()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Mobile overlay -->
+<div id="nav-overlay" onclick="closeNav()"></div>
+
+<!-- ========  TOP NAVIGATION BAR  ======== -->
+<nav id="main-nav" role="navigation" aria-label="Lecture navigation">
+
+  <!-- Page icon SVG snippet (reused via JS clone) -->
+  <template id="page-icon-tpl">
+    <svg viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="1" y="1" width="9" height="13" rx="1.2" stroke="#8dacc8" stroke-width="1.3" fill="rgba(255,255,255,.06)"/>
+      <path d="M3.5 4.5h5M3.5 7h5M3.5 9.5h3" stroke="#8dacc8" stroke-width="1" stroke-linecap="round"/>
+      <path d="M8 1v3.5h3" stroke="#8dacc8" stroke-width="1.1" stroke-linejoin="round" fill="none"/>
+    </svg>
+  </template>
+
+  <!-- Lec 8 — ACTIVE (current page) -->
+  <a href="lecture8.html" class="active" aria-current="page">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 8
+    </span>
+    <span class="nav-topic">Shaft Design</span>
+  </a>
+
+  <!-- Lec 7 -->
+  <a href="lecture7.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 7
+    </span>
+    <span class="nav-topic">Shafts</span>
+  </a>
+
+  <!-- Lec 6 -->
+  <a href="lecture6.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 6
+    </span>
+    <span class="nav-topic">Riveted</span>
+  </a>
+
+  <!-- Lec 5 -->
+  <a href="lecture5.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 5
+    </span>
+    <span class="nav-topic">Stresses II</span>
+  </a>
+
+  <!-- Lec 4 -->
+  <a href="lecture4.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 4
+    </span>
+    <span class="nav-topic">Simple Stress</span>
+  </a>
+
+  <!-- Lec 3 -->
+  <a href="lecture3.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 3
+    </span>
+    <span class="nav-topic">Stresses I</span>
+  </a>
+
+  <!-- Lec 2 -->
+  <a href="lecture2.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 2
+    </span>
+    <span class="nav-topic">Fits &amp; Tol</span>
+  </a>
+
+  <!-- Lec 1 -->
+  <a href="lecture1.html">
+    <span class="nav-lec">
+      <span class="nav-icon"></span>
+      Lec 1
+    </span>
+    <span class="nav-topic">Materials</span>
+  </a>
+
+  <!-- Home -->
+  <a href="index.html" class="home-link">
+    <span class="nav-lec">
+      <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0">
+        <path d="M1.5 6.5L7.5 1.5L13.5 6.5V13H9.5V9H5.5V13H1.5V6.5Z" stroke="#f0c040" stroke-width="1.3" fill="rgba(240,192,64,.10)" stroke-linejoin="round"/>
+      </svg>
+      Home
+    </span>
+  </a>
+
 </nav>
+
+<script>
+  /* Inject page-icon SVG into every .nav-icon slot */
+  (function() {
+    var tpl = document.getElementById('page-icon-tpl');
+    if (!tpl) return;
+    document.querySelectorAll('#main-nav a:not(.home-link) .nav-icon').forEach(function(slot) {
+      var clone = tpl.content.cloneNode(true);
+      slot.appendChild(clone);
+    });
+  })();
+
+  /* Mobile nav toggle */
+  function toggleNav() {
+    var nav = document.getElementById('main-nav');
+    var overlay = document.getElementById('nav-overlay');
+    nav.classList.toggle('nav-open');
+    overlay.classList.toggle('active');
+  }
+  function closeNav() {
+    document.getElementById('main-nav').classList.remove('nav-open');
+    document.getElementById('nav-overlay').classList.remove('active');
+  }
+  /* Close on ESC */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeNav();
+  });
+</script>
 
 <header>
   <div class="tag">Machine Design</div>

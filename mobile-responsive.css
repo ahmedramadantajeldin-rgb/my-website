@@ -16,9 +16,10 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  *, *::before, *::after {
-    max-width: 100vw;
-  }
+  /* NOTE: Removed blanket * { max-width: 100vw } — it was
+     constraining MathJax internal elements and breaking
+     wide equations. Page scroll is prevented by
+     html,body { overflow-x: hidden } in section 21. */
 
   p, li, span, div, td, th, .txt, .def, .key,
   .step-content, .question, .question-title,
@@ -48,14 +49,14 @@
     min-height: 0 !important;
   }
 
-  /* ── 3a. MathJax CHTML containers — allow full rendering, no crop ── */
+  /* ── 3a. MathJax CHTML containers — render at NATURAL width ──
+     Scroll is handled by the PARENT wrapper (.formula-box, .eq-box).
+     mjx-container must NOT be width-constrained. */
   mjx-container,
   mjx-container[jax="CHTML"],
   mjx-container[jax="CHTML"][display="true"] {
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    -webkit-overflow-scrolling: touch;
+    max-width: none !important;
+    overflow: visible !important;
     height: auto !important;
     min-height: 0 !important;
   }
@@ -645,26 +646,17 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     39. MASTER EQUATION OVERFLOW FIX — SOLVED EXAMPLES FOCUS
-     Lectures 3–7 use different class names for solved examples.
-     This section overrides ALL embedded overflow:hidden that
-     clips long equations inside solved-problem sections.
-     ─────────────────────────────────────────────────────────
-     Lecture 3: .example-card (overflow:hidden), .example-body,
-                .example-step, .formula-box
-     Lecture 4: .example-block, .step, .step-body, .eq-box
-     Lecture 5: .ex (overflow:hidden), .ex-bd, .formula-box
-     Lecture 6: .example-block, .example-body
-     Lecture 7: .example-box, .slide-section, .solution-step
+     39. SOLVED EXAMPLES — EQUATION VISIBILITY FIX
+     Lectures 2–7: keep wide equations HORIZONTAL,
+     scale down slightly, and enable horizontal scroll.
+     NEVER clip. NEVER force vertical stacking.
      ═══════════════════════════════════════════════════════════ */
 
-  /* ── 39a. PARENT WRAPPERS: force overflow visible ──
-     These are the outer containers that have overflow:hidden
-     in embedded <style> blocks. We MUST override to visible
-     so child equation content is never clipped vertically. */
+  /* ── 39a. PARENT CONTAINERS: override overflow:hidden ── */
   .example-card,
   .example-block,
   .example-body,
+  .example-step,
   .example-box,
   .ex,
   .ex-bd,
@@ -674,27 +666,24 @@
   .section,
   .section-body,
   .section-card,
+  .subsection,
   .slide-section,
   .prob-card,
   .solution-area,
   .solution-step,
-  .subsection,
-  .note,
-  .info,
-  .tip,
-  .def,
-  .key,
-  .def-box,
-  .note-box,
-  .key-answer,
+  .step-body,
+  .step-content,
+  .note, .info, .tip,
+  .def, .key,
+  .def-box, .note-box, .key-answer,
   .summary,
   [class*="sec-body"],
   [class*="section-body"] {
     overflow: visible !important;
   }
 
-  /* ── 39b. LECTURE-SPECIFIC ID OVERRIDES ──
-     Higher specificity to beat embedded #lecN .class rules */
+  /* ── 39b. LECTURE-SPECIFIC ID OVERRIDES ── */
+  #lec2 .section-body,
   #lec3 .example-card,
   #lec3 .example-body,
   #lec3 .example-step,
@@ -717,130 +706,73 @@
     overflow: visible !important;
   }
 
-  /* ── 39c. EQUATION SCROLL CONTAINERS ──
-     Every element that directly contains a long MathJax equation
-     must allow horizontal scrolling. This is the CORE fix for
-     "equation cut off from left/right" on mobile. */
+  /* ── 39c. EQUATION WRAPPERS: horizontal scroll ──
+     These are the direct wrappers around equations.
+     They get overflow-x:auto to create a scroll container.
+     DO NOT set display:block — it breaks flex layouts. */
   .formula-box,
   .eq,
   .eq.key,
   .eq-box,
   .eq-line,
-  .eq-line.highlight,
-  .example-step > div,
-  .example-step > div > .formula-box,
-  .example-body .formula-box,
-  .example-block .eq-box,
-  .ex-bd .formula-box,
-  .step-body,
-  .step-body .eq-box,
-  .step-content,
-  .step-content .formula-box,
-  .solution-step .formula-box,
-  .slide-section .formula-box {
-    display: block !important;
+  .eq-line.highlight {
     max-width: 100% !important;
     overflow-x: auto !important;
     overflow-y: visible !important;
     -webkit-overflow-scrolling: touch !important;
   }
 
-  /* ── 39d. MathJax CONTAINERS — inside solved examples ──
-     Ensure MathJax containers inside ANY parent render fully,
-     never get clipped by a parent's overflow:hidden. */
-  .example-card mjx-container,
-  .example-block mjx-container,
-  .example-body mjx-container,
-  .example-step mjx-container,
-  .example-box mjx-container,
-  .ex mjx-container,
-  .ex-bd mjx-container,
-  .step-body mjx-container,
-  .formula-box mjx-container,
-  .eq mjx-container,
-  .eq-box mjx-container,
-  .eq-line mjx-container,
-  .step-content mjx-container,
-  .solution-step mjx-container,
-  .note mjx-container,
-  .def mjx-container,
-  .key mjx-container,
-  .slide-section mjx-container,
-  * > mjx-container,
-  * > mjx-container[jax="CHTML"],
-  * > mjx-container[jax="CHTML"][display="true"] {
+  /* ── 39d. MathJax: natural width, no constraint ──
+     mjx-container renders at its natural width.
+     The PARENT wrapper (.formula-box etc) scrolls. */
+  mjx-container,
+  mjx-container[jax="CHTML"],
+  mjx-container[jax="CHTML"][display="true"] {
+    max-width: none !important;
     overflow: visible !important;
-    clip: auto !important;
-    clip-path: none !important;
   }
 
-  /* MathJax internal math element — must not be width-constrained */
   mjx-container mjx-math,
   mjx-container * {
     max-width: none !important;
   }
 
-  /* Block-display MathJax — full height, scrollable wrapper */
-  mjx-container[display="true"],
-  mjx-container[jax="CHTML"][display="true"] {
-    display: block !important;
-    min-height: fit-content !important;
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding: 8px 4px !important;
-    margin: 8px 0 !important;
-    text-align: center !important;
+  /* ── 39e. SLIGHT SCALE-DOWN for mobile ──
+     Reduce equation font-size slightly so more fits on screen.
+     If still too wide, the parent wrapper scrolls. */
+  .formula-box mjx-container,
+  .eq mjx-container,
+  .eq-box mjx-container,
+  .example-step mjx-container[display="true"],
+  .example-body mjx-container[display="true"],
+  .example-block mjx-container[display="true"],
+  .ex-bd mjx-container[display="true"],
+  .step-body mjx-container[display="true"],
+  .step-content mjx-container[display="true"],
+  .solution-step mjx-container[display="true"],
+  .slide-section mjx-container[display="true"] {
+    font-size: 0.88em !important;
   }
 
-  /* Inline MathJax — allow wrapping naturally */
-  mjx-container:not([display="true"]) {
-    display: inline-block !important;
-    overflow: visible !important;
-    vertical-align: middle !important;
-  }
-
-  /* ── 39e. SCROLL INDICATOR — thin scrollbar for touch ── */
+  /* ── 39f. SCROLLBAR STYLING ── */
   .formula-box::-webkit-scrollbar,
   .eq::-webkit-scrollbar,
-  .eq-box::-webkit-scrollbar,
-  .step-body::-webkit-scrollbar,
-  .step-content::-webkit-scrollbar,
-  .example-step > div::-webkit-scrollbar,
-  mjx-container[display="true"]::-webkit-scrollbar {
+  .eq-box::-webkit-scrollbar {
     height: 4px;
   }
-
   .formula-box::-webkit-scrollbar-thumb,
   .eq::-webkit-scrollbar-thumb,
-  .eq-box::-webkit-scrollbar-thumb,
-  .step-body::-webkit-scrollbar-thumb,
-  .step-content::-webkit-scrollbar-thumb,
-  .example-step > div::-webkit-scrollbar-thumb,
-  mjx-container[display="true"]::-webkit-scrollbar-thumb {
+  .eq-box::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.18);
     border-radius: 4px;
   }
-
   .formula-box::-webkit-scrollbar-track,
   .eq::-webkit-scrollbar-track,
-  .eq-box::-webkit-scrollbar-track,
-  .step-body::-webkit-scrollbar-track,
-  .step-content::-webkit-scrollbar-track,
-  .example-step > div::-webkit-scrollbar-track,
-  mjx-container[display="true"]::-webkit-scrollbar-track {
+  .eq-box::-webkit-scrollbar-track {
     background: rgba(0,0,0,0.04);
-    border-radius: 4px;
   }
-
-  /* Firefox scrollbar styling */
-  .formula-box,
-  .eq,
-  .eq-box,
-  .step-body,
-  .step-content,
-  mjx-container[display="true"] {
+  .formula-box, .eq, .eq-box {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.18) rgba(0,0,0,0.04);
+    scrollbar-color: rgba(0,0,0,0.18) transparent;
   }
 }

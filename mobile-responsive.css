@@ -1162,4 +1162,385 @@
     padding: 20px 14px !important;
     overflow: visible !important;
   }
+
+  /* ═══════════════════════════════════════════════════════════
+     44. LECTURE 4 — NOTES SECTION: WORD-BREAKING FIX (CRITICAL)
+
+     WHY THIS BREAKS:
+     The global rule (section 2) applies word-break:break-word
+     to all div, p, li elements. Inside RTL .note containers,
+     English .term elements (e.g. "compressive stress",
+     "higher coefficient of thermal expansion") get broken
+     letter-by-letter because the container is too narrow
+     on mobile, and the browser treats each Latin character
+     as a breakable unit under word-break:break-word in RTL.
+
+     FIX: Override word-break on .note parents to keep-all,
+     set .term to nowrap with horizontal scroll fallback,
+     and ensure proper spacing for mixed Arabic+English.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* 44a. Note containers — prevent aggressive word-breaking */
+  #lec4 .note {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    overflow: visible !important;
+    padding: 14px 16px !important;
+    line-height: 2 !important;
+  }
+
+  /* 44b. Note paragraphs inside notes — same treatment */
+  #lec4 .note p,
+  #lec4 .note li,
+  #lec4 .note strong {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+  }
+
+  /* 44c. .term elements — NEVER break letter-by-letter */
+  #lec4 .term {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    font-size: 13px !important;
+    padding: 2px 8px !important;
+    vertical-align: baseline !important;
+    line-height: 1.6 !important;
+  }
+
+  /* 44d. Highlight boxes — same word-break fix */
+  #lec4 .highlight {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    overflow: visible !important;
+    line-height: 2 !important;
+  }
+
+  #lec4 .highlight strong,
+  #lec4 .highlight li,
+  #lec4 .highlight p {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+  }
+
+  /* 44e. Figure descriptions — prevent breaking */
+  #lec4 .figure-desc {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    line-height: 2 !important;
+  }
+
+  #lec4 .figure-desc .term {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  /* 44f. Section paragraphs containing .term */
+  #lec4 .section p {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    line-height: 2 !important;
+  }
+
+  /* 44g. Section list items containing .term */
+  #lec4 .section li {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+  }
+
+  /* 44h. Equation wrappers inside notes — proper LTR + scroll */
+  #lec4 .note div[style*="direction:ltr"],
+  #lec4 .note div[style*="direction: ltr"] {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     45. LECTURE 5 — SOLUTION BLOCKS: VISIBILITY & CENTERING
+          (CRITICAL FIX)
+
+     WHY THIS BREAKS:
+     1. .sec and .ex have overflow:hidden in their base CSS,
+        which clips wide MathJax equations on narrow screens.
+     2. Containers aren't centered — content sticks to the left.
+     3. No horizontal scroll for long equations, so they just
+        get cut off or hidden.
+     4. .fbox (formula boxes) inherit overflow:hidden from
+        parent .ex which prevents scrolling.
+
+     FIX:
+     A. Override overflow:hidden → visible on all parent wrappers.
+     B. Center .ex and .fbox with margin auto.
+     C. Make .fbox a proper scroll container (overflow-x:auto).
+     D. Proper padding to avoid content touching edges.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* 45a. Section wrappers — remove clip, allow visible overflow */
+  #lec5 .sec {
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  /* 45b. Section body — proper mobile padding */
+  #lec5 .sec-bd {
+    padding: 16px 10px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 45c. Example (solution) blocks — center + no clip */
+  #lec5 .ex {
+    overflow: visible !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    border-radius: 12px !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* 45d. Example body — snug padding, no clip */
+  #lec5 .ex-bd {
+    padding: 14px 10px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 45e. Formula boxes — HORIZONTAL SCROLL CONTAINER */
+  #lec5 .fbox {
+    display: block !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 14px 12px !important;
+  }
+
+  /* 45f. MathJax inside .fbox — render at natural width, no clip */
+  #lec5 .fbox mjx-container,
+  #lec5 .fbox mjx-container[jax="CHTML"],
+  #lec5 .fbox mjx-container[jax="CHTML"][display="true"] {
+    max-width: none !important;
+    overflow: visible !important;
+    display: inline-block !important;
+  }
+
+  #lec5 .fbox mjx-container mjx-math,
+  #lec5 .fbox mjx-container * {
+    max-width: none !important;
+  }
+
+  /* 45g. Answer boxes — center on mobile */
+  #lec5 .ans-box {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* 45h. MathJax inside answer boxes — natural width */
+  #lec5 .ans-box mjx-container,
+  #lec5 .ans-box mjx-container[jax="CHTML"][display="true"] {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  /* 45i. Given / Required boxes — proper spacing */
+  #lec5 .given,
+  #lec5 .req {
+    padding: 10px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 45j. Question box — mobile fit */
+  #lec5 .q-box {
+    padding: 10px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 45k. Steps layout — tighter on mobile */
+  #lec5 .step {
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+  }
+
+  #lec5 .step > div:last-child {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  /* 45l. Step number — smaller on mobile */
+  #lec5 .sn {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 45m. Definition boxes — readable on mobile */
+  #lec5 .def {
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 45n. Note/Tip/Warn — mobile friendly */
+  #lec5 .note,
+  #lec5 .tip,
+  #lec5 .warn {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 45o. Image descriptions */
+  #lec5 .imgd {
+    padding: 10px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 45p. Hero — responsive */
+  #lec5 .hero h1 {
+    font-size: 1.5rem !important;
+  }
+
+  #lec5 .hero h2 {
+    font-size: 0.9rem !important;
+  }
+
+  /* 45q. TOC grid — single column */
+  #lec5 .toc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 45r. Two-column → single column */
+  #lec5 .two-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 45s. Section header — snug padding */
+  #lec5 .sec-hd {
+    padding: 12px 12px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  #lec5 .sec-hd h2 {
+    font-size: 1rem !important;
+  }
+
+  #lec5 .sec-num {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 12px !important;
+  }
+
+  /* 45t. Example header — mobile friendly */
+  #lec5 .ex-hd {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  #lec5 .ex-hd .pnum {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+  }
+
+  /* 45u. Wrap container — reduce padding */
+  #lec5 .wrap {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    max-width: 100% !important;
+  }
+
+  /* 45v. Sub-sections — proper spacing */
+  #lec5 .sub {
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  #lec5 .sub h3 {
+    font-size: 0.95rem !important;
+  }
+
+  /* 45w. Scrollbar styling for .fbox on mobile */
+  #lec5 .fbox::-webkit-scrollbar {
+    height: 4px;
+  }
+  #lec5 .fbox::-webkit-scrollbar-thumb {
+    background: rgba(11, 61, 110, 0.25);
+    border-radius: 4px;
+  }
+  #lec5 .fbox::-webkit-scrollbar-track {
+    background: rgba(11, 61, 110, 0.06);
+  }
+  #lec5 .fbox {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(11, 61, 110, 0.25) transparent;
+  }
+
+  /* 45x. Tables inside lecture 5 — scrollable */
+  #lec5 .dtab {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+
+  /* 45y. Equations in step content — allow scroll */
+  #lec5 .step div[style*="direction:ltr"],
+  #lec5 .step div[style*="direction: ltr"],
+  #lec5 .ex-bd div[style*="direction:ltr"],
+  #lec5 .ex-bd div[style*="direction: ltr"] {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* 45z. Ans values inside answer box */
+  #lec5 .ans {
+    font-size: 13px !important;
+    padding: 5px 10px !important;
+    display: inline-block !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  /* 45aa. TOC — mobile padding */
+  #lec5 .toc {
+    padding: 18px 14px !important;
+    margin: 20px 0 !important;
+  }
 }

@@ -21,10 +21,9 @@
      wide equations. Page scroll is prevented by
      html,body { overflow-x: hidden } in section 21. */
 
-  p, li, span, div, td, th, .txt, .def, .key,
+  p, li, div, td, th, .txt,
   .step-content, .question, .question-title,
   .question-meta, .card-description,
-  .note, .info, .tip,
   .def-box, .note-box, .key-answer,
   .summary, .example-box {
     word-wrap: break-word !important;
@@ -430,20 +429,21 @@
 
   /* ── 26. LECTURE WRAPPER ── */
   .lecture-wrapper {
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
     max-width: 100% !important;
   }
 
   .lecture-wrapper > .lec-root {
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
   }
 
   /* ── 27. SECTION / PROBLEM BLOCK - sheet3 styles ── */
   .section,
   .problem-block {
     padding: 16px 12px !important;
-    overflow-y: visible !important;
+    overflow: visible !important;
   }
 
   /* ── 27a. SLIDE SECTIONS & FORMULA BOXES (lecture files) ── */
@@ -933,6 +933,233 @@
   /* ── 39i. PROB-CARD — override overflow:hidden ──
      .prob-card is used in sheet styles with overflow:hidden. */
   .prob-card {
+    overflow: visible !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     40. LECTURE 4 — TECHNICAL TERM WORD-BREAKING FIX
+     .term elements contain English technical phrases like
+     "higher coefficient of thermal expansion" which must NOT
+     be broken letter-by-letter on mobile.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* All lectures that use .term */
+  .term,
+  #lec4 .term,
+  #lec5 .term,
+  #lec6 .term {
+    white-space: nowrap !important;
+    display: inline-block !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  /* Notes that contain .term — ensure flex layout doesn't crush terms */
+  #lec4 .note,
+  #lec4 .highlight {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+  }
+
+  /* Strong elements inside notes — also prevent breaking */
+  #lec4 .note strong,
+  #lec4 .highlight strong {
+    white-space: nowrap !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     41. LECTURE 5 — SOLUTION BLOCK CENTERING & LAYOUT FIX
+     All solution/answer blocks must be visually centered.
+     Layout must be clean and readable on mobile.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Lecture 5 main wrapper — reduce horizontal padding */
+  #lec5 .wrap {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    max-width: 100% !important;
+  }
+
+  /* Lecture 5 section body — snug mobile padding */
+  #lec5 .sec-bd {
+    padding: 16px 12px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 example blocks — center and contain */
+  #lec5 .ex {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    border-radius: 12px !important;
+  }
+
+  /* Lecture 5 example body — snug padding */
+  #lec5 .ex-bd {
+    padding: 14px 12px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 answer boxes — center text and box */
+  #lec5 .ans-box {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 formula boxes — scrollable, centered */
+  #lec5 .fbox {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Lecture 5 given/required boxes — proper mobile spacing */
+  #lec5 .given,
+  #lec5 .req {
+    padding: 10px 12px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 question box — fit on mobile */
+  #lec5 .q-box {
+    padding: 10px 12px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 steps — tighter gap on mobile */
+  #lec5 .step {
+    gap: 8px !important;
+  }
+
+  /* Lecture 5 step number — slightly smaller */
+  #lec5 .sn {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
+  }
+
+  /* Lecture 5 section header — snug padding */
+  #lec5 .sec-hd {
+    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+
+  /* Lecture 5 example header */
+  #lec5 .ex-hd {
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+  }
+
+  /* Lecture 5 note/tip/warn boxes — readable on mobile */
+  #lec5 .note,
+  #lec5 .tip,
+  #lec5 .warn,
+  #lec5 .def {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 image descriptions */
+  #lec5 .imgd {
+    padding: 10px 12px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 5 hero header — responsive */
+  #lec5 .hero h1 {
+    font-size: 1.6rem !important;
+  }
+
+  /* Lecture 5 TOC grid — single column on mobile */
+  #lec5 .toc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Lecture 5 two-column grid → single column */
+  #lec5 .two-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     42. INLINE STYLE OVERRIDE — overflow:hidden
+     Some lecture elements have inline style="overflow:hidden".
+     This CSS cannot directly override inline styles on unknown
+     elements, but these selectors use !important to win.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Override any inline overflow:hidden on notes */
+  .note[style*="overflow"],
+  .section[style*="overflow"],
+  .example-block[style*="overflow"],
+  .prob-card[style*="overflow"],
+  div[style*="overflow:hidden"],
+  div[style*="overflow: hidden"] {
+    overflow: visible !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     43. ALL LECTURES — EQUATION CONTAINER DISPLAY RULES
+     Ensure all equation containers render as block elements
+     with centered text, to keep equations properly positioned.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Equation wrappers should be block + centered */
+  .formula-box,
+  .fbox,
+  .eq-block,
+  .eq-box,
+  .eq,
+  .eq.key {
+    display: block !important;
+    text-align: center !important;
+  }
+
+  /* Lecture 6 specific equation container */
+  #lec6 .eq-block {
+    display: block !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Lecture 3 example step — preserve flex but allow overflow */
+  #lec3 .example-step {
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 4 equation boxes */
+  #lec4 .eq-box {
+    display: block !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+
+  /* Lecture 4 section — snug padding */
+  #lec4 .section {
+    padding: 24px 16px !important;
+    overflow: visible !important;
+  }
+
+  /* Lecture 4 example block */
+  #lec4 .example-block {
+    padding: 20px 14px !important;
     overflow: visible !important;
   }
 }

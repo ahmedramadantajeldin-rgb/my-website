@@ -647,24 +647,32 @@
 
   /* ═══════════════════════════════════════════════════════════
      39. SOLVED EXAMPLES — EQUATION VISIBILITY FIX
-     Lectures 2–7: keep wide equations HORIZONTAL,
+     All Lectures (1–7): keep wide equations HORIZONTAL,
      scale down slightly, and enable horizontal scroll.
      NEVER clip. NEVER force vertical stacking.
+
+     CLASS NAME AUDIT (per-lecture):
+       L1: .sec, .sec-body, .eq-box, .def, .key, .img-desc
+       L2: .section(OH), .section-body, .formula-box, .example-box, .def-box, .note-box, .figure-box
+       L3: .section-card(OH), .section-body, .example-card(OH), .example-body, .example-step, .formula-box, .def-box, .note-box, .subsection
+       L4: .section, .example-block, .eq-box, .step-body, .highlight, .note, .figure-box
+       L5: .sec(OH), .sec-bd, .ex(OH), .ex-bd, .fbox, .def, .note, .tip, .warn, .given, .req, .q-box, .imgd, .ans-box, .wrap
+       L6: .section, .example-block(OH), .example-body, .eq-block, .info-box, .warn-box, .success-box, .danger-box, .figure-card
+       L7: .slide-section, .example-box, .solution-step, .formula-box
+       SHEETS: .page(OH), .doc-body, .question, .qcard, .qbody, .prob-card(OH), .question-box, .solution-area
+       (OH) = has overflow:hidden in source
      ═══════════════════════════════════════════════════════════ */
 
-  /* ── 39a. PARENT CONTAINERS: override overflow:hidden ── */
+  /* ── 39a. PARENT CONTAINERS: override overflow:hidden ──
+     Every wrapper that could clip equation content.
+     Comprehensive list from audit of all 7 lectures + sheets. */
+
+  /* Generic classes (shared across lectures) */
   .example-card,
   .example-block,
   .example-body,
   .example-step,
   .example-box,
-  .ex,
-  .ex-bd,
-  .ex-body,
-  .sec,
-  .sec-body,
-  .section,
-  .section-body,
   .section-card,
   .subsection,
   .slide-section,
@@ -673,40 +681,146 @@
   .solution-step,
   .step-body,
   .step-content,
-  .note, .info, .tip,
-  .def, .key,
+  .step-inner,
+
+  /* Lecture content bodies */
+  .sec-body,
+  .sec-bd,
+  .section-body,
+  .ex-bd,
+
+  /* Equation / formula / info containers */
+  .formula-box,
+  .fbox,
+  .eq-block,
+  .highlight,
+
+  /* Info boxes */
+  .note, .info, .tip, .warn,
+  .def, .key, .imgd,
   .def-box, .note-box, .key-answer,
+  .info-box, .warn-box, .success-box, .danger-box,
+  .figure-box, .figure-card,
   .summary,
+  .given, .req, .q-box,
+
+  /* Sheet components */
+  .qcard,
+  .qbody,
+  .doc-body,
+  .question,
+  .question-box,
+  .ans-box,
+  .ans-text,
+  .def-block,
+  .just-box,
+
+  /* Wildcard matches */
   [class*="sec-body"],
-  [class*="section-body"] {
+  [class*="section-body"],
+  [class*="ex-bd"],
+  [class*="example-body"] {
     overflow: visible !important;
   }
 
-  /* ── 39b. LECTURE-SPECIFIC ID OVERRIDES ── */
+  /* Section-level wrappers that use overflow:hidden for
+     border-radius clipping. We override to visible. */
+  .sec,
+  .ex,
+  .section,
+  .section-card,
+  .example-card,
+  .example-block {
+    overflow: visible !important;
+  }
+
+  /* ── 39b. LECTURE-SPECIFIC ID OVERRIDES ──
+     Higher specificity to beat embedded <style> rules. */
+
+  /* Lecture 1 */
+  #lec1 .sec,
+  #lec1 .sec-body,
+  #lec1 .eq-box,
+  #lec1 .def,
+  #lec1 .key,
+  #lec1 .img-desc,
+  #lec1 .summary,
+
+  /* Lecture 2 */
+  #lec2 .section,
   #lec2 .section-body,
+  #lec2 .example-box,
+  #lec2 .formula-box,
+  #lec2 .def-box,
+  #lec2 .note-box,
+  #lec2 .figure-box,
+
+  /* Lecture 3 */
+  #lec3 .section-card,
+  #lec3 .section-body,
   #lec3 .example-card,
   #lec3 .example-body,
   #lec3 .example-step,
-  #lec3 .section-card,
-  #lec3 .section-body,
-  #lec4 .example-block,
+  #lec3 .subsection,
+  #lec3 .formula-box,
+  #lec3 .def-box,
+  #lec3 .note-box,
+
+  /* Lecture 4 */
   #lec4 .section,
+  #lec4 .example-block,
   #lec4 .step-body,
+  #lec4 .eq-box,
+  #lec4 .highlight,
+  #lec4 .note,
+  #lec4 .figure-box,
+
+  /* Lecture 5 — CRITICAL: uses unique class names */
+  #lec5 .sec,
+  #lec5 .sec-bd,
   #lec5 .ex,
   #lec5 .ex-bd,
-  #lec5 .sec,
-  #lec5 .sec-body,
+  #lec5 .fbox,
+  #lec5 .def,
+  #lec5 .note,
+  #lec5 .tip,
+  #lec5 .warn,
+  #lec5 .given,
+  #lec5 .req,
+  #lec5 .q-box,
+  #lec5 .imgd,
+  #lec5 .ans-box,
+  #lec5 .wrap,
+  #lec5 .sub,
+
+  /* Lecture 6 */
+  #lec6 .section,
   #lec6 .example-block,
   #lec6 .example-body,
-  #lec6 .section,
-  #lec6 .section-body,
-  #lec7 .example-box,
+  #lec6 .eq-block,
+  #lec6 .info-box,
+  #lec6 .warn-box,
+  #lec6 .success-box,
+  #lec6 .danger-box,
+  #lec6 .figure-card,
+
+  /* Lecture 7 */
   #lec7 .slide-section,
-  #lec7 .solution-step {
+  #lec7 .example-box,
+  #lec7 .solution-step,
+  #lec7 .formula-box {
     overflow: visible !important;
   }
 
-  /* ── 39c. EQUATION WRAPPERS: horizontal scroll ──
+  /* ── 39c. .lecture-wrapper: override its overflow:hidden ──
+     Every lecture file sets .lecture-wrapper{overflow:hidden}.
+     This clips wide MathJax equations. */
+  .lecture-wrapper {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+
+  /* ── 39d. EQUATION WRAPPERS: horizontal scroll ──
      These are the direct wrappers around equations.
      They get overflow-x:auto to create a scroll container.
      DO NOT set display:block — it breaks flex layouts. */
@@ -715,16 +829,22 @@
   .eq.key,
   .eq-box,
   .eq-line,
-  .eq-line.highlight {
+  .eq-line.highlight,
+  .eq-block,
+  .fbox,
+  #lec5 .fbox,
+  #lec6 .eq-block,
+  #lec4 .eq-box,
+  #lec1 .eq-box {
     max-width: 100% !important;
     overflow-x: auto !important;
     overflow-y: visible !important;
     -webkit-overflow-scrolling: touch !important;
   }
 
-  /* ── 39d. MathJax: natural width, no constraint ──
+  /* ── 39e. MathJax: natural width, no constraint ──
      mjx-container renders at its natural width.
-     The PARENT wrapper (.formula-box etc) scrolls. */
+     The PARENT wrapper (.formula-box / .fbox / .eq-block etc) scrolls. */
   mjx-container,
   mjx-container[jax="CHTML"],
   mjx-container[jax="CHTML"][display="true"] {
@@ -737,42 +857,82 @@
     max-width: none !important;
   }
 
-  /* ── 39e. SLIGHT SCALE-DOWN for mobile ──
+  /* ── 39f. SLIGHT SCALE-DOWN for mobile ──
      Reduce equation font-size slightly so more fits on screen.
      If still too wide, the parent wrapper scrolls. */
+
+  /* Generic equation containers */
   .formula-box mjx-container,
   .eq mjx-container,
   .eq-box mjx-container,
+  .eq-block mjx-container,
+  .fbox mjx-container,
+
+  /* Lecture-specific solved example contexts */
   .example-step mjx-container[display="true"],
   .example-body mjx-container[display="true"],
   .example-block mjx-container[display="true"],
+  .example-box mjx-container[display="true"],
   .ex-bd mjx-container[display="true"],
+  .sec-bd mjx-container[display="true"],
   .step-body mjx-container[display="true"],
   .step-content mjx-container[display="true"],
+  .step-inner mjx-container[display="true"],
   .solution-step mjx-container[display="true"],
-  .slide-section mjx-container[display="true"] {
+  .slide-section mjx-container[display="true"],
+  .section-body mjx-container[display="true"],
+  .sec-body mjx-container[display="true"],
+
+  /* Sheet-specific */
+  .qbody mjx-container[display="true"],
+  .question mjx-container[display="true"],
+  .doc-body mjx-container[display="true"],
+  .question-box mjx-container[display="true"],
+  .solution-area mjx-container[display="true"],
+  .ans-text mjx-container[display="true"],
+  .def-block mjx-container[display="true"],
+  .just-box mjx-container[display="true"] {
     font-size: 0.88em !important;
   }
 
-  /* ── 39f. SCROLLBAR STYLING ── */
+  /* ── 39g. SCROLLBAR STYLING ── */
   .formula-box::-webkit-scrollbar,
   .eq::-webkit-scrollbar,
-  .eq-box::-webkit-scrollbar {
+  .eq-box::-webkit-scrollbar,
+  .eq-block::-webkit-scrollbar,
+  .fbox::-webkit-scrollbar {
     height: 4px;
   }
   .formula-box::-webkit-scrollbar-thumb,
   .eq::-webkit-scrollbar-thumb,
-  .eq-box::-webkit-scrollbar-thumb {
+  .eq-box::-webkit-scrollbar-thumb,
+  .eq-block::-webkit-scrollbar-thumb,
+  .fbox::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.18);
     border-radius: 4px;
   }
   .formula-box::-webkit-scrollbar-track,
   .eq::-webkit-scrollbar-track,
-  .eq-box::-webkit-scrollbar-track {
+  .eq-box::-webkit-scrollbar-track,
+  .eq-block::-webkit-scrollbar-track,
+  .fbox::-webkit-scrollbar-track {
     background: rgba(0,0,0,0.04);
   }
-  .formula-box, .eq, .eq-box {
+  .formula-box, .eq, .eq-box, .eq-block, .fbox {
     scrollbar-width: thin;
     scrollbar-color: rgba(0,0,0,0.18) transparent;
+  }
+
+  /* ── 39h. SHEET .page — override overflow:hidden ──
+     Sheets embed inside .page wrappers with overflow:hidden.
+     This clips equations within sheet question/solution areas. */
+  .page {
+    overflow: visible !important;
+  }
+
+  /* ── 39i. PROB-CARD — override overflow:hidden ──
+     .prob-card is used in sheet styles with overflow:hidden. */
+  .prob-card {
+    overflow: visible !important;
   }
 }

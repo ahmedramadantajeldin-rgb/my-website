@@ -140,7 +140,10 @@
   }
 
   /* ── 5. NAVIGATION BAR MOBILE FIX ── */
-  #main-nav {
+  /* ── 5. NAVIGATION BAR MOBILE FIX
+     Guard: does NOT apply to lecture8 (.lec8-body) which has
+     its own drawer-style hamburger nav with position:fixed */
+  body:not(.lec8-body) #main-nav {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
@@ -148,11 +151,11 @@
     padding: 0 !important;
   }
 
-  #main-nav::-webkit-scrollbar {
+  body:not(.lec8-body) #main-nav::-webkit-scrollbar {
     display: none !important;
   }
 
-  #main-nav a {
+  body:not(.lec8-body) #main-nav a {
     min-width: auto !important;
     padding: 8px 12px !important;
     font-size: 10px !important;
@@ -161,7 +164,7 @@
   }
 
   /* Hide the long first title on mobile, show only on larger screens */
-  #main-nav a:first-child {
+  body:not(.lec8-body) #main-nav a:first-child {
     max-width: 120px !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -391,7 +394,7 @@
   }
 
   /* ── 22. INLINE STYLED NAV LINKS — tighten spacing ── */
-  #main-nav a[style] {
+  body:not(.lec8-body) #main-nav a[style] {
     padding: 6px 10px !important;
     font-size: 10px !important;
   }
@@ -1957,5 +1960,487 @@
   }
   .bmd-grid {
     grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   52. INDEX.HTML — MOBILE FIXES
+   These rules target elements that exist ONLY in index.html
+   and were previously unaddressed because that file lacked
+   the <link> to this stylesheet.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 52a. SIDE DOTS — hide completely on mobile.
+     On narrow screens they float over card content and
+     are unnecessary since the nav pills serve the same purpose. */
+  .side-dots {
+    display: none !important;
+  }
+
+  /* 52b. HEADER TAG (monospace pill at top) */
+  .header-tag {
+    font-size: 8px !important;
+    letter-spacing: 2px !important;
+    padding: 3px 10px !important;
+    margin-top: 18px !important;
+  }
+
+  /* 52c. HEADER TITLE — responsive scaling */
+  .header-title-en {
+    font-size: clamp(28px, 8vw, 48px) !important;
+    letter-spacing: 1px !important;
+  }
+
+  .header-subtitle {
+    font-size: clamp(16px, 5vw, 28px) !important;
+  }
+
+  .header-desc {
+    font-size: 11px !important;
+    letter-spacing: 1px !important;
+    padding: 0 16px !important;
+  }
+
+  /* 52d. HEADER NAV PILLS — scrollable row instead of column stacking.
+     We override section 48 which forced flex-direction:column.
+     On phones a horizontal scroll row is better than a tall column
+     because the user can reach all 3 pills with one thumb swipe. */
+  .header-nav {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 6px !important;
+    margin-top: 16px !important;
+    padding: 0 12px !important;
+    justify-content: flex-start !important;
+  }
+  .header-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .nav-pill {
+    width: auto !important;
+    max-width: none !important;
+    flex-shrink: 0 !important;
+    padding: 7px 14px !important;
+    font-size: 10px !important;
+    letter-spacing: 1.5px !important;
+  }
+
+  /* 52e. HEADER bottom padding */
+  header {
+    padding-bottom: 20px !important;
+  }
+
+  /* 52f. SECTION BAR — fix oversized horizontal padding */
+  .section-bar {
+    padding: 14px 16px 8px !important;
+  }
+
+  .section-bar-label {
+    font-size: 10px !important;
+    letter-spacing: 2px !important;
+  }
+
+  .section-bar-right {
+    font-size: 9px !important;
+    letter-spacing: 1.5px !important;
+  }
+
+  /* 52g. SEPARATOR LINE — full width on mobile */
+  .sep-line {
+    width: calc(100% - 32px) !important;
+    margin: 0 auto 16px !important;
+  }
+
+  /* 52h. CARD GRID — single column, proper padding */
+  .card-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 0 14px 32px !important;
+  }
+
+  /* 52i. CARD — proper mobile size and touch area */
+  .card {
+    padding: 18px 16px 14px !important;
+    gap: 8px !important;
+  }
+
+  .card:hover {
+    transform: none !important; /* disable hover lift on touch screens */
+  }
+
+  .card-number {
+    font-size: 32px !important;
+  }
+
+  .card-title {
+    font-size: 15px !important;
+  }
+
+  .card-desc {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .card-badge {
+    font-size: 8px !important;
+    padding: 2px 7px !important;
+  }
+
+  /* 52j. CARD ACTIONS — side by side (not stacked).
+     On a card, having two small buttons side by side is fine. */
+  .card-actions {
+    flex-direction: row !important;
+    gap: 8px !important;
+    margin-top: 4px !important;
+  }
+
+  .btn-main {
+    width: auto !important;
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 8px 12px !important;
+    font-size: 10px !important;
+    letter-spacing: 1.5px !important;
+  }
+
+  .btn-arrow {
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 52k. BREADCRUMB — tighten padding */
+  .breadcrumb {
+    padding: 14px 16px 0 !important;
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* 52l. HOME WRAP — reduce oversized padding */
+  .home-wrap {
+    padding: 32px 16px 40px !important;
+  }
+
+  .home-intro {
+    font-size: 9px !important;
+    letter-spacing: 3px !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* 52m. HOME OPTIONS GRID */
+  .home-options {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    padding: 0 !important;
+  }
+
+  /* 52n. HOME CARDS — proper mobile padding + disable hover lift */
+  .home-card {
+    padding: 24px 20px 20px !important;
+    gap: 10px !important;
+  }
+
+  .home-card:hover {
+    transform: none !important;
+  }
+
+  .home-card-title {
+    font-size: 22px !important;
+  }
+
+  .home-card-desc {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .home-card-cta {
+    font-size: 10px !important;
+    letter-spacing: 2px !important;
+  }
+
+  .home-card-icon {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 20px !important;
+  }
+
+  /* 52o. FOOTER */
+  footer {
+    font-size: 8px !important;
+    letter-spacing: 1px !important;
+    padding: 12px 16px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   53. LECTURE 7 — MOBILE FIX
+   lecture7.html uses .container as its main wrapper with NO #lec7 ID.
+   The section 39b rules targeting #lec7 .slide-section etc. never
+   fire. These rules use the actual class names without an ID
+   so they apply correctly.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 53a. Main container */
+  .container {
+    padding: 16px 12px 40px !important;
+    max-width: 100% !important;
+  }
+
+  /* 53b. Page header (lecture 7's .page-header) */
+  .page-header {
+    padding: 36px 20px 30px !important;
+  }
+
+  .page-header h1 {
+    font-size: clamp(1.4rem, 6vw, 2rem) !important;
+    word-break: break-word !important;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.9rem !important;
+  }
+
+  /* 53c. Slide sections */
+  .slide-section {
+    padding: 24px 16px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .slide-title {
+    font-size: 1.1rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* 53d. Formula boxes inside lecture 7 */
+  .formula-box {
+    padding: 16px 12px !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+
+  /* 53e. Example boxes */
+  .example-box {
+    padding: 18px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .example-box h3 {
+    font-size: 1rem !important;
+  }
+
+  /* 53f. Solution steps */
+  .solution-step {
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 53g. TOC */
+  .toc {
+    padding: 16px 14px !important;
+    margin: 16px 0 !important;
+  }
+
+  .toc ol {
+    columns: 1 !important;
+  }
+
+  .toc a {
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+    display: block !important;
+  }
+
+  /* 53h. Compare grid — single column */
+  .compare-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 53i. Types grid */
+  .types-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 53j. Step layout */
+  .step {
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+  }
+
+  .step-num {
+    flex-shrink: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+  }
+
+  /* 53k. Notes and warning boxes */
+  .note-box,
+  .warning-box,
+  .highlight-box {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+    overflow: visible !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 53l. Figure descriptions */
+  .figure-desc {
+    font-size: 12.5px !important;
+    word-break: keep-all !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   54. LECTURE 8 — MOBILE NAV CONFLICT FIX
+   lecture8.html has its OWN hamburger drawer nav built into its
+   embedded <style> block. The global #main-nav mobile rules in
+   section 5 of this file conflict with that drawer nav by
+   overriding overflow, flex-wrap, and padding.
+   These rules neutralise that conflict by deferring to lecture8's
+   own nav logic for its specific drawer layout.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 54a. Lecture 8 has its own nav that is drawer-style (position:fixed
+     sliding from right). Do NOT force overflow-x:auto on it or
+     collapse it to a scroll bar — that breaks the drawer. */
+  /* We use the nav-hamburger presence as a proxy for "lec8 is open".
+     Since we cannot detect it purely in CSS, we neutralise the most
+     dangerous overrides by using a body[data-lec8] approach in JS
+     (added to lecture8.html) — see 54b. */
+
+  /* 54b. Lec8 main layout container */
+  .lec8-body main,
+  .lec8-body .content-area {
+    padding-top: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* 54c. Lecture 8 section cards */
+  .lec8-body section {
+    padding: 24px 16px !important;
+    overflow: visible !important;
+  }
+
+  /* 54d. Math containers in lecture 8 */
+  .lec8-body .eq-block,
+  .lec8-body .formula-box {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+
+  /* 54e. Step boxes in lecture 8 */
+  .lec8-body .step-box,
+  .lec8-body .solution-box {
+    padding: 16px 14px !important;
+    overflow: visible !important;
+  }
+
+  /* 54f. Nav hamburger button — ensure it is touch-friendly */
+  #nav-hamburger {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    padding: 12px !important;
+  }
+
+  /* 54g. Nav overlay — full screen */
+  #nav-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 255 !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   55. GLOBAL TOUCH IMPROVEMENTS — applies to ALL files
+   Final polish layer for any missed elements.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 55a. All anchor/button elements — minimum 44px touch target */
+  a, button, [role="button"], [tabindex="0"] {
+    min-height: 44px;
+  }
+
+  /* Override on icon-only buttons to avoid layout disruption */
+  .btn-arrow {
+    min-height: unset !important;
+    height: 36px !important;
+    width: 36px !important;
+  }
+
+  /* 55b. Prevent iOS tap highlight flash on interactive elements */
+  a, button {
+    -webkit-tap-highlight-color: rgba(232,160,32,.18) !important;
+  }
+
+  /* 55c. Smooth scrolling on all scroll containers */
+  [style*="overflow-x: auto"],
+  [style*="overflow-x:auto"],
+  .formula-box,
+  .eq, .eq-box, .eq-block, .fbox,
+  #main-nav,
+  .header-nav,
+  .toc .inner {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: none !important;
+  }
+
+  /* 55d. Prevent font size inflation on iOS (belt-and-suspenders) */
+  html {
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+  }
+
+  /* 55e. Input/select elements — readable font size (prevents iOS zoom) */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* 55f. hr and dividers */
+  hr {
+    margin: 16px 0 !important;
+  }
+
+  /* 55g. Pre/code blocks — horizontal scroll */
+  pre, code {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    font-size: 12px !important;
+    white-space: pre !important;
+  }
+
+  /* 55h. Lists — prevent text from touching screen edge */
+  ul, ol {
+    padding-right: 20px !important;
+    padding-left: 8px !important;
+  }
+
+  /* For RTL pages */
+  [dir="rtl"] ul,
+  [dir="rtl"] ol {
+    padding-right: 8px !important;
+    padding-left: 20px !important;
   }
 }

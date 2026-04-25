@@ -411,11 +411,19 @@
 
   @media (max-width: 680px) {
     .container { padding: 24px 16px; }
-    .slide-section { padding: 28px 20px; }
+    .slide-section { padding: 28px 20px; overflow: visible; }
     .compare-grid { grid-template-columns: 1fr; }
     .toc ol { columns: 1; }
     .page-header h1 { font-size: 1.8rem; }
-    .example-box { padding: 20px 16px; }
+    .example-box { padding: 20px 16px; overflow: visible; }
+    /* Override overflow:hidden on any element that clips equations */
+    #lec7 .slide-section,
+    #lec7 .example-box,
+    #lec7 .solution-step,
+    #lec7 .formula-box { overflow: visible !important; }
+    #lec7 .formula-box { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+    #lec7 mjx-container { max-width: none !important; overflow: visible !important; }
+    #lec7 mjx-container * { max-width: none !important; }
   }
 </style>
 
@@ -439,6 +447,7 @@
 </nav>
 
 <!-- ═══════════════════════════════════════════════════ HEADER -->
+<div id="lec7">
 <header class="page-header">
   <h1>📐 Design of Shafts &amp; Keys</h1>
   <p class="subtitle">شرح تفصيلي وشامل للمحاضرة — د. لينا بسيوني</p>
@@ -1722,6 +1731,7 @@
   <p>📚 شرح محاضرة: Design of Shafts &amp; Keys — Mechanical Engineering, Machine Design 5</p>
   <p style="margin-top:6px;font-size:0.8rem;">د. لينا بسيوني | إعداد: شرح تفصيلي شامل</p>
 </footer>
+</div><!-- /#lec7 -->
 
 </body>
 </html>

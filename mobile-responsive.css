@@ -1913,6 +1913,35 @@
     font-size: 14px !important;
     padding: 10px 16px !important;
   }
+
+  /* 51. Global MathJax and Formula Box Responsiveness */
+  .formula-box, .math-container, .eq-box, .eq, mjx-container[display="true"] {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    box-sizing: border-box !important;
+  }
+
+  mjx-container * {
+    max-width: none !important;
+  }
+
+  .formula-box::-webkit-scrollbar, .math-container::-webkit-scrollbar, .eq-box::-webkit-scrollbar, .eq::-webkit-scrollbar, mjx-container[display="true"]::-webkit-scrollbar {
+    height: 4px;
+  }
+  .formula-box::-webkit-scrollbar-thumb, .math-container::-webkit-scrollbar-thumb, .eq-box::-webkit-scrollbar-thumb, .eq::-webkit-scrollbar-thumb, mjx-container[display="true"]::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+  }
+
+  mjx-container {
+    font-size: 95% !important;
+  }
 }
 
 /* 50. Tablets (max-width: 1024px) */

@@ -32,8 +32,8 @@ h2 { color: #0d47a1; margin-top: 30px; }
 h3 { color: #1565c0; margin-top: 20px; }
 h4 { color: #1976d2; margin-top: 15px; }
 hr { border: 0; border-top: 2px solid #1976d2; margin: 30px 0; }
-img { max-width: 100%; width: auto; display: block; margin: 20px auto; border: 2px solid #ddd; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: clamp(10px, 3vw, 20px); background-color: #f5f5f5; line-height: 1.6; }
+img { max-width: 600px; display: block; margin: 20px auto; border: 2px solid #ddd; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; line-height: 1.6; }
 .note { background-color: #fff9e6; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; font-style: italic; }
 .success-note { background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; }
 </style>
@@ -73,8 +73,8 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 
 #main-nav a:hover { color: #fff; background: rgba(255,255,255,0.09); }
 #main-nav a.active { color: #fff; background: rgba(255,255,255,0.10); border-bottom-color: #f5c842 !important; }
 </style>
-<link rel="stylesheet" href="mobile-responsive.css">
-</head>
+
+<link rel="stylesheet" href="mobile-responsive.css"></head>
 <body>
 <nav id="main-nav" style="background:#1a2744;display:flex;align-items:stretch;position:sticky;top:0;z-index:9999;box-shadow:0 3px 16px rgba(0,0,0,0.35);overflow-x:auto;">
   <a href="sheet1.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;color:rgba(255,255,255,0.55);text-decoration:none;font-size:11px;font-weight:600;border-bottom:3px solid transparent;border-top:3px solid transparent;white-space:nowrap;font-family:'Cairo',sans-serif;">Sht 1</a><a href="sheet2.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;color:rgba(255,255,255,0.55);text-decoration:none;font-size:11px;font-weight:600;border-bottom:3px solid transparent;border-top:3px solid transparent;white-space:nowrap;font-family:'Cairo',sans-serif;">Sht 2</a><a href="sheet3.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;color:rgba(255,255,255,0.55);text-decoration:none;font-size:11px;font-weight:600;border-bottom:3px solid transparent;border-top:3px solid transparent;white-space:nowrap;font-family:'Cairo',sans-serif;">Sht 3</a><a href="sheet4.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;color:rgba(255,255,255,0.55);text-decoration:none;font-size:11px;font-weight:600;border-bottom:3px solid transparent;border-top:3px solid transparent;white-space:nowrap;font-family:'Cairo',sans-serif;">Sht 4</a><a href="sheet5.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;color:#f5a623;text-decoration:none;font-size:11px;font-weight:600;border-bottom:3px solid #f5a623;border-top:3px solid transparent;white-space:nowrap;font-family:'Cairo',sans-serif;">Sht 5</a><a href="sheet6.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;color:rgba(255,255,255,0.55);text-decoration:none;font-size:11px;font-weight:600;border-bottom:3px solid transparent;border-top:3px solid transparent;white-space:nowrap;font-family:'Cairo',sans-serif;">Sht 6</a>
@@ -774,22 +774,5 @@ $$\tau_{B(web)} = \frac{50,000 \times 47,250}{5,906,250 \times 15} = \frac{2,362
 </div>
 
 <script src="nav-inject.js"></script>
-<script>
-/* Mobile table-scroll wrapper */
-(function () {
-  if (window.innerWidth > 768) return;
-  document.querySelectorAll("table").forEach(function (tbl) {
-    var parent = tbl.parentElement;
-    if (!parent) return;
-    var cls = (parent.className || "").toLowerCase();
-    if (cls.indexOf("table-wrap") !== -1 || cls.indexOf("scroll") !== -1 ||
-        parent.style.overflowX === "auto") return;
-    var wrap = document.createElement("div");
-    wrap.style.cssText = "overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;width:100%;margin:8px 0;";
-    parent.insertBefore(wrap, tbl);
-    wrap.appendChild(tbl);
-  });
-}());
-</script>
 </body>
 </html>

@@ -582,7 +582,7 @@
             <polyline points="14 2 14 8 20 8"/>
             <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
           </svg>
-          <span class="home-card-number">6</span>
+          <span class="home-card-number">7</span>
         </div>
         <div class="home-card-title">Sheets</div>
         <div class="home-card-desc">Problem sheets with full model answers and complete worked solutions.</div>
@@ -635,7 +635,7 @@
 
   <div class="section-bar">
     <span class="section-bar-label">All Sheets</span>
-    <span class="section-bar-right">6 Sheets</span>
+    <span class="section-bar-right">7 Sheets</span>
   </div>
   <div class="sep-line"></div>
 
@@ -647,7 +647,7 @@
 
 
 <!-- ─── FOOTER ─── -->
-<footer>ME307 Machine Design — All Sheets Combined — Model Answers &amp; Full Solutions</footer>
+<footer>ME307 Machine Design — All Sheets Combined — Model Answers &amp; Full Solutions — Sheet 1 to Sheet 7</footer>
 
 
 <script>
@@ -770,6 +770,14 @@ const SHEETS = [
     btn:   "Full Solutions",
     link:  "sheet6.html",
   },
+  {
+    num: "07",
+    badge: "SHEET 7",
+    title: "Shaft Design",
+    desc:  "Shaft design problems — torque transmission, hollow vs solid shafts, combined bending & torsion, and twist-limited design (Q1–Q12).",
+    btn:   "Full Solutions",
+    link:  "sheet7.html",
+  },
 ];
 
 /* ═══════════════════════════════════════════
@@ -796,12 +804,25 @@ function makeCard(item) {
 }
 
 document.getElementById('lecturesGrid').innerHTML = LECTURES.map(makeCard).join('');
+
+const pages = ['home','lectures','sheets'];
+
+/* ═══════════════════════════════════════════
+   RESTORE LAST PAGE (e.g. back from Sheet 7)
+═══════════════════════════════════════════ */
+(function() {
+  const saved = localStorage.getItem('me307_page');
+  if (saved && pages.includes(saved)) {
+    showPage(saved);
+    localStorage.removeItem('me307_page');
+  }
+})();
 document.getElementById('sheetsGrid').innerHTML   = SHEETS.map(makeCard).join('');
 
 /* ═══════════════════════════════════════════
    SIDE DOTS
 ═══════════════════════════════════════════ */
-const pages = ['home','lectures','sheets'];
+
 const dotLabels = {home:'⌂', lectures:'L', sheets:'S'};
 const sideDots = document.getElementById('sideDots');
 
@@ -821,7 +842,7 @@ pages.forEach(p => {
 const headerMeta = {
   home:     { sub: 'Study Resources',   desc: 'All lectures & sheets — full solutions & model answers' },
   lectures: { sub: 'Lecture Notes',     desc: 'Lecture 1 – 8 — course content & theory' },
-  sheets:   { sub: 'Machine Design Sheets', desc: 'Sheet 1 – Sheet 6 — full solutions & model answers' },
+  sheets:   { sub: 'Machine Design Sheets', desc: 'Sheet 1 – Sheet 7 — full solutions & model answers' },
 };
 
 function showPage(id) {

@@ -4961,5 +4961,24 @@ window.addEventListener('load', function() {
 });
 </script>
 <script src="nav-inject.js"></script>
+<script>
+/* Mobile table-scroll wrapper — auto-wraps bare <table> elements
+   in a scrollable div on screens ≤ 768 px. */
+(function () {
+  if (window.innerWidth > 768) return;
+  document.querySelectorAll("table").forEach(function (tbl) {
+    var parent = tbl.parentElement;
+    if (!parent) return;
+    var cls = (parent.className || "").toLowerCase();
+    if (cls.indexOf("table-wrap") !== -1 || cls.indexOf("scroll") !== -1 ||
+        parent.style.overflowX === "auto") return;
+    var wrap = document.createElement("div");
+    wrap.className = "table-scroll-wrap";
+    wrap.style.cssText = "overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;width:100%;margin:8px 0;";
+    parent.insertBefore(wrap, tbl);
+    wrap.appendChild(tbl);
+  });
+}());
+</script>
 </body>
 </html>

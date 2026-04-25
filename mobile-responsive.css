@@ -2444,3 +2444,1708 @@
     padding-left: 20px !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   56. SHEET 1 — Engineering Materials
+   Classes: .page, .doc-header, .doc-body, .question, .question-title,
+            .question-meta, .key-answer, .solution-heading, .sub-heading,
+            .table-wrap, .sheet-section-anchor
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 56a. Page wrapper */
+  .page {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* 56b. Document header */
+  .doc-header {
+    padding: 20px 16px !important;
+    text-align: center !important;
+  }
+
+  .doc-header .course {
+    font-size: 0.82rem !important;
+    word-break: break-word !important;
+  }
+
+  .doc-header .subtitle {
+    font-size: 0.78rem !important;
+    word-break: break-word !important;
+  }
+
+  .doc-header .institution {
+    font-size: 0.72rem !important;
+    word-break: break-word !important;
+  }
+
+  /* 56c. Document body container */
+  .doc-body {
+    padding: 12px 14px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 56d. Question blocks */
+  .question {
+    padding: 14px 12px !important;
+    margin-bottom: 16px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .question-title {
+    font-size: 0.92rem !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .question-meta {
+    font-size: 0.78rem !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* 56e. Solution heading */
+  .solution-heading {
+    font-size: 0.8rem !important;
+    padding: 6px 10px !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* 56f. Sub-heading */
+  .sub-heading {
+    font-size: 0.88rem !important;
+    margin: 12px 0 6px !important;
+  }
+
+  /* 56g. Key answer summary boxes */
+  .key-answer {
+    padding: 10px 12px !important;
+    font-size: 0.82rem !important;
+    line-height: 1.6 !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 56h. Table wrapper — horizontal scroll */
+  .table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* 56i. All tables inside sheet1 */
+  .doc-body table {
+    min-width: 480px !important;
+    font-size: 11.5px !important;
+  }
+
+  .doc-body table th,
+  .doc-body table td {
+    padding: 7px 9px !important;
+    font-size: 11.5px !important;
+    word-break: break-word !important;
+  }
+
+  /* 56j. Document footer */
+  .doc-footer {
+    padding: 10px 14px !important;
+    font-size: 0.6rem !important;
+    text-align: center !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   57. SHEET 2 — Limits, Fits & Tolerances
+   Classes: .hdr, .hdr-badge, .hdr-sub, .hdr-pills, .pill, .hdr-stripe,
+            .toc-wrap, .toc-cols, .toc-row, .toc-n, .toc-tag,
+            .content, .qcard, .qcard-hdr, .q-num, .q-title, .q-badge,
+            .qbody, .slabel, .q-text, .gr-grid, .gr-box, .sub-hd, .body-p,
+            .eq-box, .eq-box.hi, .ans-box, .ans-text, .comp-table,
+            .fit-table, .it-table, .def-block, .desg, .cl, .in, .cat-*,
+            .bd-list, .mcq-ans
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 57a. Sheet 2 header */
+  .hdr {
+    padding: 24px 16px 20px !important;
+    overflow: hidden !important;
+    max-width: 100% !important;
+  }
+
+  .hdr-badge {
+    font-size: 0.65rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  .hdr h1 {
+    font-size: clamp(1.2rem, 5.5vw, 1.8rem) !important;
+    line-height: 1.3 !important;
+    word-break: break-word !important;
+    text-align: center !important;
+  }
+
+  .hdr-sub {
+    font-size: 0.78rem !important;
+    word-break: break-word !important;
+    text-align: center !important;
+  }
+
+  /* 57b. Pills row */
+  .hdr-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    margin-top: 10px !important;
+  }
+
+  .pill {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+  }
+
+  .hdr-stripe {
+    height: 3px !important;
+    margin-top: 14px !important;
+  }
+
+  /* 57c. TOC */
+  .toc-wrap {
+    padding: 14px 14px !important;
+    margin: 16px 0 !important;
+  }
+
+  .toc-wrap h3 {
+    font-size: 0.88rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  .toc-cols {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  .toc-row {
+    font-size: 0.78rem !important;
+    padding: 8px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+  }
+
+  .toc-n {
+    font-size: 0.7rem !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .toc-tag {
+    margin-left: auto !important;
+    font-size: 0.6rem !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* 57d. Content wrapper */
+  .content {
+    padding: 12px 12px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 57e. Question cards */
+  .qcard {
+    margin-bottom: 20px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 8px !important;
+  }
+
+  .qcard-hdr {
+    padding: 12px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .q-num {
+    font-size: 1rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .q-title {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .q-badge {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* 57f. Question body */
+  .qbody {
+    padding: 14px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .slabel {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .q-text {
+    font-size: 0.88rem !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important;
+  }
+
+  /* 57g. Given/Required grid */
+  .gr-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .gr-box {
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    font-size: 0.83rem !important;
+  }
+
+  .gr-box h4 {
+    font-size: 0.78rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  .gr-box ul {
+    padding-left: 16px !important;
+  }
+
+  .gr-box li {
+    font-size: 0.82rem !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+  }
+
+  /* 57h. Sub-heading inside qbody */
+  .sub-hd {
+    font-size: 0.85rem !important;
+    margin: 14px 0 6px !important;
+    word-break: break-word !important;
+  }
+
+  /* 57i. Body paragraphs */
+  .body-p {
+    font-size: 0.85rem !important;
+    line-height: 1.65 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 57j. Equation boxes */
+  .eq-box {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px 10px !important;
+    margin: 10px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .eq-box.hi {
+    padding: 14px 12px !important;
+  }
+
+  /* 57k. Answer boxes */
+  .ans-box {
+    padding: 10px 12px !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    font-size: 0.83rem !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+  }
+
+  .ans-text {
+    font-size: 0.82rem !important;
+    line-height: 1.7 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+  }
+
+  /* 57l. Comparison / Fit / IT tables */
+  .comp-table,
+  .fit-table,
+  .it-table {
+    min-width: 440px !important;
+    font-size: 11.5px !important;
+    display: table !important;
+  }
+
+  .comp-table th, .comp-table td,
+  .fit-table th, .fit-table td,
+  .it-table th, .it-table td {
+    padding: 6px 8px !important;
+    font-size: 11.5px !important;
+    word-break: break-word !important;
+  }
+
+  /* Wrap wide tables in scrollable container */
+  .qbody table {
+    display: table !important;
+    min-width: 400px !important;
+    font-size: 11.5px !important;
+  }
+
+  /* 57m. Definition block */
+  .def-block {
+    padding: 10px 12px !important;
+    font-size: 0.83rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 57n. Designation box */
+  .desg {
+    font-size: 0.82rem !important;
+    padding: 8px 10px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    word-break: keep-all !important;
+    white-space: nowrap !important;
+    display: block !important;
+  }
+
+  /* 57o. Classification boxes */
+  .cat-a, .cat-b, .cat-c, .cat-d, .cat-e {
+    padding: 10px 12px !important;
+    font-size: 0.82rem !important;
+    overflow: visible !important;
+  }
+
+  /* 57p. MCQ answer box */
+  .ans-box.mcq-ans {
+    font-size: 0.9rem !important;
+    padding: 10px 14px !important;
+  }
+
+  /* 57q. Bold/definition list */
+  .bd-list li {
+    font-size: 0.83rem !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important;
+  }
+
+  /* 57r. Clearance/interference inline labels */
+  .cl, .in {
+    font-size: 0.78rem !important;
+    padding: 2px 6px !important;
+    word-break: keep-all !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   58. SHEET 3 — Simple Stresses in Machine Parts
+   Classes: #sheet3-wrapper, .page-wrap, .doc-header, .doc-subtitle,
+            .uni-badge, .header-meta, .meta-chip, .toc-panel, .toc-grid,
+            .toc-item, .toc-num, .content, .problem, .prob-header,
+            .prob-num, .prob-title, .prob-tag, .prob-body, .sec, .q-text,
+            .data-grid, .data-box.given, .data-box.reqd, .gov-eq,
+            .eq-line, .eq-line.highlight, .answer-box, .ans-content
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 58a. Main wrapper */
+  #sheet3-wrapper {
+    overflow-x: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 58b. Page wrap */
+  .page-wrap {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* 58c. Document header */
+  .doc-header {
+    padding: 20px 16px !important;
+    text-align: center !important;
+  }
+
+  .uni-badge {
+    font-size: 0.65rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    text-align: center !important;
+    display: block !important;
+  }
+
+  .doc-header h1 {
+    font-size: clamp(1.1rem, 5.5vw, 1.7rem) !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+  }
+
+  .doc-subtitle {
+    font-size: 0.78rem !important;
+    word-break: break-word !important;
+    text-align: center !important;
+  }
+
+  /* 58d. Header meta chips */
+  .header-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    margin-top: 10px !important;
+  }
+
+  .meta-chip {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+  }
+
+  /* 58e. TOC panel */
+  .toc-panel {
+    padding: 14px 14px !important;
+    margin: 12px 0 !important;
+  }
+
+  .toc-panel h3 {
+    font-size: 0.88rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  .toc-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+
+  .toc-item {
+    font-size: 0.78rem !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  .toc-num {
+    font-size: 0.68rem !important;
+    padding: 2px 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 58f. Content area */
+  .content {
+    padding: 12px 10px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 58g. Problem cards */
+  .problem {
+    margin-bottom: 20px !important;
+    border-radius: 8px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 58h. Problem header */
+  .prob-header {
+    padding: 12px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .prob-num {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+    flex-shrink: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .prob-title {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    word-break: break-word !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .prob-tag {
+    font-size: 0.6rem !important;
+    padding: 2px 7px !important;
+    flex-shrink: 0 !important;
+    border-radius: 3px !important;
+  }
+
+  /* 58i. Problem body */
+  .prob-body {
+    padding: 14px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .sec {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin: 14px 0 8px !important;
+    display: inline-block !important;
+  }
+
+  .q-text {
+    font-size: 0.88rem !important;
+    line-height: 1.65 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* 58j. Data grid (Given / Required) */
+  .data-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin: 10px 0 14px !important;
+  }
+
+  .data-box {
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .data-box h4 {
+    font-size: 0.78rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  .data-box li {
+    font-size: 0.82rem !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 58k. Governing equations container */
+  .gov-eq {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px 10px !important;
+    margin: 10px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  /* 58l. Equation lines */
+  .eq-line {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 8px 10px !important;
+    margin: 6px 0 !important;
+    display: block !important;
+    border-radius: 4px !important;
+  }
+
+  .eq-line.highlight {
+    padding: 10px 12px !important;
+  }
+
+  /* 58m. Answer box */
+  .answer-box {
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    margin: 14px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .ans-content {
+    font-size: 0.85rem !important;
+    line-height: 1.65 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 58n. MathJax inside sheet3 — allow natural width */
+  #sheet3-wrapper mjx-container {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #sheet3-wrapper mjx-container * {
+    max-width: none !important;
+  }
+
+  /* 58o. Data grid mjx */
+  .gov-eq mjx-container,
+  .eq-line mjx-container,
+  .data-box mjx-container {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   59. SHEET 4 — Torsional & Bending Stresses
+   Classes: .hero, .hero-badge, .hl, .hero-meta, .chip, .wrapper,
+            .toc, .toc-title, .toc-grid, .toc-item, .toc-num, .toc-text,
+            .section, .sec-tag, .note, .highlight, .given-block,
+            .block-title, .eq, .eq-label, .box.blue/.green/.amber/.teal,
+            .fig, .fig-title, .fig-body, .diagram-wrap,
+            .prob-header, .prob-num, .final-ans, .ans-badge, .ans-title,
+            .ans-val, .divider, .divider-line, .divider-text,
+            .intuition, .term
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 59a. Hero section */
+  .hero {
+    padding: 28px 16px 24px !important;
+    text-align: center !important;
+    overflow: hidden !important;
+  }
+
+  .hero-badge {
+    font-size: 0.65rem !important;
+    padding: 4px 10px !important;
+    letter-spacing: 1.5px !important;
+    margin-bottom: 10px !important;
+    display: inline-block !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.2rem, 6vw, 2rem) !important;
+    line-height: 1.25 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .hero .subtitle {
+    font-size: 0.82rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin-top: 8px !important;
+  }
+
+  .hero-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    margin-top: 12px !important;
+  }
+
+  .chip {
+    font-size: 0.65rem !important;
+    padding: 4px 10px !important;
+  }
+
+  /* 59b. Outer wrapper */
+  .wrapper {
+    padding: 0 8px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 59c. TOC */
+  .toc {
+    padding: 14px 12px !important;
+    margin: 16px 0 !important;
+    border-radius: 8px !important;
+  }
+
+  .toc-title {
+    font-size: 0.85rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  .toc-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+
+  .toc-item {
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+    font-size: 0.78rem !important;
+    overflow: hidden !important;
+    gap: 6px !important;
+  }
+
+  .toc-num {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 0.7rem !important;
+    flex-shrink: 0 !important;
+    border-radius: 4px !important;
+  }
+
+  .toc-text {
+    font-size: 0.72rem !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    overflow: hidden !important;
+  }
+
+  /* 59d. Theory sections */
+  .section {
+    padding: 20px 14px !important;
+    margin-bottom: 20px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 8px !important;
+  }
+
+  .section h2 {
+    font-size: 1.1rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.3 !important;
+  }
+
+  .section h3 {
+    font-size: 0.95rem !important;
+    word-break: break-word !important;
+    line-height: 1.4 !important;
+  }
+
+  .section p {
+    font-size: 0.88rem !important;
+    line-height: 1.7 !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .section li {
+    font-size: 0.88rem !important;
+    line-height: 1.7 !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .sec-tag {
+    font-size: 0.6rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 10px !important;
+    display: inline-block !important;
+  }
+
+  /* 59e. Note / highlight boxes in sheet4 */
+  .note {
+    padding: 12px 14px !important;
+    font-size: 0.84rem !important;
+    line-height: 1.75 !important;
+    overflow: visible !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+  }
+
+  /* 59f. Given block */
+  .given-block {
+    padding: 14px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    margin: 12px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .block-title {
+    font-size: 0.65rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+    display: inline-block !important;
+  }
+
+  /* 59g. Equation boxes */
+  .eq {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 10px 10px !important;
+    margin: 8px 0 !important;
+    border-radius: 6px !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  .eq-label {
+    font-size: 0.72rem !important;
+    margin-top: 4px !important;
+    display: block !important;
+  }
+
+  /* 59h. Colored info boxes */
+  .box {
+    padding: 12px 14px !important;
+    font-size: 0.83rem !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 59i. Figures */
+  .fig {
+    padding: 14px 12px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+  }
+
+  .fig-title {
+    font-size: 0.82rem !important;
+    margin-bottom: 8px !important;
+    word-break: break-word !important;
+  }
+
+  .fig-body {
+    font-size: 0.82rem !important;
+    line-height: 1.65 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 59j. SVG diagrams — scale to fit */
+  .diagram-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    margin: 12px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .diagram-wrap svg {
+    min-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  /* 59k. Problem header (problems section) */
+  .prob-header {
+    padding: 14px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+  }
+
+  /* 59l. Final answer box */
+  .final-ans {
+    padding: 14px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    margin-top: 14px !important;
+  }
+
+  .ans-badge {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 6px !important;
+    display: inline-block !important;
+  }
+
+  .ans-title {
+    font-size: 0.82rem !important;
+    word-break: break-word !important;
+  }
+
+  .ans-val {
+    font-size: 1rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 59m. Divider */
+  .divider {
+    margin: 20px 0 !important;
+  }
+
+  .divider-line {
+    height: 1px !important;
+  }
+
+  .divider-text {
+    font-size: 0.7rem !important;
+    padding: 0 10px !important;
+    white-space: nowrap !important;
+  }
+
+  /* 59n. Intuition box */
+  .intuition {
+    padding: 12px 14px !important;
+    font-size: 0.83rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 59o. Technical term labels */
+  .term {
+    font-size: 0.82rem !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  /* 59p. Scrollbar on eq boxes */
+  .eq::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .eq::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.18);
+    border-radius: 4px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   60. SHEET 5 — Torsional & Bending Stresses (Simple Layout)
+   Classes: body (max-width: 1200px), .question-header, .given-section,
+            .solution-section, .reference-section, .step, .formula-box,
+            .note, .success-note, h1, h2, h3, h4, table, img
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 60a. Override body max-width and padding for sheet5 */
+  /* Sheet5 has body { max-width: 1200px; padding: 20px; }.
+     On mobile, the padding creates horizontal overflow. */
+  body {
+    padding: 8px 10px !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 60b. Fix the h1 overflow */
+  h1 {
+    font-size: clamp(1.2rem, 5.5vw, 1.8rem) !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    padding-bottom: 10px !important;
+  }
+
+  h2 {
+    font-size: clamp(1rem, 4.5vw, 1.4rem) !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin-top: 20px !important;
+  }
+
+  h3 {
+    font-size: clamp(0.9rem, 4vw, 1.2rem) !important;
+    word-break: break-word !important;
+  }
+
+  h4 {
+    font-size: 0.9rem !important;
+    word-break: break-word !important;
+  }
+
+  /* 60c. Question header block */
+  .question-header {
+    padding: 12px 14px !important;
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin: 20px 0 12px !important;
+    border-radius: 4px !important;
+  }
+
+  /* 60d. Given / solution / reference sections */
+  .given-section {
+    padding: 12px 14px !important;
+    font-size: 0.88rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+  }
+
+  .given-section h3, .given-section ul, .given-section li {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .given-section li {
+    font-size: 0.85rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .solution-section {
+    padding: 12px 14px !important;
+    font-size: 0.88rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+  }
+
+  .reference-section {
+    padding: 10px 12px !important;
+    font-size: 0.82rem !important;
+    word-break: break-word !important;
+  }
+
+  /* 60e. Steps */
+  .step {
+    margin: 12px 0 !important;
+    padding-left: 12px !important;
+    border-left-width: 3px !important;
+    font-size: 0.88rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+  }
+
+  /* 60f. Formula box — CRITICAL for MathJax equations */
+  .formula-box {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    padding: 12px 10px !important;
+    border-radius: 4px !important;
+    text-align: center !important;
+  }
+
+  /* 60g. Images — CRITICAL: source has max-width: 600px which overflows on phones */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 14px auto !important;
+  }
+
+  /* 60h. Tables — full-width with horizontal scroll */
+  table {
+    min-width: 400px !important;
+    font-size: 12px !important;
+    display: table !important;
+  }
+
+  th, td {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+    word-break: break-word !important;
+  }
+
+  /* 60i. Wrap all tables in scrollable div:
+     We target the table parent since sheet5 has tables
+     directly in <body> without .table-wrap */
+  .solution-section table,
+  .given-section table,
+  .step table,
+  body > table {
+    display: table !important;
+    min-width: 380px !important;
+  }
+
+  /* 60j. Note and success note */
+  .note {
+    padding: 12px 14px !important;
+    font-size: 0.85rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .success-note {
+    padding: 12px 14px !important;
+    font-size: 0.85rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+  }
+
+  /* 60k. hr separators */
+  hr {
+    margin: 20px 0 !important;
+  }
+
+  /* 60l. Paragraph text */
+  p {
+    font-size: 0.88rem !important;
+    line-height: 1.7 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 60m. MathJax inside formula-box for sheet5 */
+  .formula-box mjx-container,
+  .step mjx-container,
+  .solution-section mjx-container {
+    max-width: none !important;
+    overflow: visible !important;
+    font-size: 0.9em !important;
+  }
+
+  .formula-box mjx-container * {
+    max-width: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   61. SHEET 6 — Riveted Joints
+   Classes: .sheet-bar, .sheet-header, .container, .prob-card.s6,
+            .prob-header, .prob-num, .prob-title, .q-label, .question-box,
+            .given, .solution-area, .sol-title, .step, .step-num,
+            .step-content, .eq, .eq.key, .note, .note.info, .answer,
+            .ans-values, .ans-icon, .ico, .sheet-divider,
+            .sheet-section-anchor
+   NOTE: .prob-card, .solution-area, .step, .eq, .answer are already
+   covered by sections 29–38. This section adds sheet6-specific fixes.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 61a. Sheet 6 container */
+  .s6 {
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 61b. Sheet bar (top banner) */
+  .sheet-bar {
+    padding: 14px 14px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    border-radius: 8px !important;
+    margin: 12px 8px !important;
+  }
+
+  .sheet-bar .ico {
+    font-size: 1.2rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 61c. Sheet header wrapper */
+  .sheet-header {
+    padding: 0 8px !important;
+    margin: 16px auto 0 !important;
+  }
+
+  /* 61d. Container */
+  .container {
+    padding: 8px 8px 40px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 61e. Prob-card sheet6 variant */
+  .prob-card.s6 {
+    overflow: visible !important;
+    margin: 12px 0 !important;
+    border-radius: 10px !important;
+  }
+
+  /* 61f. Question box inside prob-card */
+  .question-box {
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .question-box p {
+    font-size: 0.88rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 61g. Given section inside question-box */
+  .given {
+    padding: 8px 12px !important;
+    font-size: 0.82rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 61h. Q-label */
+  .q-label {
+    font-size: 0.6rem !important;
+    padding: 2px 6px !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* 61i. Note / info note */
+  .note.info {
+    padding: 10px 12px !important;
+    font-size: 0.82rem !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   62. SHEET 7 — Shaft Design
+   Classes: header, header .tag, header h1, header .sub,
+            nav.toc, nav.toc .inner, nav.toc a,
+            main, section, .q-head, .q-badge, .q-body,
+            .problem, .plbl, .given, .glbl, .step, .slbl,
+            .eq, .answer, .albl, .aval, .note, .nlbl,
+            .diagram, .bmd, .bmd-grid, .sep, .sub, .tag
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 62a. Page header */
+  header {
+    padding: 28px 16px 24px !important;
+    overflow: hidden !important;
+  }
+
+  header .tag {
+    font-size: 0.65rem !important;
+    padding: 4px 12px !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 10px !important;
+  }
+
+  header h1 {
+    font-size: clamp(1.3rem, 5.5vw, 2rem) !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.25 !important;
+  }
+
+  header .sub {
+    font-size: 0.88rem !important;
+    word-break: break-word !important;
+    margin-top: 6px !important;
+  }
+
+  /* 62b. Sticky TOC nav */
+  nav.toc {
+    padding: 8px 0 !important;
+  }
+
+  nav.toc .inner {
+    gap: 4px !important;
+    padding: 0 10px !important;
+  }
+
+  nav.toc a {
+    font-size: 0.8rem !important;
+    padding: 6px 12px !important;
+    border-radius: 100px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* 62c. Main content area */
+  main {
+    padding: 20px 12px 48px !important;
+    max-width: 100% !important;
+  }
+
+  /* 62d. Section spacing */
+  section {
+    margin-bottom: 28px !important;
+    scroll-margin-top: 60px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  /* 62e. Question header */
+  .q-head {
+    padding: 12px 16px !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    border-radius: 10px 10px 0 0 !important;
+    align-items: flex-start !important;
+  }
+
+  .q-head .q-badge {
+    font-size: 0.7rem !important;
+    padding: 4px 10px !important;
+    flex-shrink: 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .q-head h2 {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* 62f. Question body */
+  .q-body {
+    padding: 14px 14px !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .q-body h3 {
+    font-size: 0.9rem !important;
+    margin-top: 14px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .q-body p {
+    font-size: 0.88rem !important;
+    line-height: 1.7 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 62g. Problem statement */
+  .problem {
+    padding: 12px 14px !important;
+    font-size: 0.88rem !important;
+    line-height: 1.7 !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    border-radius: 8px !important;
+  }
+
+  .plbl {
+    font-size: 0.6rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+    display: inline-block !important;
+  }
+
+  /* 62h. Given data box */
+  .given {
+    padding: 12px 14px !important;
+    font-size: 0.85rem !important;
+    line-height: 1.7 !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    margin: 10px 0 !important;
+  }
+
+  .glbl {
+    font-size: 0.6rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 6px !important;
+    display: inline-block !important;
+  }
+
+  /* 62i. Steps */
+  .step {
+    padding: 10px 14px !important;
+    margin: 12px 0 !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+  }
+
+  .slbl {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+    display: inline-block !important;
+    border-radius: 4px !important;
+  }
+
+  .step h4 {
+    font-size: 0.88rem !important;
+    margin: 8px 0 !important;
+    word-break: break-word !important;
+  }
+
+  .step p {
+    font-size: 0.85rem !important;
+    line-height: 1.7 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 62j. Equation boxes */
+  .eq {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 10px 10px !important;
+    margin: 8px 0 !important;
+    border-radius: 6px !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  .eq.boxed {
+    padding: 14px 12px !important;
+  }
+
+  /* 62k. Answer box */
+  .answer {
+    padding: 12px 14px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+    margin-top: 14px !important;
+  }
+
+  .albl {
+    font-size: 0.62rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    flex-shrink: 0 !important;
+    border-radius: 4px !important;
+    align-self: flex-start !important;
+  }
+
+  .aval {
+    font-size: 0.9rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    line-height: 1.5 !important;
+  }
+
+  /* 62l. Note box */
+  .note {
+    padding: 12px 14px !important;
+    font-size: 0.83rem !important;
+    line-height: 1.7 !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    border-radius: 6px !important;
+  }
+
+  .nlbl {
+    font-size: 0.6rem !important;
+    padding: 3px 8px !important;
+    letter-spacing: 1px !important;
+    display: inline-block !important;
+    border-radius: 4px !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* 62m. Bearing / material diagrams */
+  .diagram {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    margin: 12px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  /* 62n. BMD grid (bending moment diagram) */
+  .bmd {
+    overflow: visible !important;
+    max-width: 100% !important;
+    margin: 12px 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .bmd-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* 62o. Sub-section label */
+  .sub {
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+
+  .sub h3 {
+    font-size: 0.9rem !important;
+    word-break: break-word !important;
+  }
+
+  /* 62p. Separator */
+  .sep {
+    margin: 16px 0 !important;
+    opacity: 0.4 !important;
+  }
+
+  /* 62q. Back navigation */
+  .back-nav {
+    padding: 8px 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .btn-back {
+    font-size: 0.82rem !important;
+    padding: 8px 14px !important;
+    border-radius: 6px !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  /* 62r. Crumb current */
+  .crumb-current {
+    font-size: 0.78rem !important;
+    word-break: break-word !important;
+  }
+
+  /* 62s. Tag pill */
+  .tag {
+    font-size: 0.65rem !important;
+    padding: 4px 10px !important;
+    border-radius: 100px !important;
+  }
+
+  /* 62t. MathJax in sheet7 */
+  section mjx-container,
+  .step mjx-container,
+  .eq mjx-container,
+  .answer mjx-container {
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  section mjx-container * {
+    max-width: none !important;
+  }
+
+  /* 62u. Scrollbar on .eq */
+  .eq::-webkit-scrollbar { height: 4px; }
+  .eq::-webkit-scrollbar-thumb {
+    background: rgba(45,108,176,.25);
+    border-radius: 4px;
+  }
+  .eq::-webkit-scrollbar-track {
+    background: rgba(45,108,176,.06);
+  }
+  .eq {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(45,108,176,.25) transparent;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   63. ALL SHEETS — SHARED TABLE OVERFLOW FIX
+   Tables that appear inside .doc-body, .qbody, .content,
+   .prob-body, .q-body, .solution-section must be scrollable.
+   Wrap them in auto-overflow parent so they don't cause page overflow.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* 63a. Any table not already inside a .table-wrap should scroll */
+  .doc-body > table,
+  .qbody > table,
+  .content > table,
+  .prob-body > table,
+  .q-body > table,
+  .solution-section > table,
+  .step > table,
+  body > table {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    min-width: 340px !important;
+  }
+
+  /* 63b. All table cells — minimum touch-friendly font */
+  table td,
+  table th {
+    font-size: 12px !important;
+    padding: 7px 9px !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* 63c. Global html/body — guarantee no page-level horizontal scroll */
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 63d. Inline styles that set overflow:hidden — override for content areas */
+  .qbody[style*="overflow"],
+  .prob-body[style*="overflow"],
+  .q-body[style*="overflow"] {
+    overflow: visible !important;
+  }
+
+  /* 63e. All MathJax equation containers globally */
+  mjx-container[jax="CHTML"] {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+  }
+
+  /* 63f. Back-to-top anchor */
+  #top {
+    display: block !important;
+    height: 0 !important;
+  }
+}

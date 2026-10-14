@@ -1,18 +1,11 @@
 
-$dir   = 'c:\Users\ENG  AHMED TAG\Documents\my-website'
+$dir   = $PSScriptRoot
 $files = @(
     'lecture1.html','lecture2.html','lecture3.html','lecture4.html',
     'lecture5.html','lecture6.html','lecture7.html','lecture8.html',
     'sheet1.html','sheet2.html','sheet3.html','sheet4.html',
     'sheet5.html','sheet6.html','sheet7.html'
 )
-
-$sig = "`n<!-- PERSONAL SIGNATURE -->`n" +
-       "<div style=""text-align:center;margin-top:50px;padding:20px;" +
-       "border-top:1px solid #444;font-weight:bold;" +
-       "font-family:Arial,sans-serif;color:#333;"">" +
-       "Created by Mechanical Engineering Student: Ahmed Tageldien" +
-       "</div>`n"
 
 # Regex patterns: [pattern, replacement]
 $pats = @(
@@ -67,12 +60,6 @@ foreach ($f in $files) {
          '(?s)\n?<!-- PERSONAL SIGNATURE -->.*?</div>',
          '',
          [System.Text.RegularExpressions.RegexOptions]::Singleline)
-
-    # Inject signature before </body>
-    $bodyTag = [regex]::Match($c, '(?i)</body>').Value
-    if ($bodyTag) {
-        $c = [regex]::Replace($c, '(?i)</body>', $sig + $closingBody, 1)
-    }
 
     if ($c -ne $orig) {
         [System.IO.File]::WriteAllText($path, $c, $enc)

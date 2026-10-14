@@ -101,7 +101,7 @@
     <svg viewBox="0 0 300 200"><g class="gear-a"><path d="M161.4,91.4 L179.8,95.0 L179.8,105.0 L161.4,108.6 L160.6,112.9 L176.7,122.6 L173.3,132.0 L154.7,129.1 L152.6,132.9 L164.4,147.5 L157.9,155.2 L141.5,146.1 L138.2,148.9 L144.3,166.6 L135.6,171.7 L123.2,157.5 L119.2,159.0 L118.8,177.8 L108.9,179.5 L102.2,162.0 L97.8,162.0 L91.1,179.5 L81.2,177.8 L80.8,159.0 L76.8,157.5 L64.4,171.7 L55.7,166.6 L61.8,148.9 L58.5,146.1 L42.1,155.2 L35.6,147.5 L47.4,132.9 L45.3,129.1 L26.7,132.0 L23.3,122.6 L39.4,112.9 L38.6,108.6 L20.2,105.0 L20.2,95.0 L38.6,91.4 L39.4,87.1 L23.3,77.4 L26.7,68.0 L45.3,70.9 L47.4,67.1 L35.6,52.5 L42.1,44.8 L58.5,53.9 L61.8,51.1 L55.7,33.4 L64.4,28.3 L76.8,42.5 L80.8,41.0 L81.2,22.2 L91.1,20.5 L97.8,38.0 L102.2,38.0 L108.9,20.5 L118.8,22.2 L119.2,41.0 L123.2,42.5 L135.6,28.3 L144.3,33.4 L138.2,51.1 L141.5,53.9 L157.9,44.8 L164.4,52.5 L152.6,67.1 L154.7,70.9 L173.3,68.0 L176.7,77.4 L160.6,87.1Z"/><circle cx="100" cy="100" r="50"/><circle cx="100" cy="100" r="12"/><circle cx="133.0" cy="100.0" r="9"/><circle cx="116.5" cy="128.6" r="9"/><circle cx="83.5" cy="128.6" r="9"/><circle cx="67.0" cy="100.0" r="9"/><circle cx="83.5" cy="71.4" r="9"/><circle cx="116.5" cy="71.4" r="9"/></g><g class="gear-b"><path d="M182.1,98.0 L164.8,90.7 L167.5,80.5 L186.1,82.7 L188.1,79.3 L176.9,64.3 L184.3,56.9 L199.3,68.1 L202.7,66.1 L200.5,47.5 L210.7,44.8 L218.0,62.1 L222.0,62.1 L229.3,44.8 L239.5,47.5 L237.3,66.1 L240.7,68.1 L255.7,56.9 L263.1,64.3 L251.9,79.3 L253.9,82.7 L272.5,80.5 L275.2,90.7 L257.9,98.0 L257.9,102.0 L275.2,109.3 L272.5,119.5 L253.9,117.3 L251.9,120.7 L263.1,135.7 L255.7,143.1 L240.7,131.9 L237.3,133.9 L239.5,152.5 L229.3,155.2 L222.0,137.9 L218.0,137.9 L210.7,155.2 L200.5,152.5 L202.7,133.9 L199.3,131.9 L184.3,143.1 L176.9,135.7 L188.1,120.7 L186.1,117.3 L167.5,119.5 L164.8,109.3 L182.1,102.0Z"/><circle cx="220" cy="100" r="26"/><circle cx="220" cy="100" r="12"/><circle cx="234.8" cy="114.8" r="6"/><circle cx="205.2" cy="114.8" r="6"/><circle cx="205.2" cy="85.2" r="6"/><circle cx="234.8" cy="85.2" r="6"/></g></svg>
   </div>
   <div class="hub-nav">
-    <a href="https://ahmedramadantajeldin-rgb.github.io/MechLibrary/" class="hub-link" title="Back to MechHub">
+    <a href="#" onclick="goBackToMechHub(event)" class="hub-link" title="Back to MechHub">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       <span>Back to MechHub</span>
     </a>
@@ -213,6 +213,27 @@ function showPage(id) {
     }
   } catch (e) {}
 })();
+</script>
+
+<script>
+/* ── MechHub back-navigation helper ──────────────────────────────────────────
+ * Called by every "Back to MechHub" link.
+ * Strategy:
+ *   1. If there is a prior history entry in this tab, go back (the user came
+ *      from MechHub via same-tab navigation — no new entry is added).
+ *   2. Otherwise navigate with location.replace() so MechHub replaces this
+ *      page in history rather than stacking a new entry on top.
+ * This prevents duplicate hub pages accumulating on mobile and in the PWA.
+ */
+function goBackToMechHub(e) {
+  if (e) e.preventDefault();
+  var HUB = "https://ahmedramadantajeldin-rgb.github.io/MechLibrary/";
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.replace(HUB);
+  }
+}
 </script>
 </body>
 </html>
